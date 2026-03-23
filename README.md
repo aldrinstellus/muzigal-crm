@@ -1,73 +1,150 @@
-# React + TypeScript + Vite
+# Muzigal CRM
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Custom music academy CRM built for [Muzigal](https://muzigal.com), Whitefield, Bangalore. React + TypeScript + Tailwind CSS on Cloudflare Pages, backed by Google Apps Script + Google Sheets. Zero infrastructure cost.
 
-Currently, two official plugins are available:
+**Live**: [muzigal-crm.pages.dev](https://muzigal-crm.pages.dev)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+---
 
-## React Compiler
+## Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **Dashboard** -- Key metrics, enrollment trends, revenue charts, and upcoming classes at a glance
+- **Student Management** -- Full student directory with search, filtering, and contact details
+- **Teacher Management** -- Teacher profiles, instrument assignments, and schedule overview
+- **Class Management** -- Create and manage classes by instrument, grade level, and time slot
+- **Enrollment Pipeline** -- Track inquiries from initial contact through trial class to active enrollment
+- **Attendance Tracking** -- Mark and review attendance per class with visual summaries
+- **Payment Tracking** -- Fee collection, payment history, outstanding balances, and receipt generation
+- **Reports** -- Attendance summaries, enrollment stats, and revenue breakdowns with Recharts visualizations
+- **Public Enrollment Form** -- Parent-facing form at the root URL for new student registration
+- **WhatsApp Integration** -- Automated class notifications via the backend system (schedule changes, reminders, broadcasts)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Pages
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+| Page | Route | Description |
+|------|-------|-------------|
+| Public Enrollment | `/` | Parent-facing enrollment form |
+| Dashboard | `/admin` | Overview with charts and key metrics |
+| Students | `/admin/students` | Student directory and management |
+| Teachers | `/admin/teachers` | Teacher profiles and assignments |
+| Classes | `/admin/classes` | Class scheduling and management |
+| Enrollment | `/admin/enrollment` | Enrollment pipeline and tracking |
+| Attendance | `/admin/attendance` | Attendance marking and history |
+| Payments | `/admin/payments` | Fee tracking and payment records |
+| Reports | `/admin/reports` | Visual reports and analytics |
+| Settings | `/admin/settings` | System configuration |
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Tech Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | React 19 |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| Build tool | Vite |
+| Charts | Recharts |
+| Icons | lucide-react |
+| Hosting | Cloudflare Pages + Workers |
+| Backend | Google Apps Script + Google Sheets ([repo](https://github.com/aldrinstellus/whatsapp-class-notifications)) |
+| Testing | Vitest + React Testing Library |
+
+---
+
+## Quick Start
+
+```bash
+# Install dependencies
+npm install
+
+# Start dev server
+npm run dev
+
+# Run tests
+npm test
+
+# Build for production
+npm run build
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+The dev server starts at `http://localhost:5173`. The app uses mock data in development -- no backend connection required.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+---
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Test Coverage
+
+**109 tests** passing across **4 test suites**, covering **5 personas**:
+
+| Persona | Role | Tests |
+|---------|------|-------|
+| Receptionist | Enrollment intake, student registration | Enrollment form, student CRUD |
+| Teacher | Class management, attendance marking | Attendance workflows, class views |
+| Owner | Financial oversight, reports | Payment tracking, revenue reports |
+| Parent | Public enrollment | Enrollment form submission |
+| Admin | Full system access, settings | All pages, configuration |
+
+See [docs/PERSONAS-AND-TEST-CASES.md](docs/PERSONAS-AND-TEST-CASES.md) for the full test plan.
+
+---
+
+## File Structure
+
 ```
+muzigal-crm/
+  src/
+    api/            # API client and endpoint definitions
+    assets/         # Static assets
+    auth/           # Authentication utilities
+    components/     # Reusable UI components
+    hooks/          # Custom React hooks
+    lib/            # Shared utilities and helpers
+    pages/
+      index.tsx     # Public enrollment form
+      admin/        # 9 admin pages (dashboard, students, teachers, etc.)
+      portal/       # Portal pages
+    __mocks__/      # Mock data for development and testing
+    __tests__/      # Test suites (4 files, 109 tests)
+    App.tsx         # Root component with routing
+    main.tsx        # Entry point
+  docs/             # Documentation
+  public/           # Static public assets
+```
+
+---
+
+## System Overview
+
+This is the frontend half of a two-repo system:
+
+| Repo | Purpose | LOC |
+|------|---------|-----|
+| [whatsapp-class-notifications](https://github.com/aldrinstellus/whatsapp-class-notifications) | Backend -- Google Apps Script, WhatsApp API, 25+ REST endpoints | 4,115 |
+| **muzigal-crm** (this repo) | Frontend -- React CRM dashboard and public enrollment | 2,614 |
+| **Total** | | **6,729** |
+
+---
+
+## Cost
+
+| Component | Monthly Cost |
+|-----------|-------------|
+| Cloudflare Pages hosting | Rs. 0 |
+| Cloudflare Workers | Rs. 0 |
+| Google Apps Script backend | Rs. 0 |
+| Google Sheets database | Rs. 0 |
+| **Infrastructure total** | **Rs. 0/month** |
+
+WhatsApp message delivery is the only variable cost (~Rs. 0.35 per message).
+
+---
+
+## License
+
+MIT License. See [LICENSE](LICENSE) for details.
+
+---
+
+Built by **Aldrin Stellus** for **Muzigal**, Bangalore
