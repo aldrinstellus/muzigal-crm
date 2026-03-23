@@ -170,9 +170,15 @@ function doGet(e) {
 
   // --- Phase 2: Auth ---
   if (action === 'login') {
-    var idToken = e.parameter.id_token;
-    if (!idToken) return jsonResponse_({ success: false, message: 'Missing id_token' });
-    return jsonResponse_(handleLogin(idToken));
+    var credentials = e.parameter.credentials || e.parameter.id_token || '';
+    if (!credentials) return jsonResponse_({ status: 'error', message: 'Missing credentials' });
+    var result = handleLogin(credentials);
+    // Normalize response to {status: 'ok', data: {token, user}} format
+    if (result.success) {
+      return jsonResponse_({ status: 'ok', data: { token: result.token, user: result.user } });
+    } else {
+      return jsonResponse_({ status: 'error', message: result.error });
+    }
   }
 
   // --- Phase 2: CRM API (Students) ---

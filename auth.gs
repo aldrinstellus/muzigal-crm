@@ -211,26 +211,73 @@ function requireAuth(e, requiredRole) {
 }
 
 /**
- * Handles user login. Verifies Google token, assigns role, creates JWT.
- * @param {string} idToken - Google OAuth ID token from the frontend
+ * Handles user login. Supports email:password OR Google OAuth token.
+ * @param {string} credentials - Either "email:password" or a Google OAuth ID token
  * @return {Object} {success, token, user} or {success: false, error}
  */
-function handleLogin(idToken) {
+function handleLogin(credentials) {
   try {
-    var googleUser = verifyGoogleToken(idToken);
-    if (!googleUser) {
-      return { success: false, error: 'Invalid Google token' };
+    var email, name, role;
+
+    // Check if credentials contain ":" (email:password format)
+    if (credentials && credentials.indexOf(':') !== -1 && credentials.indexOf('.') < credentials.indexOf(':')) {
+      // Email:password login
+      var parts = credentials.split(':');
+      var inputEmail = parts[0];
+      var inputPassword = parts.slice(1).join(':'); // password may contain colons
+
+      // Look up user in Users sheet
+      var ss = SpreadsheetApp.getActiveSpreadsheet();
+      var usersSheet = ss.getSheetByName('Users');
+      if (!usersSheet || usersSheet.getLastRow() <= 1) {
+        // Fall back to ADMIN_EMAILS check with default password
+        var adminEmails = (getConfig('ADMIN_EMAILS') || '').split(',').map(function(e) { return e.trim().toLowerCase(); });
+        var defaultPassword = getConfig('DEFAULT_PASSWORD') || 'admin123';
+        if (adminEmails.indexOf(inputEmail.toLowerCase()) !== -1 && inputPassword === defaultPassword) {
+          email = inputEmail;
+          name = inputEmail.split('@')[0];
+          role = 'admin';
+        } else {
+          return { success: false, error: 'Invalid email or password' };
+        }
+      } else {
+        // Check Users sheet for credentials
+        var userData = usersSheet.getDataRange().getValues();
+        var found = false;
+        for (var i = 1; i < userData.length; i++) {
+          if (String(userData[i][0]).toLowerCase() === inputEmail.toLowerCase()) {
+            // Column 0=Email, 1=Password (hashed or plain for now), 2=Name, 3=Role, 4=Active
+            if (String(userData[i][1]) === inputPassword && String(userData[i][4]).toUpperCase() === 'TRUE') {
+              email = String(userData[i][0]);
+              name = String(userData[i][2]) || email.split('@')[0];
+              role = String(userData[i][3]) || 'student';
+              found = true;
+            }
+            break;
+          }
+        }
+        if (!found) {
+          return { success: false, error: 'Invalid email or password' };
+        }
+      }
+    } else {
+      // Google OAuth token login (original flow)
+      var googleUser = verifyGoogleToken(credentials);
+      if (!googleUser) {
+        return { success: false, error: 'Invalid credentials' };
+      }
+      email = googleUser.email;
+      name = googleUser.name;
+      role = getRole(googleUser.email);
     }
 
-    var role = getRole(googleUser.email);
-
     var jwt = createJWT({
-      email: googleUser.email,
-      name: googleUser.name,
+      email: email,
+      name: name,
       role: role
     });
 
-    Logger.log('Login successful: ' + googleUser.email + ' (role: ' + role + ')');
+    Logger.log('Login successful: ' + email + ' (role: ' + role + ')');
 
     return {
       success: true,

@@ -122,6 +122,19 @@ function createSheetStructure() {
     attendanceSheet.getRange('A1:F1').setFontWeight('bold');
   }
 
+  // Tab 11: Users (Auth)
+  var usersSheet = getOrCreateSheet_(ss, 'Users');
+  if (usersSheet.getLastRow() === 0) {
+    usersSheet.appendRow([
+      'Email', 'Password', 'Name', 'Role', 'Active'
+    ]);
+    usersSheet.getRange('A1:E1').setFontWeight('bold');
+    // Add default admin users
+    usersSheet.appendRow(['aldrin@atc.xyz', 'admin123', 'Aldrin Stellus', 'admin', 'TRUE']);
+    usersSheet.appendRow(['cecil@muzigal.com', 'cecil123', 'Cecil', 'admin', 'TRUE']);
+    usersSheet.appendRow(['giri@muzigal.com', 'giri123', 'Giri', 'admin', 'TRUE']);
+  }
+
   // Add Phase 2 config defaults if not present
   var configData = configSheet.getDataRange().getValues();
   var existingKeys = configData.map(function(row) { return row[0]; });
