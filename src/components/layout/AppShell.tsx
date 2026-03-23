@@ -19,7 +19,7 @@ const titleMap: Record<string, string> = {
 export default function AppShell() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
-  const pageTitle = titleMap[location.pathname] || 'Muzigal CRM';
+  const pageTitle = titleMap[location.pathname] || 'ZOO CRM';
 
   return (
     <div className="flex h-screen bg-surface">

@@ -12,7 +12,7 @@ export default function Settings() {
 
   // WhatsApp test
   const [testPhone, setTestPhone] = useState('');
-  const [testMessage, setTestMessage] = useState('Hello from Muzigal CRM!');
+  const [testMessage, setTestMessage] = useState('Hello from ZOO CRM!');
   const [sendingTest, setSendingTest] = useState(false);
   const [testResult, setTestResult] = useState('');
 

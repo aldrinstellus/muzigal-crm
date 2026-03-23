@@ -187,6 +187,7 @@ export default function PublicEnrollment() {
             <Phone size={12} />
             <span>Contact us for more info</span>
           </div>
+          <p className="text-[10px] text-zinc-300 mt-3">Powered by ZOO CRM</p>
         </div>
       </footer>
     </div>

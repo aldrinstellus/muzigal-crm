@@ -53,7 +53,7 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
       >
         {/* Logo */}
         <div className="flex items-center gap-2 px-6 py-5 border-b border-zinc-100">
-          <span className="text-lg font-bold text-zinc-900 tracking-tight">Muzigal</span>
+          <span className="text-lg font-bold text-zinc-900 tracking-tight">ZOO</span>
           <span className="text-xs font-medium text-zinc-400 uppercase tracking-widest">CRM</span>
         </div>
 
