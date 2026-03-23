@@ -1,0 +1,5 @@
+name = "muzigal-crm"
+compatibility_date = "2024-12-01"
+
+[vars]
+GAS_URL = "https://script.google.com/macros/s/AKfycbxa15p4A8J1t85MZ0APjPHtBQTBKCNBzK9z06jlJI1UwTk7yZbgBr5ePXnakVWDYa1plA/exec"
