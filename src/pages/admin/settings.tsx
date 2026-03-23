@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Save, Send, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
-import { api } from '../../api/client';
+import { activeApi as api } from '../../api/client';
 import Card from '../../components/ui/Card';
 
 export default function Settings() {

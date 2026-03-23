@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Music, CheckCircle, AlertCircle, Phone, MapPin } from 'lucide-react';
-import { api } from '../api/client';
+import { activeApi as api } from '../api/client';
 
 export default function PublicEnrollment() {
   const [form, setForm] = useState({

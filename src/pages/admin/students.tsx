@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Search, Plus, AlertCircle } from 'lucide-react';
-import { api } from '../../api/client';
+import { activeApi as api } from '../../api/client';
 import { formatDate, formatPhone } from '../../lib/utils';
 import Table from '../../components/ui/Table';
 import type { Column } from '../../components/ui/Table';

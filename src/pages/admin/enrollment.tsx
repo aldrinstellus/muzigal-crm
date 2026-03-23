@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Plus, Phone, Calendar, AlertCircle, ChevronRight } from 'lucide-react';
-import { api } from '../../api/client';
+import { activeApi as api } from '../../api/client';
 import { formatPhone, formatDate, cn } from '../../lib/utils';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Save, AlertCircle, CheckCircle } from 'lucide-react';
-import { api } from '../../api/client';
+import { activeApi as api } from '../../api/client';
 import { cn } from '../../lib/utils';
 import Card from '../../components/ui/Card';
 

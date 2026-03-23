@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Plus, Clock, MapPin, Users, AlertCircle } from 'lucide-react';
-import { api } from '../../api/client';
+import { activeApi as api } from '../../api/client';
 import { formatCurrency } from '../../lib/utils';
 import Badge from '../../components/ui/Badge';
 import Modal from '../../components/ui/Modal';

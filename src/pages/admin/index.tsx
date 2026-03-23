@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Users, BookOpen, IndianRupee, AlertCircle } from 'lucide-react';
-import { api } from '../../api/client';
+import { activeApi as api } from '../../api/client';
 import { formatCurrency, formatDate } from '../../lib/utils';
 import StatCard from '../../components/ui/StatCard';
 import Card from '../../components/ui/Card';

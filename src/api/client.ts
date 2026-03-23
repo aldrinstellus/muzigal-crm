@@ -1,3 +1,6 @@
+import { mockApi } from '../__mocks__/mockApi';
+
+const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
 const GAS_URL = import.meta.env.VITE_GAS_URL || '';
 const PROXY_URL = import.meta.env.VITE_PROXY_URL || '/api';
 
@@ -151,3 +154,7 @@ export const api = {
   // --- Health ---
   health: () => request('health'),
 };
+
+// Export either mock or real API based on environment
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const activeApi: any = USE_MOCK ? mockApi : api;

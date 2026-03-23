@@ -5,7 +5,7 @@ import {
   LineChart, Line,
   PieChart, Pie, Cell,
 } from 'recharts';
-import { api } from '../../api/client';
+import { activeApi as api } from '../../api/client';
 import { formatCurrency } from '../../lib/utils';
 import Card from '../../components/ui/Card';
 
