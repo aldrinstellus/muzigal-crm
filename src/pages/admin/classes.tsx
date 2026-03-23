@@ -66,7 +66,7 @@ function ClassForm({ onClose, onSave }: { onClose: () => void; onSave: () => voi
         maxStudents: Number(form.maxStudents) || 0,
         fee: Number(form.fee) || 0,
       });
-      if (res.status === 'success') { onSave(); onClose(); }
+      if (res.status === 'ok') { onSave(); onClose(); }
       else setError(res.message || 'Failed to create class');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -151,7 +151,7 @@ export default function Classes() {
     setLoading(true);
     api.listClasses()
       .then((res) => {
-        if (res.status === 'success') setClasses((res.data as ClassItem[]) || []);
+        if (res.status === 'ok') setClasses((res.data as ClassItem[]) || []);
         else setError(res.message || 'Failed to load classes');
       })
       .catch((err) => setError(err.message))

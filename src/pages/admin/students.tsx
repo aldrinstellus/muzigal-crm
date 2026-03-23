@@ -49,7 +49,7 @@ function StudentForm({ onClose, onSave }: { onClose: () => void; onSave: () => v
     setError('');
     try {
       const res = await api.createStudent(form);
-      if (res.status === 'success') {
+      if (res.status === 'ok') {
         onSave();
         onClose();
       } else {
@@ -161,7 +161,7 @@ export default function Students() {
     setLoading(true);
     api.listStudents()
       .then((res) => {
-        if (res.status === 'success') setStudents((res.data as Student[]) || []);
+        if (res.status === 'ok') setStudents((res.data as Student[]) || []);
         else setError(res.message || 'Failed to load students');
       })
       .catch((err) => setError(err.message))

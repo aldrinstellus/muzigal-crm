@@ -25,7 +25,7 @@ export default function PublicEnrollment() {
         source: 'Website',
         date: new Date().toISOString(),
       });
-      if (res.status === 'success') {
+      if (res.status === 'ok') {
         setSubmitted(true);
       } else {
         setError(res.message || 'Something went wrong. Please try again.');

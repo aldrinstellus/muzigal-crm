@@ -29,7 +29,7 @@ function PaymentForm({ onClose, onSave }: { onClose: () => void; onSave: () => v
         status: 'Paid',
         date: new Date().toISOString(),
       });
-      if (res.status === 'success') { onSave(); onClose(); }
+      if (res.status === 'ok') { onSave(); onClose(); }
       else setError(res.message || 'Failed to record payment');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -94,7 +94,7 @@ export default function Payments() {
     setLoading(true);
     api.listPayments()
       .then((res) => {
-        if (res.status === 'success') setPayments((res.data as Payment[]) || []);
+        if (res.status === 'ok') setPayments((res.data as Payment[]) || []);
         else setError(res.message || 'Failed to load payments');
       })
       .catch((err) => setError(err.message))

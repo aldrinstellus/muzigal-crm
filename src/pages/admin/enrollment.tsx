@@ -66,7 +66,7 @@ function InquiryForm({ onClose, onSave }: { onClose: () => void; onSave: () => v
     setError('');
     try {
       const res = await api.createInquiry({ ...form, stage: 'New' });
-      if (res.status === 'success') { onSave(); onClose(); }
+      if (res.status === 'ok') { onSave(); onClose(); }
       else setError(res.message || 'Failed to create inquiry');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -146,9 +146,10 @@ export default function Enrollment() {
   const load = () => {
     setLoading(true);
     api.listInquiries()
-      .then((res) => {
-        if (res.status === 'success') setInquiries((res.data as Inquiry[]) || []);
-        else setError(res.message || 'Failed to load inquiries');
+      .then((res: any) => {
+        console.log('[Enrollment] API response:', JSON.stringify(res).substring(0, 200));
+        if (res.status === 'ok' && res.data) setInquiries(res.data as Inquiry[]);
+        else setError('Failed to load inquiries');
       })
       .catch((err) => setError(err.message))
       .finally(() => setLoading(false));

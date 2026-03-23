@@ -73,7 +73,7 @@ function TeacherForm({ onClose, onSave }: { onClose: () => void; onSave: () => v
         ...form,
         instruments: form.instruments.split(',').map(s => s.trim()).filter(Boolean),
       });
-      if (res.status === 'success') { onSave(); onClose(); }
+      if (res.status === 'ok') { onSave(); onClose(); }
       else setError(res.message || 'Failed to add teacher');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
@@ -130,7 +130,7 @@ export default function Teachers() {
     setLoading(true);
     api.listTeachers()
       .then((res) => {
-        if (res.status === 'success') setTeachers((res.data as Teacher[]) || []);
+        if (res.status === 'ok') setTeachers((res.data as Teacher[]) || []);
         else setError(res.message || 'Failed to load teachers');
       })
       .catch((err) => setError(err.message))

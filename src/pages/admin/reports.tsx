@@ -40,7 +40,7 @@ export default function Reports() {
   useEffect(() => {
     api.dashboardStats()
       .then((res) => {
-        if (res.status === 'success' && res.data) {
+        if (res.status === 'ok' && res.data) {
           setData(res.data as unknown as ReportData);
         } else {
           setError(res.message || 'Failed to load reports');

@@ -23,9 +23,9 @@ export default function Settings() {
   useEffect(() => {
     api.getConfig()
       .then((res) => {
-        if (res.status === 'success' && res.config) {
+        if (res.status === 'ok' && res.config) {
           setConfig(res.config);
-        } else if (res.status === 'success' && res.data) {
+        } else if (res.status === 'ok' && res.data) {
           setConfig(res.data as Record<string, string>);
         }
       })
@@ -39,7 +39,7 @@ export default function Settings() {
     setSuccess('');
     try {
       const res = await api.setConfig(key, value);
-      if (res.status === 'success') {
+      if (res.status === 'ok') {
         setSuccess(`"${key}" updated`);
         setTimeout(() => setSuccess(''), 3000);
       } else {
@@ -58,7 +58,7 @@ export default function Settings() {
     setTestResult('');
     try {
       const res = await api.sendTest(testPhone, testMessage);
-      setTestResult(res.status === 'success' ? 'Message sent successfully' : (res.message || 'Failed to send'));
+      setTestResult(res.status === 'ok' ? 'Message sent successfully' : (res.message || 'Failed to send'));
     } catch (err) {
       setTestResult(err instanceof Error ? err.message : 'Failed to send');
     } finally {

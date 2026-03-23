@@ -40,7 +40,7 @@ export default function Attendance() {
   useEffect(() => {
     api.listClasses()
       .then((res) => {
-        if (res.status === 'success') setClasses((res.data as ClassItem[]) || []);
+        if (res.status === 'ok') setClasses((res.data as ClassItem[]) || []);
       })
       .catch(() => {});
   }, []);
@@ -53,7 +53,7 @@ export default function Attendance() {
     setSuccess('');
     api.getAttendance(selectedClass, date)
       .then((res) => {
-        if (res.status === 'success') {
+        if (res.status === 'ok') {
           const data = (res.data as AttendanceRecord[]) || [];
           setRecords(data);
           const initial: Record<string, Status> = {};
@@ -84,7 +84,7 @@ export default function Attendance() {
         date,
         records: attendance,
       });
-      if (res.status === 'success') {
+      if (res.status === 'ok') {
         setSuccess('Attendance saved successfully');
       } else {
         setError(res.message || 'Failed to save attendance');
