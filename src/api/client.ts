@@ -1,6 +1,5 @@
 import { mockApi } from '../__mocks__/mockApi';
-
-const USE_MOCK = import.meta.env.VITE_USE_MOCK === 'true';
+import { isDemo } from '../lib/mode';
 const GAS_URL = import.meta.env.VITE_GAS_URL || '';
 const PROXY_URL = import.meta.env.VITE_PROXY_URL || '/api';
 
@@ -156,6 +155,10 @@ export const api = {
   health: () => request('health'),
 };
 
-// Export either mock or real API based on environment
+// Export either mock or real API based on runtime mode
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const activeApi: any = USE_MOCK ? mockApi : api;
+export const activeApi: any = new Proxy({} as any, {
+  get(_target, prop) {
+    return isDemo() ? (mockApi as any)[prop] : (api as any)[prop];
+  },
+});

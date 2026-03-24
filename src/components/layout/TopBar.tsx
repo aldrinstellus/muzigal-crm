@@ -1,5 +1,6 @@
 import { Bell, Menu } from 'lucide-react';
 import { getInitials } from '../../lib/utils';
+import { isDemo } from '../../lib/mode';
 
 interface TopBarProps {
   title: string;
@@ -18,6 +19,11 @@ export default function TopBar({ title, onMenuClick }: TopBarProps) {
             <Menu size={20} />
           </button>
           <h1 className="text-lg font-semibold text-zinc-900">{title}</h1>
+          {isDemo() && (
+            <span className="px-2 py-0.5 bg-amber-100 text-amber-700 text-[10px] font-semibold rounded-full uppercase tracking-wide">
+              Demo
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2">

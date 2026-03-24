@@ -1,21 +1,41 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 import { activeApi as api, setToken } from '../api/client';
+import { getMode, setMode, type AppMode } from '../lib/mode';
 
 export default function Login() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { isAuthenticated, login } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [mode, setModeState] = useState<AppMode>(getMode);
+
+  // Honor ?mode=demo or ?mode=prod URL param
+  useEffect(() => {
+    const param = searchParams.get('mode');
+    if (param === 'demo' || param === 'prod') {
+      setMode(param);
+      setModeState(param);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/admin', { replace: true });
     }
   }, [isAuthenticated, navigate]);
+
+  function handleModeToggle(newMode: AppMode) {
+    setMode(newMode);
+    setModeState(newMode);
+    setError('');
+    setEmail('');
+    setPassword('');
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,6 +75,39 @@ export default function Login() {
           <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">ZOO CRM</h1>
           <p className="text-zinc-500 text-sm mt-1">Muzigal Admin Portal</p>
         </div>
+
+        {/* Mode Toggle */}
+        <div className="flex items-center justify-center mb-6">
+          <div className="flex bg-zinc-100 rounded-lg p-1 gap-1">
+            <button
+              onClick={() => handleModeToggle('prod')}
+              className={`px-4 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                mode === 'prod'
+                  ? 'bg-white text-zinc-900 shadow-sm'
+                  : 'text-zinc-500 hover:text-zinc-700'
+              }`}
+            >
+              Production
+            </button>
+            <button
+              onClick={() => handleModeToggle('demo')}
+              className={`px-4 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                mode === 'demo'
+                  ? 'bg-amber-400 text-amber-900 shadow-sm'
+                  : 'text-zinc-500 hover:text-zinc-700'
+              }`}
+            >
+              Demo
+            </button>
+          </div>
+        </div>
+
+        {mode === 'demo' && (
+          <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800">
+            <p className="font-semibold mb-1">Demo mode — fake data only</p>
+            <p>Email: <span className="font-mono">demo@zoo.crm</span> · Password: <span className="font-mono">demo</span></p>
+          </div>
+        )}
 
         {/* Login Card */}
         <div className="bg-white border border-zinc-200 rounded-xl p-6 sm:p-8">

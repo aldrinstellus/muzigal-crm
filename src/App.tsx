@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import AppShell from './components/layout/AppShell';
 import ProtectedRoute from './auth/ProtectedRoute';
 import Login from './pages/login';
@@ -18,8 +18,9 @@ export default function App() {
     <BrowserRouter>
       <Routes>
         {/* Public */}
-        <Route path="/" element={<PublicEnrollment />} />
+        <Route path="/" element={<Navigate to="/login" replace />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/enroll" element={<PublicEnrollment />} />
 
         {/* Admin (Protected) */}
         <Route path="/admin" element={

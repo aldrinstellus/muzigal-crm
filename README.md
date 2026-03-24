@@ -2,7 +2,7 @@
 
 Custom music academy CRM built for [Muzigal](https://muzigal.com), Whitefield, Bangalore. React + TypeScript + Tailwind CSS on Cloudflare Pages, backed by Google Apps Script + Google Sheets. Zero infrastructure cost.
 
-**Live**: [muzigal-crm.pages.dev](https://muzigal-crm.pages.dev)
+**Live**: [zoo-crm.pages.dev](https://zoo-crm.pages.dev)
 
 ---
 
@@ -25,7 +25,9 @@ Custom music academy CRM built for [Muzigal](https://muzigal.com), Whitefield, B
 
 | Page | Route | Description |
 |------|-------|-------------|
-| Public Enrollment | `/` | Parent-facing enrollment form |
+| Login | `/` | Redirects to login — entry point |
+| Login | `/login` | Admin sign-in (Production or Demo mode) |
+| Public Enrollment | `/enroll` | Parent-facing enrollment form |
 | Dashboard | `/admin` | Overview with charts and key metrics |
 | Students | `/admin/students` | Student directory and management |
 | Teachers | `/admin/teachers` | Teacher profiles and assignments |
@@ -71,6 +73,24 @@ npm run build
 ```
 
 The dev server starts at `http://localhost:5173`. The app uses mock data in development -- no backend connection required.
+
+---
+
+## Demo vs Production Mode
+
+The app supports runtime mode switching — no rebuild required.
+
+| Mode | Data | Login credentials |
+|------|------|-------------------|
+| **Demo** | Fake / mock data | `demo@zoo.crm` / `demo` |
+| **Production** | Real Google Sheet | Credentials from Users sheet in GAS backend |
+
+**To switch modes:**
+- Toggle on the `/login` page
+- Or use URL params: `/login?mode=demo` or `/login?mode=prod`
+- Choice is persisted in localStorage
+
+A **Demo** badge appears in the top bar when running in demo mode.
 
 ---
 
