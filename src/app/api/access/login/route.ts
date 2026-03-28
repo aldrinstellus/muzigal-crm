@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import { supabase } from "@/lib/supabase";
+import { db } from "@/lib/supabase";
 import { verifyPassword, createSessionToken, logAccess } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
     const { email, password } = await request.json();
-    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
     const ua = request.headers.get("user-agent") || "";
     const emailLower = (email || "").toLowerCase();
 
@@ -14,15 +15,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Email and password required" }, { status: 400 });
     }
 
-    // Find the most recent approved request for this email
-    const { data: req } = await supabase
-      .from("access_requests")
+    // Find approved request for this email
+    const { data } = await db("access_requests")
       .select("*")
       .eq("email", emailLower)
       .eq("status", "approved")
       .order("approved_at", { ascending: false })
       .limit(1)
       .single();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const req = data as any;
 
     if (!req) {
       await logAccess({
@@ -32,7 +35,7 @@ export async function POST(request: Request) {
         user_agent: ua,
       });
       return NextResponse.json(
-        { error: "No approved access found for this email. Please request access first." },
+        { error: "No approved access found. Your request may still be pending." },
         { status: 401 }
       );
     }
@@ -66,20 +69,18 @@ export async function POST(request: Request) {
     }
 
     // Mark as used
-    await supabase
-      .from("access_requests")
+    await db("access_requests")
       .update({ status: "used", used_at: new Date().toISOString() })
       .eq("id", req.id);
 
     // Create session
     const sessionToken = await createSessionToken(emailLower, "visitor");
-
     const cookieStore = await cookies();
     cookieStore.set("muzigal_auth", sessionToken, {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
-      maxAge: 30 * 60, // 30 minutes
+      maxAge: 30 * 60,
       path: "/",
     });
 

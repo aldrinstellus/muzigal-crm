@@ -1,5 +1,5 @@
 import { hash, compare } from "bcryptjs";
-import { supabase } from "./supabase";
+import { db } from "./supabase";
 
 const HMAC_SECRET = process.env.HMAC_SECRET!;
 
@@ -26,7 +26,7 @@ export async function verifyPassword(
   return compare(password, hashed);
 }
 
-// --- HMAC tokens ---
+// --- HMAC session tokens (Edge-compatible) ---
 
 async function getHmacKey(): Promise<CryptoKey> {
   const enc = new TextEncoder();
@@ -39,21 +39,29 @@ async function getHmacKey(): Promise<CryptoKey> {
   );
 }
 
-export async function createHmacToken(payload: Record<string, unknown>): Promise<string> {
+export async function createSessionToken(
+  email: string,
+  role: "visitor" | "admin"
+): Promise<string> {
+  const payload = JSON.stringify({
+    email,
+    role,
+    iat: Date.now(),
+    sid: crypto.randomUUID(),
+  });
   const key = await getHmacKey();
-  const data = JSON.stringify(payload);
   const enc = new TextEncoder();
-  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(data));
+  const sig = await crypto.subtle.sign("HMAC", key, enc.encode(payload));
   const sigHex = Array.from(new Uint8Array(sig))
     .map((b) => b.toString(16).padStart(2, "0"))
     .join("");
-  const b64 = btoa(data);
-  return `${b64}.${sigHex}`;
+  return `${btoa(payload)}.${sigHex}`;
 }
 
-export async function verifyHmacToken(
-  token: string
-): Promise<Record<string, unknown> | null> {
+export async function verifySessionToken(
+  token: string,
+  maxAgeMs: number
+): Promise<{ email: string; role: string; iat: number } | null> {
   try {
     const [b64, sigHex] = token.split(".");
     if (!b64 || !sigHex) return null;
@@ -65,50 +73,16 @@ export async function verifyHmacToken(
       sigHex.match(/.{2}/g)!.map((h) => parseInt(h, 16))
     );
 
-    const valid = await crypto.subtle.verify(
-      "HMAC",
-      key,
-      sigBytes,
-      enc.encode(data)
-    );
+    const valid = await crypto.subtle.verify("HMAC", key, sigBytes, enc.encode(data));
     if (!valid) return null;
 
-    return JSON.parse(data);
+    const payload = JSON.parse(data);
+    if (Date.now() - payload.iat > maxAgeMs) return null;
+
+    return { email: payload.email, role: payload.role, iat: payload.iat };
   } catch {
     return null;
   }
-}
-
-// --- Session tokens ---
-
-export async function createSessionToken(
-  email: string,
-  role: "visitor" | "admin"
-): Promise<string> {
-  const payload = {
-    email,
-    role,
-    iat: Date.now(),
-    sid: crypto.randomUUID(),
-  };
-  return createHmacToken(payload);
-}
-
-export async function verifySessionToken(
-  token: string,
-  maxAgeMs = 30 * 60 * 1000 // 30 minutes
-): Promise<{ email: string; role: string; iat: number } | null> {
-  const payload = await verifyHmacToken(token);
-  if (!payload) return null;
-
-  const iat = payload.iat as number;
-  if (Date.now() - iat > maxAgeMs) return null;
-
-  return {
-    email: payload.email as string,
-    role: payload.role as string,
-    iat,
-  };
 }
 
 // --- Logging ---
@@ -121,7 +95,7 @@ export async function logAccess(params: {
   user_agent?: string;
   metadata?: Record<string, unknown>;
 }) {
-  await supabase.from("access_log").insert({
+  await db("access_log").insert({
     request_id: params.request_id || null,
     email: params.email || null,
     action: params.action,

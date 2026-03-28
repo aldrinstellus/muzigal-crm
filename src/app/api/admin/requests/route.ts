@@ -1,47 +1,45 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-import { generatePassword, hashPassword, logAccess } from "@/lib/auth";
-import { sendApprovedPassword, sendDenialNotification } from "@/lib/email";
+import { db } from "@/lib/supabase";
+import { logAccess } from "@/lib/auth";
 
 export async function GET() {
-  const { data, error } = await supabase
-    .from("access_requests")
+  const { data: requests } = await db("access_requests")
     .select("*")
     .order("requested_at", { ascending: false })
     .limit(100);
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+  const { data: logs } = await db("access_log")
+    .select("*")
+    .order("created_at", { ascending: false })
+    .limit(200);
 
-  return NextResponse.json(data);
+  return NextResponse.json({ requests: requests || [], logs: logs || [] });
 }
 
 export async function PATCH(request: Request) {
   try {
     const { id, action } = await request.json();
-    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
-    const ua = request.headers.get("user-agent") || "";
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
 
     if (!id || !["approve", "deny"].includes(action)) {
-      return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+      return NextResponse.json({ error: "Invalid" }, { status: 400 });
     }
 
-    // Get the request
-    const { data: req } = await supabase
-      .from("access_requests")
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const { data } = await db("access_requests")
       .select("*")
       .eq("id", id)
       .eq("status", "pending")
       .single();
+    const req = data as any;
 
     if (!req) {
-      return NextResponse.json({ error: "Request not found or already processed" }, { status: 404 });
+      return NextResponse.json({ error: "Not found or already processed" }, { status: 404 });
     }
 
     if (action === "deny") {
-      await supabase
-        .from("access_requests")
+      await db("access_requests")
         .update({ status: "denied", denied_at: new Date().toISOString() })
         .eq("id", id);
 
@@ -50,27 +48,19 @@ export async function PATCH(request: Request) {
         email: req.email,
         action: "denied",
         ip_address: ip,
-        user_agent: ua,
-        metadata: { via: "admin_ui" },
       });
-
-      await sendDenialNotification(req.email);
 
       return NextResponse.json({ ok: true });
     }
 
-    // Approve
-    const plainPassword = generatePassword(12);
-    const hashed = await hashPassword(plainPassword);
+    // Approve — reset expiry to 30 min from NOW
     const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
 
-    await supabase
-      .from("access_requests")
+    await db("access_requests")
       .update({
         status: "approved",
-        password_hash: hashed,
-        expires_at: expiresAt,
         approved_at: new Date().toISOString(),
+        expires_at: expiresAt,
       })
       .eq("id", id);
 
@@ -79,13 +69,10 @@ export async function PATCH(request: Request) {
       email: req.email,
       action: "approved",
       ip_address: ip,
-      user_agent: ua,
-      metadata: { via: "admin_ui", expires_at: expiresAt },
+      metadata: { expires_at: expiresAt },
     });
 
-    await sendApprovedPassword({ email: req.email, password: plainPassword });
-
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, password: req.password_plain });
   } catch (err) {
     console.error("Admin action error:", err);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });

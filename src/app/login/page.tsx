@@ -1,16 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Suspense } from "react";
 
 function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const initialMode = searchParams.get("mode") || "request";
 
   const [mode, setMode] = useState<"request" | "login" | "admin">(
-    initialMode === "login" ? "login" : initialMode === "admin" ? "admin" : "request"
+    searchParams.get("mode") === "login" ? "login" : "request"
   );
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -19,11 +17,10 @@ function LoginForm() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const m = searchParams.get("mode");
-    if (m === "login") setMode("login");
+    if (searchParams.get("mode") === "login") setMode("login");
   }, [searchParams]);
 
-  async function handleRequestAccess(e: React.FormEvent) {
+  async function handleRequest(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -37,7 +34,7 @@ function LoginForm() {
 
     const data = await res.json();
     if (res.ok) {
-      setSuccess("Request submitted. You'll receive a password by email once approved.");
+      setSuccess("Request submitted. You'll receive a password once approved.");
     } else {
       setError(data.error || "Something went wrong");
     }
@@ -55,17 +52,17 @@ function LoginForm() {
       body: JSON.stringify({ email, password }),
     });
 
-    const data = await res.json();
     if (res.ok) {
       router.push("/");
       router.refresh();
     } else {
+      const data = await res.json();
       setError(data.error || "Login failed");
       setLoading(false);
     }
   }
 
-  async function handleAdminLogin(e: React.FormEvent) {
+  async function handleAdmin(e: React.FormEvent) {
     e.preventDefault();
     setLoading(true);
     setError("");
@@ -94,7 +91,7 @@ function LoginForm() {
             <p className="text-sm text-gray-400">Documentation Portal</p>
           </div>
 
-          {/* Request Access Mode */}
+          {/* Request Access */}
           {mode === "request" && (
             <>
               {success ? (
@@ -102,24 +99,21 @@ function LoginForm() {
                   <div className="w-12 h-12 rounded-full bg-green-50 text-green-600 flex items-center justify-center mx-auto mb-4 text-xl font-bold">
                     &#10003;
                   </div>
-                  <p className="text-sm text-gray-600 mb-4">{success}</p>
+                  <p className="text-sm text-gray-600 mb-2">{success}</p>
                   <p className="text-xs text-gray-400 mb-6">
-                    Check your inbox. Once approved, you&apos;ll receive a one-time password.
+                    The admin will send you a one-time password.
                   </p>
                   <button
-                    onClick={() => setMode("login")}
+                    onClick={() => { setMode("login"); setSuccess(""); }}
                     className="text-sm text-blue-600 hover:text-blue-800 font-medium"
                   >
                     I have a password &rarr;
                   </button>
                 </div>
               ) : (
-                <form onSubmit={handleRequestAccess} className="space-y-4">
+                <form onSubmit={handleRequest} className="space-y-4">
                   <div>
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-gray-700 mb-1.5"
-                    >
+                    <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
                       Email address
                     </label>
                     <input
@@ -133,9 +127,7 @@ function LoginForm() {
                       required
                     />
                   </div>
-
                   {error && <p className="text-sm text-red-600">{error}</p>}
-
                   <button
                     type="submit"
                     disabled={loading}
@@ -143,7 +135,6 @@ function LoginForm() {
                   >
                     {loading ? "Submitting..." : "Request Access"}
                   </button>
-
                   <p className="text-xs text-gray-400 text-center">
                     A request will be sent to the admin for approval.
                   </p>
@@ -152,14 +143,11 @@ function LoginForm() {
             </>
           )}
 
-          {/* Login with Password Mode */}
+          {/* Login with Password */}
           {mode === "login" && (
             <form onSubmit={handleLogin} className="space-y-4">
               <div>
-                <label
-                  htmlFor="login-email"
-                  className="block text-sm font-medium text-gray-700 mb-1.5"
-                >
+                <label htmlFor="login-email" className="block text-sm font-medium text-gray-700 mb-1.5">
                   Email
                 </label>
                 <input
@@ -174,26 +162,21 @@ function LoginForm() {
                 />
               </div>
               <div>
-                <label
-                  htmlFor="login-password"
-                  className="block text-sm font-medium text-gray-700 mb-1.5"
-                >
+                <label htmlFor="login-pw" className="block text-sm font-medium text-gray-700 mb-1.5">
                   Password
                 </label>
                 <input
-                  id="login-password"
+                  id="login-pw"
                   type="text"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  placeholder="12-character password from email"
+                  placeholder="12-character password"
                   className="w-full px-3 py-2.5 border border-gray-300 rounded-lg text-sm font-mono tracking-wider focus:outline-none focus:ring-2 focus:ring-[#1a1a2e] focus:border-transparent"
                   autoComplete="off"
                   required
                 />
               </div>
-
               {error && <p className="text-sm text-red-600">{error}</p>}
-
               <button
                 type="submit"
                 disabled={loading}
@@ -201,25 +184,21 @@ function LoginForm() {
               >
                 {loading ? "Verifying..." : "Access Docs"}
               </button>
-
               <p className="text-xs text-gray-400 text-center">
-                Password is valid for 30 minutes. One-time use only.
+                One-time use. Expires 30 min after approval.
               </p>
             </form>
           )}
 
-          {/* Admin Login Mode */}
+          {/* Admin Login */}
           {mode === "admin" && (
-            <form onSubmit={handleAdminLogin} className="space-y-4">
+            <form onSubmit={handleAdmin} className="space-y-4">
               <div>
-                <label
-                  htmlFor="admin-password"
-                  className="block text-sm font-medium text-gray-700 mb-1.5"
-                >
+                <label htmlFor="admin-pw" className="block text-sm font-medium text-gray-700 mb-1.5">
                   Admin Password
                 </label>
                 <input
-                  id="admin-password"
+                  id="admin-pw"
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
@@ -229,9 +208,7 @@ function LoginForm() {
                   required
                 />
               </div>
-
               {error && <p className="text-sm text-red-600">{error}</p>}
-
               <button
                 type="submit"
                 disabled={loading}
@@ -245,36 +222,17 @@ function LoginForm() {
           {/* Mode switcher */}
           <div className="mt-6 pt-5 border-t border-gray-100 flex flex-col items-center gap-2">
             {mode !== "request" && (
-              <button
-                onClick={() => {
-                  setMode("request");
-                  setError("");
-                  setSuccess("");
-                }}
-                className="text-xs text-blue-600 hover:text-blue-800"
-              >
+              <button onClick={() => { setMode("request"); setError(""); setSuccess(""); }} className="text-xs text-blue-600 hover:text-blue-800">
                 Request access
               </button>
             )}
             {mode !== "login" && (
-              <button
-                onClick={() => {
-                  setMode("login");
-                  setError("");
-                }}
-                className="text-xs text-blue-600 hover:text-blue-800"
-              >
+              <button onClick={() => { setMode("login"); setError(""); }} className="text-xs text-blue-600 hover:text-blue-800">
                 I have a password
               </button>
             )}
             {mode !== "admin" && (
-              <button
-                onClick={() => {
-                  setMode("admin");
-                  setError("");
-                }}
-                className="text-xs text-gray-400 hover:text-gray-600"
-              >
+              <button onClick={() => { setMode("admin"); setError(""); }} className="text-xs text-gray-400 hover:text-gray-600">
                 Admin
               </button>
             )}

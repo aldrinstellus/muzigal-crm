@@ -6,10 +6,10 @@ interface AccessRequest {
   id: string;
   email: string;
   status: string;
+  password_plain: string | null;
   requested_at: string;
   approved_at: string | null;
   used_at: string | null;
-  denied_at: string | null;
   expires_at: string | null;
   ip_address: string | null;
 }
@@ -19,9 +19,7 @@ interface LogEntry {
   email: string | null;
   action: string;
   ip_address: string | null;
-  user_agent: string | null;
   created_at: string;
-  metadata: Record<string, unknown>;
 }
 
 const STATUS_COLORS: Record<string, string> = {
@@ -37,29 +35,45 @@ export default function AdminPage() {
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [tab, setTab] = useState<"requests" | "logs">("requests");
   const [acting, setActing] = useState<string | null>(null);
+  const [copied, setCopied] = useState<string | null>(null);
+  const [approvedPasswords, setApprovedPasswords] = useState<Record<string, string>>({});
 
   const loadData = useCallback(async () => {
-    const [reqRes, logRes] = await Promise.all([
-      fetch("/api/admin/requests"),
-      fetch("/api/admin/logs"),
-    ]);
-    if (reqRes.ok) setRequests(await reqRes.json());
-    if (logRes.ok) setLogs(await logRes.json());
+    const res = await fetch("/api/admin/requests");
+    if (res.ok) {
+      const data = await res.json();
+      setRequests(data.requests);
+      setLogs(data.logs);
+    }
   }, []);
 
   useEffect(() => {
     loadData();
+    const interval = setInterval(loadData, 15000);
+    return () => clearInterval(interval);
   }, [loadData]);
 
   async function handleAction(id: string, action: "approve" | "deny") {
     setActing(id);
-    await fetch("/api/admin/requests", {
+    const res = await fetch("/api/admin/requests", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, action }),
     });
+    if (res.ok && action === "approve") {
+      const data = await res.json();
+      if (data.password) {
+        setApprovedPasswords((prev) => ({ ...prev, [id]: data.password }));
+      }
+    }
     await loadData();
     setActing(null);
+  }
+
+  function copyPassword(id: string, pw: string) {
+    navigator.clipboard.writeText(pw);
+    setCopied(id);
+    setTimeout(() => setCopied(null), 2000);
   }
 
   function fmtTime(ts: string | null) {
@@ -71,6 +85,10 @@ export default function AdminPage() {
       hour: "2-digit",
       minute: "2-digit",
     });
+  }
+
+  function getPassword(r: AccessRequest) {
+    return approvedPasswords[r.id] || r.password_plain;
   }
 
   const pending = requests.filter((r) => r.status === "pending");
@@ -96,7 +114,7 @@ export default function AdminPage() {
       {pending.length > 0 && (
         <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4 mb-6">
           <p className="text-sm font-medium text-yellow-800">
-            {pending.length} pending request{pending.length > 1 ? "s" : ""} awaiting approval
+            {pending.length} pending request{pending.length > 1 ? "s" : ""} — approve and send the password to them
           </p>
         </div>
       )}
@@ -106,9 +124,7 @@ export default function AdminPage() {
         <button
           onClick={() => setTab("requests")}
           className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-            tab === "requests"
-              ? "bg-white text-[#1a1a2e] shadow-sm"
-              : "text-gray-500 hover:text-gray-700"
+            tab === "requests" ? "bg-white text-[#1a1a2e] shadow-sm" : "text-gray-500"
           }`}
         >
           Requests
@@ -116,82 +132,95 @@ export default function AdminPage() {
         <button
           onClick={() => setTab("logs")}
           className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
-            tab === "logs"
-              ? "bg-white text-[#1a1a2e] shadow-sm"
-              : "text-gray-500 hover:text-gray-700"
+            tab === "logs" ? "bg-white text-[#1a1a2e] shadow-sm" : "text-gray-500"
           }`}
         >
           Audit Log
         </button>
       </div>
 
-      {/* Requests Table */}
+      {/* Requests */}
       {tab === "requests" && (
-        <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Email</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Status</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Requested</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">IP</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-500">Expires</th>
-                <th className="text-right px-4 py-3 font-medium text-gray-500">Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {requests.map((r) => (
-                <tr key={r.id} className="border-b border-gray-100 last:border-0">
-                  <td className="px-4 py-3 font-medium text-gray-900">{r.email}</td>
-                  <td className="px-4 py-3">
+        <div className="space-y-3">
+          {requests.length === 0 && (
+            <div className="bg-white rounded-lg border border-gray-200 p-8 text-center text-gray-400">
+              No requests yet
+            </div>
+          )}
+          {requests.map((r) => {
+            const pw = getPassword(r);
+            return (
+              <div
+                key={r.id}
+                className="bg-white rounded-lg border border-gray-200 p-4"
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-3">
                     <span
-                      className={`inline-block px-2 py-0.5 rounded-full text-xs font-medium border ${
+                      className={`px-2 py-0.5 rounded-full text-xs font-medium border ${
                         STATUS_COLORS[r.status] || ""
                       }`}
                     >
                       {r.status}
                     </span>
-                  </td>
-                  <td className="px-4 py-3 text-gray-500">{fmtTime(r.requested_at)}</td>
-                  <td className="px-4 py-3 text-gray-400 font-mono text-xs">
-                    {r.ip_address || "—"}
-                  </td>
-                  <td className="px-4 py-3 text-gray-500">{fmtTime(r.expires_at)}</td>
-                  <td className="px-4 py-3 text-right">
+                    <span className="font-medium text-gray-900">{r.email}</span>
+                    <span className="text-xs text-gray-400">
+                      {fmtTime(r.requested_at)}
+                    </span>
+                    <span className="text-xs text-gray-300 font-mono">
+                      {r.ip_address}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
                     {r.status === "pending" && (
-                      <div className="flex gap-2 justify-end">
+                      <>
                         <button
                           onClick={() => handleAction(r.id, "approve")}
                           disabled={acting === r.id}
-                          className="px-3 py-1 bg-green-600 text-white rounded text-xs font-medium hover:bg-green-700 disabled:opacity-50"
+                          className="px-3 py-1.5 bg-green-600 text-white rounded-md text-xs font-medium hover:bg-green-700 disabled:opacity-50"
                         >
-                          Approve
+                          {acting === r.id ? "..." : "Approve"}
                         </button>
                         <button
                           onClick={() => handleAction(r.id, "deny")}
                           disabled={acting === r.id}
-                          className="px-3 py-1 bg-red-600 text-white rounded text-xs font-medium hover:bg-red-700 disabled:opacity-50"
+                          className="px-3 py-1.5 bg-red-600 text-white rounded-md text-xs font-medium hover:bg-red-700 disabled:opacity-50"
                         >
                           Deny
                         </button>
-                      </div>
+                      </>
                     )}
-                  </td>
-                </tr>
-              ))}
-              {requests.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="px-4 py-8 text-center text-gray-400">
-                    No requests yet
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                  </div>
+                </div>
+
+                {/* Show password for approved/pending requests */}
+                {pw && (r.status === "approved" || r.status === "pending" || approvedPasswords[r.id]) && (
+                  <div className="mt-3 flex items-center gap-3 bg-gray-50 rounded-md p-3">
+                    <span className="text-xs text-gray-500">Password:</span>
+                    <code className="text-sm font-mono font-bold tracking-widest text-[#1a1a2e]">
+                      {pw}
+                    </code>
+                    <button
+                      onClick={() => copyPassword(r.id, pw)}
+                      className="px-2 py-1 text-xs bg-white border border-gray-200 rounded hover:bg-gray-50"
+                    >
+                      {copied === r.id ? "Copied!" : "Copy"}
+                    </button>
+                    {r.status === "approved" && r.expires_at && (
+                      <span className="text-xs text-red-500 ml-auto">
+                        Expires {fmtTime(r.expires_at)}
+                      </span>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       )}
 
-      {/* Logs Table */}
+      {/* Logs */}
       {tab === "logs" && (
         <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
           <table className="w-full text-sm">
@@ -213,16 +242,12 @@ export default function AdminPage() {
                       {l.action}
                     </code>
                   </td>
-                  <td className="px-4 py-3 text-gray-400 font-mono text-xs">
-                    {l.ip_address || "—"}
-                  </td>
+                  <td className="px-4 py-3 text-gray-400 font-mono text-xs">{l.ip_address || "—"}</td>
                 </tr>
               ))}
               {logs.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="px-4 py-8 text-center text-gray-400">
-                    No logs yet
-                  </td>
+                  <td colSpan={4} className="px-4 py-8 text-center text-gray-400">No logs yet</td>
                 </tr>
               )}
             </tbody>

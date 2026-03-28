@@ -1,26 +1,24 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase";
-import { createHmacToken, logAccess } from "@/lib/auth";
-import { sendAccessRequestNotification } from "@/lib/email";
+import { db } from "@/lib/supabase";
+import { generatePassword, hashPassword, logAccess } from "@/lib/auth";
 
 export async function POST(request: Request) {
   try {
     const { email } = await request.json();
-    const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
+    const ip =
+      request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() || "unknown";
     const ua = request.headers.get("user-agent") || "";
 
-    // Validate email
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json({ error: "Valid email required" }, { status: 400 });
     }
 
-    // Rate limit: 1 pending request per email per 10 minutes
+    // Rate limit: 1 pending/approved request per email per 10 minutes
     const tenMinAgo = new Date(Date.now() - 10 * 60 * 1000).toISOString();
-    const { data: recent } = await supabase
-      .from("access_requests")
+    const { data: recent } = await db("access_requests")
       .select("id")
       .eq("email", email.toLowerCase())
-      .eq("status", "pending")
+      .in("status", ["pending", "approved"])
       .gte("requested_at", tenMinAgo)
       .limit(1);
 
@@ -31,21 +29,18 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create approval token
-    const approvalPayload = {
-      email: email.toLowerCase(),
-      ts: Date.now(),
-      nonce: crypto.randomUUID(),
-    };
-    const approvalToken = await createHmacToken(approvalPayload);
+    // Generate password now, store hash, keep plaintext for admin to see
+    const plainPassword = generatePassword(12);
+    const hashed = await hashPassword(plainPassword);
+    const expiresAt = new Date(Date.now() + 30 * 60 * 1000).toISOString();
 
-    // Insert request
-    const { data: req, error: insertErr } = await supabase
-      .from("access_requests")
+    const { data: req, error: insertErr } = await db("access_requests")
       .insert({
         email: email.toLowerCase(),
         status: "pending",
-        approval_token: approvalToken,
+        password_hash: hashed,
+        password_plain: plainPassword,
+        expires_at: expiresAt,
         ip_address: ip,
       })
       .select("id")
@@ -56,21 +51,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Failed to create request" }, { status: 500 });
     }
 
-    // Log
     await logAccess({
       request_id: req.id,
       email: email.toLowerCase(),
       action: "request_created",
       ip_address: ip,
       user_agent: ua,
-    });
-
-    // Notify admin
-    await sendAccessRequestNotification({
-      requestId: req.id,
-      email: email.toLowerCase(),
-      approveToken: approvalToken,
-      ip,
     });
 
     return NextResponse.json({ ok: true });
