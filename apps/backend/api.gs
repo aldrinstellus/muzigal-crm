@@ -1,5 +1,5 @@
 /**
- * api.gs — Full CRUD operations for the Muzigal CRM
+ * api.gs — Full CRUD operations for ZOO CRM
  *
  * Provides create, read, update operations for Students, Classes, Teachers,
  * Inquiries (enrollment pipeline), Attendance, and Dashboard stats.

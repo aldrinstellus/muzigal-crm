@@ -162,7 +162,7 @@ function createPaymentLink(studentId, amount, description) {
   var payload = {
     amount: Math.round(amount * 100), // Convert INR to paise
     currency: 'INR',
-    description: description || 'Muzigal fee payment',
+    description: description || (getConfig('ACADEMY_NAME') || 'Academy') + ' fee payment',
     reference_id: studentId + '_' + getIndiaDate(),
     callback_url: '',
     callback_method: ''

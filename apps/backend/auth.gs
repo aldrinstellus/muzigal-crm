@@ -1,5 +1,5 @@
 /**
- * auth.gs — JWT-based authentication for the Muzigal CRM
+ * auth.gs — JWT-based authentication for ZOO CRM
  *
  * Provides Google OAuth token verification, JWT creation/verification,
  * role-based access control, and login handling.

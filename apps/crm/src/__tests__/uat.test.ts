@@ -1,9 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import { mockApi } from '../__mocks__/mockApi';
+import { CLIENT } from '../config/client';
 
 // ============================================================================
 // USER ACCEPTANCE TESTS (UAT)
-// End-to-end business workflow scenarios for Muzigal CRM
+// End-to-end business workflow scenarios for ZOO CRM
 // ============================================================================
 
 describe('UAT: Enrollment Workflow', () => {
@@ -159,7 +160,7 @@ describe('UAT: WhatsApp Integration', () => {
   it('Scenario 8: Send emergency broadcast to all students', async () => {
     const result = await mockApi.sendOverride(
       'all', 'all',
-      'Muzigal will be closed tomorrow (March 25) for a local holiday. Classes resume Wednesday.',
+      CLIENT.messages.closure('tomorrow (March 25)', 'a local holiday', 'Wednesday.'),
       'Admin'
     );
     expect(result.sent).toBeGreaterThan(0);
@@ -183,7 +184,7 @@ describe('UAT: System Health & Config', () => {
   it('Scenario 11: Config management', async () => {
     // Read config
     const config = await mockApi.getConfig();
-    expect(config.config.ACADEMY_NAME).toBe('Muzigal');
+    expect(config.config.ACADEMY_NAME).toBe(CLIENT.name);
     expect(config.config.TIMEZONE).toBe('Asia/Kolkata');
 
     // Update config

@@ -129,10 +129,8 @@ function createSheetStructure() {
       'Email', 'Password', 'Name', 'Role', 'Active'
     ]);
     usersSheet.getRange('A1:E1').setFontWeight('bold');
-    // Add default admin users
-    usersSheet.appendRow(['aldrin@atc.xyz', 'admin123', 'Aldrin Stellus', 'admin', 'TRUE']);
-    usersSheet.appendRow(['cecil@muzigal.com', 'cecil123', 'Cecil', 'admin', 'TRUE']);
-    usersSheet.appendRow(['giri@muzigal.com', 'giri123', 'Giri', 'admin', 'TRUE']);
+    // Default admin user — customize per client deployment
+    usersSheet.appendRow(['admin@zoo.crm', 'admin123', 'Admin', 'admin', 'TRUE']);
   }
 
   // Add Phase 2 config defaults if not present
@@ -143,9 +141,9 @@ function createSheetStructure() {
     ['ADMIN_EMAILS', '(placeholder)'],
     ['RAZORPAY_KEY_ID', '(placeholder)'],
     ['RAZORPAY_KEY_SECRET', '(placeholder)'],
-    ['ACADEMY_NAME', 'Muzigal'],
-    ['ACADEMY_PHONE', '+919403890891'],
-    ['ACADEMY_EMAIL', 'muzigal.borewell@gmail.com']
+    ['ACADEMY_NAME', '(placeholder)'],
+    ['ACADEMY_PHONE', '(placeholder)'],
+    ['ACADEMY_EMAIL', '(placeholder)']
   ];
   phase2Defaults.forEach(function(row) {
     if (existingKeys.indexOf(row[0]) === -1) {

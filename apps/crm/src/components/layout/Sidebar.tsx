@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from 'react-router-dom';
+import { CLIENT } from '../../config/client';
 import {
   LayoutDashboard,
   Users,
@@ -82,8 +83,8 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
       >
         {/* Logo */}
         <div className="px-6 py-4 border-b border-zinc-100">
-          <span className="text-lg font-bold text-zinc-900 tracking-tight">Muzigal</span>
-          <p className="text-[10px] text-zinc-400 mt-0.5">Powered by ZOO CRM</p>
+          <span className="text-lg font-bold text-zinc-900 tracking-tight">{CLIENT.name}</span>
+          <p className="text-[10px] text-zinc-400 mt-0.5">{CLIENT.tagline}</p>
         </div>
 
         {/* Navigation */}

@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mockApi } from '../__mocks__/mockApi';
+import { CLIENT } from '../config/client';
 
 // ============================================================================
 // COMPREHENSIVE PERSONA-BASED TEST SUITE
@@ -216,7 +217,7 @@ describe('Persona: Academy Owner (Cecil & Giri)', () => {
 
     it('should add a new guest teacher', async () => {
       const res = await mockApi.createTeacher({
-        Name: 'Rajesh Menon', Phone: '+919777888999', Email: 'rajesh@muzigal.com',
+        Name: 'Rajesh Menon', Phone: '+919777888999', Email: `rajesh@${CLIENT.name.toLowerCase()}.com`,
         Instruments: 'Tabla,Mrudangam', Availability: 'Sat-Sun 11:00-17:00',
       });
       expect(res.data.TeacherID).toBeDefined();
@@ -228,7 +229,7 @@ describe('Persona: Academy Owner (Cecil & Giri)', () => {
     it('should send holiday announcement to all students', async () => {
       const res = await mockApi.sendOverride(
         'all', 'all',
-        'Muzigal will be closed on March 29 for Ugadi. Classes resume March 31.',
+        CLIENT.messages.closure('March 29', 'Ugadi', 'March 31.'),
         'Cecil'
       );
       expect(res.sent).toBeGreaterThan(0);
@@ -299,7 +300,7 @@ describe('Persona: System Administrator (Aldrin)', () => {
 
     it('should view all config values', async () => {
       const res = await mockApi.getConfig();
-      expect(res.config.ACADEMY_NAME).toBe('Muzigal');
+      expect(res.config.ACADEMY_NAME).toBe(CLIENT.name);
       expect(res.config.TIMEZONE).toBe('Asia/Kolkata');
       expect(res.config.WHATSAPP_TOKEN).toBeDefined();
       expect(res.config.PHONE_NUMBER_ID).toBeDefined();
@@ -315,10 +316,10 @@ describe('Persona: System Administrator (Aldrin)', () => {
     });
 
     it('should update school name', async () => {
-      await mockApi.setConfig('SCHOOL_NAME', 'Muzigal Academy');
+      await mockApi.setConfig('SCHOOL_NAME', `${CLIENT.name} Academy`);
       const res = await mockApi.getConfig();
-      expect(res.config.SCHOOL_NAME).toBe('Muzigal Academy');
-      await mockApi.setConfig('SCHOOL_NAME', 'Muzigal'); // restore
+      expect(res.config.SCHOOL_NAME).toBe(`${CLIENT.name} Academy`);
+      await mockApi.setConfig('SCHOOL_NAME', CLIENT.name); // restore
     });
   });
 
@@ -372,7 +373,7 @@ describe('Cross-Persona: Full Student Lifecycle', () => {
     expect(students.data.length).toBeGreaterThanOrEqual(1);
 
     // 6. Admin sends welcome WhatsApp
-    const welcome = await mockApi.sendTest('+919000111222', 'Welcome to Muzigal! Your Drums classes start next week.');
+    const welcome = await mockApi.sendTest('+919000111222', CLIENT.messages.welcome('Drums'));
     expect(welcome.success).toBe(true);
 
     // 7. First payment recorded

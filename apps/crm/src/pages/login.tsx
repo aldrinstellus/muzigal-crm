@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
+import { CLIENT } from '../config/client';
 import { activeApi as api, setToken } from '../api/client';
 import { getMode, setMode, type AppMode } from '../lib/mode';
 
@@ -73,7 +74,7 @@ export default function Login() {
             <span className="text-white font-bold text-lg">Z</span>
           </div>
           <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">ZOO CRM</h1>
-          <p className="text-zinc-500 text-sm mt-1">Muzigal Admin Portal</p>
+          <p className="text-zinc-500 text-sm mt-1">{CLIENT.portalTitle}</p>
         </div>
 
         {/* Mode Toggle */}
@@ -105,7 +106,7 @@ export default function Login() {
         {mode === 'demo' && (
           <div className="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800">
             <p className="font-semibold mb-1">Demo mode — fake data only</p>
-            <p>Email: <span className="font-mono">demo@zoo.crm</span> · Password: <span className="font-mono">demo</span></p>
+            <p>Email: <span className="font-mono">{CLIENT.demoUser.email}</span> · Password: <span className="font-mono">{CLIENT.demoUser.password}</span></p>
           </div>
         )}
 

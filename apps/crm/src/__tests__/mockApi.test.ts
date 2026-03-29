@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { mockApi } from '../__mocks__/mockApi';
+import { CLIENT } from '../config/client';
 
 // ============================================================================
 // MOCK API UNIT TESTS
@@ -92,7 +93,7 @@ describe('Mock API — Teachers', () => {
 
   it('should create a teacher', async () => {
     const res = await mockApi.createTeacher({
-      Name: 'Rajesh', Phone: '+919999888777', Email: 'rajesh@muzigal.com',
+      Name: 'Rajesh', Phone: '+919999888777', Email: `rajesh@${CLIENT.name.toLowerCase()}.com`,
       Instruments: 'Tabla,Mrudangam', Availability: 'Sat-Sun 11:00-17:00',
     });
     expect(res.data.TeacherID).toMatch(/^T\d+$/);
@@ -199,12 +200,12 @@ describe('Mock API — Reports & Dashboard', () => {
 describe('Mock API — Config & Health', () => {
   it('should return config', async () => {
     const res = await mockApi.getConfig();
-    expect(res.config.ACADEMY_NAME).toBe('Muzigal');
+    expect(res.config.ACADEMY_NAME).toBe(CLIENT.name);
     expect(res.config.TIMEZONE).toBe('Asia/Kolkata');
   });
 
   it('should update config', async () => {
-    const res = await mockApi.setConfig('SCHOOL_NAME', 'Muzigal Academy');
+    const res = await mockApi.setConfig('SCHOOL_NAME', `${CLIENT.name} Academy`);
     expect(res.message).toContain('updated');
   });
 

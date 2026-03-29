@@ -1,7 +1,8 @@
 // ============================================================================
-// MUZIGAL CRM — Mock Data for Development & Testing
-// Realistic Bangalore music academy data
+// ZOO CRM — Mock Data for Development & Testing
+// Client-specific values imported from config/client.ts
 // ============================================================================
+import { CLIENT } from '../config/client';
 
 export const mockStudents = [
   { StudentID: 'S001', Name: 'Aarav Krishnan', Phone: '+919845708094', Class: 'Guitar - Grade 3', Instrument: 'Guitar', Level: 'Grade 3', Active: true, ParentName: 'Ramesh Krishnan', ParentPhone: '+919845708095', EnrollmentDate: '2025-09-15', DOB: '2014-03-20', Email: 'ramesh.k@gmail.com', Notes: '' },
@@ -27,9 +28,9 @@ export const mockClasses = [
 ];
 
 export const mockTeachers = [
-  { TeacherID: 'T001', Name: 'Cecil', Phone: '+919403890891', Email: 'cecil@muzigal.com', Instruments: 'Guitar,Ukulele,Drums', Availability: 'Mon-Sat 11:00-21:00', Status: 'Active', JoinDate: '2023-08-16' },
-  { TeacherID: 'T002', Name: 'Giri', Phone: '+919403890892', Email: 'giri@muzigal.com', Instruments: 'Piano,Keyboard,Violin', Availability: 'Mon-Sat 11:00-21:00', Status: 'Active', JoinDate: '2023-08-16' },
-  { TeacherID: 'T003', Name: 'Lakshmi', Phone: '+919403890893', Email: 'lakshmi@muzigal.com', Instruments: 'Western Vocals,Carnatic Vocals,Hindustani Vocals', Availability: 'Mon-Sat 11:00-19:00', Status: 'Active', JoinDate: '2024-01-10' },
+  { TeacherID: CLIENT.teachers[0].id, Name: CLIENT.teachers[0].name, Phone: CLIENT.teachers[0].phone, Email: CLIENT.teachers[0].email, Instruments: 'Guitar,Ukulele,Drums', Availability: 'Mon-Sat 11:00-21:00', Status: 'Active', JoinDate: '2023-08-16' },
+  { TeacherID: CLIENT.teachers[1].id, Name: CLIENT.teachers[1].name, Phone: CLIENT.teachers[1].phone, Email: CLIENT.teachers[1].email, Instruments: 'Piano,Keyboard,Violin', Availability: 'Mon-Sat 11:00-21:00', Status: 'Active', JoinDate: '2023-08-16' },
+  { TeacherID: CLIENT.teachers[2].id, Name: CLIENT.teachers[2].name, Phone: CLIENT.teachers[2].phone, Email: CLIENT.teachers[2].email, Instruments: 'Western Vocals,Carnatic Vocals,Hindustani Vocals', Availability: 'Mon-Sat 11:00-19:00', Status: 'Active', JoinDate: '2024-01-10' },
 ];
 
 export const mockPayments = [
@@ -102,13 +103,13 @@ export const mockConfig = {
   DAILY_SEND_HOUR: '8',
   DAILY_SEND_MINUTE: '0',
   TIMEZONE: 'Asia/Kolkata',
-  SCHOOL_NAME: 'Muzigal',
+  SCHOOL_NAME: CLIENT.name,
   WEBHOOK_SECRET: '(hidden)',
   JWT_SECRET: '(hidden)',
-  ADMIN_EMAILS: 'aldrin@atc.xyz,cecil@muzigal.com,giri@muzigal.com',
+  ADMIN_EMAILS: CLIENT.adminEmails,
   RAZORPAY_KEY_ID: '(hidden)',
   RAZORPAY_KEY_SECRET: '(hidden)',
-  ACADEMY_NAME: 'Muzigal',
-  ACADEMY_PHONE: '+919403890891',
-  ACADEMY_EMAIL: 'muzigal.borewell@gmail.com',
+  ACADEMY_NAME: CLIENT.name,
+  ACADEMY_PHONE: CLIENT.phone,
+  ACADEMY_EMAIL: CLIENT.email,
 };

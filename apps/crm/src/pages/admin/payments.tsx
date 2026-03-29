@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Plus, MessageCircle, AlertCircle } from 'lucide-react';
 import { activeApi as api } from '../../api/client';
+import { CLIENT } from '../../config/client';
 import { formatCurrency, formatDate, cn } from '../../lib/utils';
 import Table from '../../components/ui/Table';
 import type { Column } from '../../components/ui/Table';
@@ -116,7 +117,7 @@ export default function Payments() {
       const amount = formatCurrency(Number(payment.Amount) || 0);
       await api.sendOverride(
         'phone', phone,
-        `Hi ${name}, your payment of ${amount} is due. Please clear it at the earliest. - Muzigal`,
+        CLIENT.messages.paymentReminder(name, amount),
         'Admin'
       );
     } catch {

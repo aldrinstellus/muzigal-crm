@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Music, CheckCircle, AlertCircle, Phone, MapPin } from 'lucide-react';
 import { activeApi as api } from '../api/client';
+import { CLIENT } from '../config/client';
 
 export default function PublicEnrollment() {
   const [form, setForm] = useState({
@@ -54,8 +55,8 @@ export default function PublicEnrollment() {
             <div className="inline-flex items-center justify-center w-12 h-12 bg-blue-600 rounded-xl mb-4">
               <Music size={24} className="text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">Muzigal</h1>
-            <p className="text-sm text-zinc-500 mt-1">Begin your musical journey</p>
+            <h1 className="text-2xl font-bold text-zinc-900 tracking-tight">{CLIENT.name}</h1>
+            <p className="text-sm text-zinc-500 mt-1">{CLIENT.enrollmentTagline}</p>
           </div>
 
           {submitted ? (
@@ -178,10 +179,10 @@ export default function PublicEnrollment() {
       {/* Footer */}
       <footer className="border-t border-zinc-200 bg-white py-6 px-4">
         <div className="max-w-md mx-auto text-center space-y-2">
-          <p className="text-sm font-semibold text-zinc-900">Muzigal Music Academy</p>
+          <p className="text-sm font-semibold text-zinc-900">{CLIENT.fullName}</p>
           <div className="flex items-center justify-center gap-1.5 text-xs text-zinc-500">
             <MapPin size={12} />
-            <span>Bangalore, Karnataka, India</span>
+            <span>{CLIENT.location}</span>
           </div>
           <div className="flex items-center justify-center gap-1.5 text-xs text-zinc-500">
             <Phone size={12} />

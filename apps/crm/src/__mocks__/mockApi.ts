@@ -1,8 +1,9 @@
 // ============================================================================
-// MUZIGAL CRM — Mock API Layer
+// ZOO CRM — Mock API Layer
 // Intercepts api calls and returns mock data for development/testing
 // Enable by setting VITE_USE_MOCK=true in .env.local
 // ============================================================================
+import { CLIENT } from '../config/client';
 
 import {
   mockStudents, mockClasses, mockTeachers, mockPayments,
@@ -42,12 +43,9 @@ export const mockApi = {
     // Parse email:password format
     const [email, password] = credentials.split(':');
     // Mock users (in production this checks Google Sheet)
-    const users: Record<string, { password: string; name: string; role: string }> = {
-      'aldrin@atc.xyz': { password: 'admin123', name: 'Aldrin Stellus', role: 'admin' },
-      'cecil@muzigal.com': { password: 'cecil123', name: 'Cecil', role: 'admin' },
-      'giri@muzigal.com': { password: 'giri123', name: 'Giri', role: 'admin' },
-      'demo@zoo.crm': { password: 'demo', name: 'Demo User', role: 'admin' },
-    };
+    const users: Record<string, { password: string; name: string; role: string }> = {};
+    for (const u of CLIENT.admins) users[u.email] = { password: u.password, name: u.name, role: u.role };
+    users[CLIENT.demoUser.email] = { password: CLIENT.demoUser.password, name: CLIENT.demoUser.name, role: CLIENT.demoUser.role };
     const user = users[email];
     if (!user || user.password !== password) {
       return { status: 'error', message: 'Invalid email or password.' };
