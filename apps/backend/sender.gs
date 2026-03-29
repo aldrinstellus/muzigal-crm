@@ -3,6 +3,12 @@
  *
  * Supports both free-form text (within 24hr window) and template-based
  * business-initiated messages. Defaults to template for all scheduled sends.
+ *
+ * Token handling:
+ *   - Reads WHATSAPP_TOKEN from Config tab (works for both temporary and System User tokens)
+ *   - Reads WHATSAPP_TOKEN_TYPE from Config tab ("temporary" or "system_user")
+ *   - On auth failures, provides actionable error messages based on token type
+ *   - Use validateWhatsAppToken() (in config.gs) to proactively check token health
  */
 
 /**
@@ -116,6 +122,10 @@ function sendTemplate(phone, templateName, params) {
 
 /**
  * Executes a WhatsApp Cloud API request.
+ * Includes token-type-aware error handling: when a request fails due to
+ * authentication issues, the error message explains whether to refresh a
+ * temporary token or investigate the System User token.
+ *
  * @private
  * @param {string} url
  * @param {string} token
@@ -146,9 +156,28 @@ function executeWhatsAppRequest_(url, token, payload) {
       };
     }
 
+    // Build an actionable error message based on token type
     var errorMsg = 'HTTP ' + code;
     if (body.error) {
       errorMsg += ': ' + (body.error.message || JSON.stringify(body.error));
+
+      // Detect auth/token expiry errors and add guidance
+      var metaCode = body.error.code || 0;
+      var metaSubcode = body.error.error_subcode || 0;
+
+      if (code === 401 || metaCode === 190) {
+        var tokenType = getWhatsAppTokenType();
+        if (tokenType === 'temporary') {
+          errorMsg += ' | ACTION REQUIRED: Your temporary WhatsApp token has likely expired (24hr limit). ' +
+                      'Generate a new one at developers.facebook.com > WhatsApp > API Setup, ' +
+                      'then update WHATSAPP_TOKEN in the Config tab. ' +
+                      'Consider switching to a System User token (WHATSAPP_TOKEN_TYPE = "system_user") to avoid this.';
+        } else {
+          errorMsg += ' | ACTION REQUIRED: Your System User token is invalid. ' +
+                      'This token should not expire. Check Meta Business Manager > System Users ' +
+                      'to verify the token and permissions (whatsapp_business_messaging required).';
+        }
+      }
     }
     return { success: false, messageId: '', error: errorMsg };
 

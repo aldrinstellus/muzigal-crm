@@ -31,6 +31,13 @@ function doPost(e) {
       return jsonResponse_({ success: false, message: 'Invalid JSON body' }, 400);
     }
 
+    // --- WhatsApp Incoming Message Webhook (from Meta) ---
+    // Meta Cloud API webhooks have entry[].changes[] and no "secret" or "action" field.
+    // Route these before secret validation since Meta signs webhooks differently.
+    if (!body.action && body.entry && body.entry.length > 0) {
+      return handleIncomingWhatsApp_(body);
+    }
+
     // Validate shared secret
     var expectedSecret = getConfig('WEBHOOK_SECRET');
     if (!expectedSecret || expectedSecret === '(placeholder)') {
@@ -50,6 +57,8 @@ function doPost(e) {
         return handleDailyTrigger_(body);
       case 'send_test':
         return handleTestSend_(body);
+      case 'validate_token':
+        return handleValidateToken_();
     }
 
     // --- Phase 2: CRM Write Actions (JWT or secret auth) ---
@@ -77,6 +86,12 @@ function doPost(e) {
         return jsonResponse_({ status: 'ok', data: convertInquiryToStudent(body.id) });
       case 'mark_attendance':
         return jsonResponse_({ status: 'ok', data: markAttendance(body.data) });
+      case 'mark_attendance_by_name':
+        return jsonResponse_({ status: 'ok', data: markAttendanceByName(body.studentName, body.date, body.status) });
+      case 'mark_bulk_attendance':
+        return jsonResponse_({ status: 'ok', data: markBulkAttendance(body.date, body.attendanceList) });
+      case 'notify_absences':
+        return jsonResponse_({ status: 'ok', data: notifyAbsences(body.date) });
       case 'record_payment':
         return jsonResponse_({ status: 'ok', data: recordPayment(body.data) });
       case 'create_payment_link':
@@ -99,6 +114,17 @@ function doPost(e) {
  * @return {ContentService.TextOutput} JSON response
  */
 function doGet(e) {
+  // --- Meta WhatsApp Webhook Verification ---
+  // Meta sends GET with hub.mode, hub.verify_token, hub.challenge to verify the endpoint.
+  if (e && e.parameter && e.parameter['hub.mode'] === 'subscribe') {
+    var verifyToken = getConfig('WEBHOOK_SECRET');
+    if (e.parameter['hub.verify_token'] === verifyToken) {
+      // Return the challenge value as plain text (not JSON) per Meta's requirement
+      return ContentService.createTextOutput(e.parameter['hub.challenge']);
+    }
+    return ContentService.createTextOutput('Verification failed').setMimeType(ContentService.MimeType.TEXT);
+  }
+
   var action = (e && e.parameter && e.parameter.action) ? e.parameter.action : 'health';
 
   if (action === 'setup') {
@@ -106,6 +132,15 @@ function doGet(e) {
     return jsonResponse_({
       status: 'ok',
       message: 'Sheet structure created successfully',
+      timestamp: getIndiaTimestamp()
+    });
+  }
+
+  if (action === 'validate_token') {
+    var result = validateWhatsAppToken();
+    return jsonResponse_({
+      status: result.valid ? 'ok' : 'error',
+      data: result,
       timestamp: getIndiaTimestamp()
     });
   }
@@ -237,6 +272,12 @@ function doGet(e) {
   // --- Phase 2: CRM API (Attendance) ---
   if (action === 'get_attendance') {
     return jsonResponse_({ status: 'ok', data: getAttendance(e.parameter.classId, e.parameter.date) });
+  }
+  if (action === 'daily_attendance') {
+    return jsonResponse_({ status: 'ok', data: getDailyAttendanceReport(e.parameter.date) });
+  }
+  if (action === 'attendance_report') {
+    return jsonResponse_({ status: 'ok', data: getAttendanceReportByName(e.parameter.studentName, e.parameter.startDate, e.parameter.endDate) });
   }
 
   // --- Phase 2: CRM API (Reports) ---
@@ -410,6 +451,113 @@ function handleTestSend_(body) {
     messageId: result.messageId || '',
     message: result.success ? 'Test message sent' : 'Failed: ' + result.error
   });
+}
+
+/**
+ * Handles the validate_token action (POST).
+ * Validates the WhatsApp token by calling the Meta Graph API.
+ * @private
+ * @return {ContentService.TextOutput} JSON response with validation result
+ */
+function handleValidateToken_() {
+  var result = validateWhatsAppToken();
+  return jsonResponse_({
+    success: result.valid,
+    tokenType: result.tokenType,
+    details: result.details,
+    error: result.error || '',
+    message: result.valid
+      ? 'WhatsApp token is valid (' + result.tokenType + ')'
+      : 'WhatsApp token validation failed',
+    timestamp: getIndiaTimestamp()
+  });
+}
+
+/**
+ * Handles incoming WhatsApp messages from the Meta Cloud API webhook.
+ * Extracts the sender's phone and message text, then routes to the
+ * registration flow if applicable.
+ *
+ * Meta webhook payload structure:
+ *   { entry: [{ changes: [{ value: { messages: [{ from, text: { body } }] } }] }] }
+ *
+ * @private
+ * @param {Object} body - Parsed webhook payload from Meta
+ * @return {ContentService.TextOutput} JSON acknowledgement
+ */
+function handleIncomingWhatsApp_(body) {
+  try {
+    var entries = body.entry || [];
+
+    for (var e = 0; e < entries.length; e++) {
+      var changes = entries[e].changes || [];
+
+      for (var c = 0; c < changes.length; c++) {
+        var value = changes[c].value;
+        if (!value || !value.messages) continue;
+
+        var messages = value.messages;
+
+        for (var m = 0; m < messages.length; m++) {
+          var msg = messages[m];
+          if (msg.type !== 'text' || !msg.text || !msg.text.body) continue;
+
+          var senderPhone = formatPhoneNumber(msg.from || '');
+          var messageText = String(msg.text.body).trim();
+          var lowerText = messageText.toLowerCase();
+
+          Logger.log('Incoming WhatsApp from ' + senderPhone + ': ' + messageText);
+
+          // Check if user wants to start registration
+          if (lowerText === 'register' || lowerText === 'signup' || lowerText === 'sign up' || lowerText === 'join') {
+            var welcomeMsg = startRegistration(senderPhone);
+            sendFreeForm(senderPhone, welcomeMsg);
+
+            logToSheet({
+              studentName: '',
+              phone: senderPhone,
+              messageType: 'registration_start',
+              messageSent: welcomeMsg,
+              deliveryStatus: 'sent',
+              whatsappMsgId: msg.id || '',
+              error: ''
+            });
+
+            continue;
+          }
+
+          // Check if user is in an active registration flow
+          if (isInRegistrationFlow(senderPhone)) {
+            var result = handleRegistrationMessage(senderPhone, messageText);
+
+            if (result.handled && result.reply) {
+              sendFreeForm(senderPhone, result.reply);
+
+              logToSheet({
+                studentName: '',
+                phone: senderPhone,
+                messageType: 'registration_step',
+                messageSent: result.reply,
+                deliveryStatus: 'sent',
+                whatsappMsgId: msg.id || '',
+                error: ''
+              });
+            }
+
+            continue;
+          }
+
+          // Not in registration flow and not a registration keyword — ignore or handle elsewhere
+          Logger.log('Unhandled incoming message from ' + senderPhone + ': ' + messageText);
+        }
+      }
+    }
+  } catch (err) {
+    Logger.log('handleIncomingWhatsApp_ error: ' + err.message);
+  }
+
+  // Always return 200 OK to Meta to acknowledge receipt
+  return jsonResponse_({ success: true, message: 'Webhook received' });
 }
 
 /**

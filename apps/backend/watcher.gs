@@ -100,6 +100,13 @@ function onScheduleEdit(e) {
 
   Logger.log('Batch send complete: ' + result.sent + ' sent, ' + result.failed + ' failed');
 
+  // Sync change to Google Calendar
+  try {
+    syncScheduleRowToCalendar(scheduleRow, changeType);
+  } catch (calErr) {
+    Logger.log('Calendar sync failed (non-blocking): ' + calErr.message);
+  }
+
   // Send summary email if there were failures
   if (result.failed > 0) {
     sendSummaryEmail({

@@ -57,6 +57,7 @@ function createSheetStructure() {
 
     var defaults = [
       ['WHATSAPP_TOKEN', '(placeholder)'],
+      ['WHATSAPP_TOKEN_TYPE', 'temporary'],
       ['PHONE_NUMBER_ID', '(placeholder)'],
       ['TEMPLATE_NAME', 'class_update'],
       ['CLAUDE_API_KEY', '(placeholder)'],
@@ -113,13 +114,14 @@ function createSheetStructure() {
     enrollmentSheet.getRange('A1:L1').setFontWeight('bold');
   }
 
-  // Tab 10: Attendance (Phase 2)
+  // Tab 10: Attendance (Phase 2 + WhatsApp notifications)
   var attendanceSheet = getOrCreateSheet_(ss, 'Attendance');
   if (attendanceSheet.getLastRow() === 0) {
     attendanceSheet.appendRow([
-      'AttendanceID', 'StudentID', 'ClassID', 'Date', 'Status', 'MarkedBy'
+      'AttendanceID', 'StudentID', 'StudentName', 'StudentPhone', 'ParentPhone',
+      'ClassID', 'Date', 'Status', 'MarkedBy', 'MarkedAt', 'NotificationSent'
     ]);
-    attendanceSheet.getRange('A1:F1').setFontWeight('bold');
+    attendanceSheet.getRange('A1:K1').setFontWeight('bold');
   }
 
   // Tab 11: Users (Auth)
@@ -133,6 +135,44 @@ function createSheetStructure() {
     usersSheet.appendRow(['admin@zoo.crm', 'admin123', 'Admin', 'admin', 'TRUE']);
   }
 
+  // Tab 12: Fees
+  var feesSheet = getOrCreateSheet_(ss, 'Fees');
+  if (feesSheet.getLastRow() === 0) {
+    feesSheet.appendRow([
+      'FeeID', 'StudentName', 'ParentPhone', 'Amount',
+      'DueDate', 'Status', 'PaidDate', 'Notes'
+    ]);
+    feesSheet.getRange('A1:H1').setFontWeight('bold');
+    feesSheet.setColumnWidth(3, 160); // Phone column wider
+  }
+
+  // Tab 13: FeeRemindersLog
+  var feeRemindersLogSheet = getOrCreateSheet_(ss, 'FeeRemindersLog');
+  if (feeRemindersLogSheet.getLastRow() === 0) {
+    feeRemindersLogSheet.appendRow([
+      'Timestamp', 'FeeID', 'StudentName', 'Phone',
+      'ReminderType', 'DeliveryStatus', 'WhatsAppMsgID', 'Error'
+    ]);
+    feeRemindersLogSheet.getRange('A1:H1').setFontWeight('bold');
+  }
+
+  // Tab 14: CalendarSync (Calendar integration)
+  var calendarSyncSheet = getOrCreateSheet_(ss, 'CalendarSync');
+  if (calendarSyncSheet.getLastRow() === 0) {
+    calendarSyncSheet.appendRow([
+      'ScheduleRow', 'ScheduleID', 'CalendarEventID', 'LastSynced', 'Status'
+    ]);
+    calendarSyncSheet.getRange('A1:E1').setFontWeight('bold');
+  }
+
+  // Tab 15: RegistrationState (WhatsApp self-registration)
+  var regStateSheet = getOrCreateSheet_(ss, 'RegistrationState');
+  if (regStateSheet.getLastRow() === 0) {
+    regStateSheet.appendRow(['Phone', 'CurrentStep', 'Data_JSON', 'StartedAt', 'UpdatedAt']);
+    regStateSheet.getRange('A1:E1').setFontWeight('bold');
+    regStateSheet.setColumnWidth(3, 300); // Data_JSON column wider
+  }
+
   // Add Phase 2 config defaults if not present
   var configData = configSheet.getDataRange().getValues();
   var existingKeys = configData.map(function(row) { return row[0]; });
@@ -143,7 +183,9 @@ function createSheetStructure() {
     ['RAZORPAY_KEY_SECRET', '(placeholder)'],
     ['ACADEMY_NAME', '(placeholder)'],
     ['ACADEMY_PHONE', '(placeholder)'],
-    ['ACADEMY_EMAIL', '(placeholder)']
+    ['ACADEMY_EMAIL', '(placeholder)'],
+    ['WHATSAPP_TOKEN_TYPE', 'temporary'],
+    ['CALENDAR_ID', '(placeholder)']
   ];
   phase2Defaults.forEach(function(row) {
     if (existingKeys.indexOf(row[0]) === -1) {
@@ -151,7 +193,7 @@ function createSheetStructure() {
     }
   });
 
-  Logger.log('Sheet structure created successfully (Phase 1 + Phase 2 tabs).');
+  Logger.log('Sheet structure created successfully (Phase 1 + Phase 2 + Calendar tabs).');
 }
 
 /**
@@ -193,7 +235,28 @@ function installTriggers() {
     .onEdit()
     .create();
 
-  Logger.log('Triggers installed: daily at ' + hour + ':' + minute + ' IST, onEdit for Schedule tab.');
+  // Daily fee reminder trigger — runs at 9:00 AM IST
+  ScriptApp.newTrigger('checkFeeReminders')
+    .timeBased()
+    .atHour(9)
+    .nearMinute(0)
+    .everyDays(1)
+    .inTimezone('Asia/Kolkata')
+    .create();
+
+  // Hourly calendar sync trigger — syncs Schedule tab to Google Calendar
+  ScriptApp.newTrigger('syncScheduleToCalendar')
+    .timeBased()
+    .everyHours(1)
+    .create();
+
+  // Hourly registration cleanup trigger — removes stale registrations (24h timeout)
+  ScriptApp.newTrigger('cleanupStaleRegistrations')
+    .timeBased()
+    .everyHours(1)
+    .create();
+
+  Logger.log('Triggers installed: daily schedule at ' + hour + ':' + minute + ' IST, fee reminders at 9:00 IST, onEdit for Schedule tab, hourly calendar sync, hourly registration cleanup.');
 }
 
 /**
@@ -222,7 +285,7 @@ function testSetup() {
 
   // Check that all tabs exist
   var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var requiredTabs = ['Students', 'Schedule', 'Log', 'Overrides', 'Config'];
+  var requiredTabs = ['Students', 'Schedule', 'Log', 'Overrides', 'Config', 'Fees', 'FeeRemindersLog', 'CalendarSync', 'RegistrationState'];
   var missingTabs = [];
 
   requiredTabs.forEach(function(tab) {
@@ -244,5 +307,24 @@ function testSetup() {
     Logger.log('  - ' + t.getHandlerFunction() + ' (' + t.getEventType() + ')');
   });
 
-  return { missingConfig: result, missingTabs: missingTabs, triggerCount: triggers.length };
+  // Validate WhatsApp token
+  var tokenResult = validateWhatsAppToken();
+  Logger.log('WhatsApp token type: ' + tokenResult.tokenType);
+  if (tokenResult.valid) {
+    Logger.log('WhatsApp token is VALID. ' + tokenResult.details);
+  } else {
+    Logger.log('WhatsApp token is INVALID: ' + tokenResult.error);
+  }
+
+  return {
+    missingConfig: result,
+    missingTabs: missingTabs,
+    triggerCount: triggers.length,
+    whatsappToken: {
+      valid: tokenResult.valid,
+      tokenType: tokenResult.tokenType,
+      details: tokenResult.details,
+      error: tokenResult.error
+    }
+  };
 }

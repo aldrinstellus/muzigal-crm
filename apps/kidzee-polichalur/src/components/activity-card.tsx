@@ -3,6 +3,7 @@
 import type { Activity } from "@/lib/types";
 import { CATEGORY_LABELS, CATEGORY_EMOJIS } from "@/lib/types";
 import { getShareUrls } from "@/lib/social";
+import { SocialShareButton } from "@/components/social-share-button";
 import { Calendar, Share2, Globe, Play, Copy, Check, MessageCircle } from "lucide-react";
 import { useState } from "react";
 
@@ -127,6 +128,9 @@ export function ActivityCard({ activity, index = 0 }: { activity: Activity; inde
           <p className="text-xs text-gray-400 mt-2">
             Tip: For Instagram, copy the link and share via the Instagram app.
           </p>
+
+          {/* Auto-post to social media */}
+          <SocialShareButton activity={activity} />
         </div>
       )}
 
