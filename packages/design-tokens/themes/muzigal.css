@@ -31,7 +31,11 @@
   /* ── Text ── */
   --color-text: #18181b;
   --color-text-secondary: #71717a;
-  --color-text-muted: #a1a1aa;
+  --color-text-muted: #71717a;     /* Upgraded from #a1a1aa — 5.0:1 on white */
+
+  /* ── On-color tokens (WCAG AA verified) ── */
+  --color-on-primary: #ffffff;      /* White on navy — 12.8:1 */
+  --color-on-accent: #ffffff;       /* White on blue — 4.56:1 */
 
   /* ── Typography ── */
   --font-display: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;

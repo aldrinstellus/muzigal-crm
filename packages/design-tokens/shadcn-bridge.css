@@ -65,4 +65,11 @@
   --chart-3: var(--color-success);
   --chart-4: var(--color-warning);
   --chart-5: var(--color-secondary);
+
+  /* ── On-color tokens ── */
+  --on-primary: var(--color-on-primary);
+  --on-accent: var(--color-on-accent);
+
+  /* ── Overlay ── */
+  --overlay: var(--overlay-color);
 }

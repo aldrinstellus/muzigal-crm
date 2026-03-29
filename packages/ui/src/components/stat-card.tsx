@@ -6,9 +6,14 @@ interface StatCardProps {
   icon: React.ReactNode;
   trend?: string;
   trendUp?: boolean;
+  iconLabel?: string;
 }
 
-export function StatCard({ label, value, icon, trend, trendUp }: StatCardProps) {
+export function StatCard({ label, value, icon, trend, trendUp, iconLabel }: StatCardProps) {
+  const trendLabel = trend
+    ? `${trendUp ? "Up" : "Down"} ${trend}`
+    : undefined;
+
   return (
     <div className="bg-card text-card-foreground border border-border rounded-xl p-6">
       <div className="flex items-start justify-between">
@@ -18,15 +23,23 @@ export function StatCard({ label, value, icon, trend, trendUp }: StatCardProps) 
           {trend && (
             <p
               className={cn(
-                "mt-1 text-xs font-medium",
-                trendUp ? "text-emerald-600" : "text-red-500"
+                "mt-1 text-sm font-medium",
+                trendUp
+                  ? "text-[var(--color-success)]"
+                  : "text-[var(--color-error)]"
               )}
+              aria-label={trendLabel}
             >
-              {trendUp ? "+" : ""}{trend}
+              {trendUp ? "↑ +" : "↓ "}{trend}
             </p>
           )}
         </div>
-        <div className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary">
+        <div
+          className="flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 text-primary"
+          role={iconLabel ? "img" : "presentation"}
+          aria-label={iconLabel}
+          aria-hidden={!iconLabel}
+        >
           {icon}
         </div>
       </div>

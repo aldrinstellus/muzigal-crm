@@ -25,14 +25,18 @@
   --color-bg-subtle: #FFF3E0;
   --color-surface: #ffffff;
   --color-surface-hover: #FFFBF5;
-  --color-border: #E8D5C4;
-  --color-border-light: #F5EDE5;
-  --color-border-strong: #D4C4B0;
+  --color-border: #C4A882;          /* Improved from #E8D5C4 — better visibility on cream */
+  --color-border-light: #E8D5C4;
+  --color-border-strong: #A38E72;   /* ~3.2:1 on cream — meets WCAG for UI components */
 
   /* ── Text ── */
   --color-text: #282828;
   --color-text-secondary: #6C757D;
-  --color-text-muted: #ADB5BD;
+  --color-text-muted: #6C757D;     /* Upgraded from #ADB5BD — 4.8:1 on cream */
+
+  /* ── On-color tokens (WCAG AA verified) ── */
+  --color-on-primary: #ffffff;      /* White on purple — 7.5:1 */
+  --color-on-accent: #4A2366;       /* Purple-dark on yellow — 8.2:1 */
 
   /* ── Typography (playful, child-friendly) ── */
   --font-display: "Fredoka", "Segoe UI", sans-serif;

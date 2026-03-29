@@ -71,26 +71,26 @@ describe('Utility Functions', () => {
   });
 
   describe('statusColor() — badge color mapping', () => {
-    it('returns green for Active', () => {
-      expect(statusColor('Active')).toContain('emerald');
+    it('returns success token for Active', () => {
+      expect(statusColor('Active')).toContain('status-success');
     });
-    it('returns green for Paid', () => {
-      expect(statusColor('Paid')).toContain('emerald');
+    it('returns success token for Paid', () => {
+      expect(statusColor('Paid')).toContain('status-success');
     });
-    it('returns amber for Pending', () => {
-      expect(statusColor('Pending')).toContain('amber');
+    it('returns warning token for Pending', () => {
+      expect(statusColor('Pending')).toContain('status-warning');
     });
-    it('returns red for Overdue', () => {
-      expect(statusColor('Overdue')).toContain('red');
+    it('returns danger token for Overdue', () => {
+      expect(statusColor('Overdue')).toContain('status-danger');
     });
-    it('returns red for Absent', () => {
-      expect(statusColor('Absent')).toContain('red');
+    it('returns danger token for Absent', () => {
+      expect(statusColor('Absent')).toContain('status-danger');
     });
-    it('returns blue for Demo Scheduled', () => {
-      expect(statusColor('Demo Scheduled')).toContain('blue');
+    it('returns info token for Demo Scheduled', () => {
+      expect(statusColor('Demo Scheduled')).toContain('status-info');
     });
-    it('returns default for unknown status', () => {
-      expect(statusColor('Unknown')).toContain('zinc');
+    it('returns neutral token for unknown status', () => {
+      expect(statusColor('Unknown')).toContain('status-neutral');
     });
   });
 });

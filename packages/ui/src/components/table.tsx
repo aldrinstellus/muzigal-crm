@@ -9,6 +9,7 @@ interface TableProps<T> {
   data: T[];
   onRowClick?: (row: T) => void;
   emptyMessage?: string;
+  caption?: string;
 }
 
 export type { Column };
@@ -18,16 +19,19 @@ export function Table<T extends Record<string, unknown>>({
   data,
   onRowClick,
   emptyMessage = "No data found",
+  caption,
 }: TableProps<T>) {
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
+        {caption && <caption className="sr-only">{caption}</caption>}
         <thead>
           <tr className="border-b border-border">
             {columns.map((col) => (
               <th
                 key={col.key}
-                className="px-4 py-3 text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider"
+                scope="col"
+                className="px-4 py-3 text-left text-sm font-semibold text-muted-foreground uppercase tracking-wider"
               >
                 {col.header}
               </th>
@@ -48,13 +52,25 @@ export function Table<T extends Record<string, unknown>>({
             data.map((row, i) => (
               <tr
                 key={i}
-                onClick={() => onRowClick?.(row)}
+                onClick={onRowClick ? () => onRowClick(row) : undefined}
+                onKeyDown={
+                  onRowClick
+                    ? (e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault();
+                          onRowClick(row);
+                        }
+                      }
+                    : undefined
+                }
+                role={onRowClick ? "button" : undefined}
+                tabIndex={onRowClick ? 0 : undefined}
                 className={`border-b border-border/50 transition-colors hover:bg-muted ${
-                  onRowClick ? "cursor-pointer" : ""
+                  onRowClick ? "cursor-pointer focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-2" : ""
                 }`}
               >
                 {columns.map((col) => (
-                  <td key={col.key} className="px-4 py-3 text-foreground/80">
+                  <td key={col.key} className="px-4 py-3 text-foreground">
                     {col.render ? col.render(row) : (row[col.key] as React.ReactNode) ?? ""}
                   </td>
                 ))}

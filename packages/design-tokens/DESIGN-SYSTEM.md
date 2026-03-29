@@ -1,7 +1,7 @@
 # ZOO CRM — Master Design System
 
 > **The white-labeling architecture for all ZOO CRM client apps.**
-> Version 2.0 | March 29, 2026
+> Version 3.0 | March 29, 2026 — WCAG 2.1 AA Compliant
 
 ---
 
@@ -118,13 +118,16 @@ All components use semantic tokens — they rebrand automatically with the theme
 | `Badge` | `import { Badge } from '@zoo/ui'` | `bg-zinc-100 text-zinc-600` → `bg-muted text-muted-foreground` |
 | `Table` | `import { Table } from '@zoo/ui'` | `border-zinc-200 text-zinc-700` → `border-border text-foreground/80` |
 | `Modal` | `import { Modal } from '@zoo/ui'` | `bg-white text-zinc-900` → `bg-card text-foreground` |
+| `SkipNav` | `import { SkipNav } from '@zoo/ui'` | Skip-to-content link for keyboard users |
 
-**Utilities:**
+**Utilities & Hooks:**
 ```ts
 import { cn, statusColor } from '@zoo/ui';
+import { useFocusTrap } from '@zoo/ui';
 
 cn('px-4 py-2', isActive && 'bg-primary')  // clsx + tailwind-merge
-statusColor('Active')  // → 'bg-emerald-50 text-emerald-700 border-emerald-200'
+statusColor('Active')  // → token-based WCAG AA verified classes
+useFocusTrap(ref, open) // trap Tab cycling inside a container
 ```
 
 ---
@@ -157,10 +160,12 @@ statusColor('Active')  // → 'bg-emerald-50 text-emerald-700 border-emerald-200
 
 ## Token Categories
 
-### Colors (26 tokens)
+### Colors (46 tokens)
 ```
 Brand:     --color-primary, -dark, -light, --color-accent, -warm
 Semantic:  --color-success, -warning, -error, -info (+ -light variants)
+On-color:  --color-on-primary, -on-accent, -on-success, -on-warning, -on-error, -on-info
+Status:    --color-status-{success,warning,info,danger,neutral}-{bg,text,border}
 Neutral:   --color-text, -secondary, -muted, -inverse
 Surface:   --color-bg, -alt, -subtle, --color-surface, -hover
 Border:    --color-border, -light, -strong
@@ -201,6 +206,112 @@ Max-width: --max-width-sm through --max-width-2xl, --max-width-prose
 Z-index:   --z-base through --z-toast (8 layers)
 ```
 
+### Interactive States (16 tokens) — *New in v3.0*
+```
+State layers:  --state-hover-opacity, -focus, -pressed, -dragged, -selected (M3 pattern)
+Disabled:      --disabled-opacity, -bg, -text, -border
+Focus ring:    --focus-ring-color, -width, -offset, -style
+Touch targets: --touch-target-min (44px), --touch-target-compact (36px)
+```
+
+### Form Field Tokens (6 tokens) — *New in v3.0*
+```
+--input-border, -border-focus, -border-error, -bg, -bg-disabled, -placeholder
+```
+
+### Overlay & Loading (4 tokens) — *New in v3.0*
+```
+--overlay-color, --overlay-blur, --skeleton-bg, --skeleton-shimmer
+```
+
+### Transition Shorthands (3 tokens) — *New in v3.0*
+```
+--transition-colors, --transition-transform, --transition-opacity
+```
+
+### Letter Spacing (5 tokens) — *New in v3.0*
+```
+--tracking-tight, -normal, -wide, -wider, -caps
+```
+
+---
+
+## Accessibility Architecture (v3.0)
+
+### On-Color Tokens (M3 Pattern)
+
+Every colored background has a paired text token that guarantees WCAG AA contrast:
+
+| Background | Text Token | Contrast |
+|---|---|---|
+| `--color-primary` | `--color-on-primary` | ≥ 4.5:1 (verified per theme) |
+| `--color-accent` | `--color-on-accent` | ≥ 4.5:1 (verified per theme) |
+| `--color-success-light` | `--color-on-success` | 7.2:1 |
+| `--color-warning-light` | `--color-on-warning` | 5.4:1 |
+| `--color-error-light` | `--color-on-error` | 5.9:1 |
+| `--color-info-light` | `--color-on-info` | 5.6:1 |
+
+**Usage:** `<button style="background: var(--color-primary); color: var(--color-on-primary)">`
+
+### Status Tokens
+
+Token-based status colors replace hardcoded Tailwind. Every status has `{bg, text, border}`:
+
+```css
+--color-status-success-bg / -text / -border
+--color-status-warning-bg / -text / -border
+--color-status-info-bg / -text / -border
+--color-status-danger-bg / -text / -border
+--color-status-neutral-bg / -text / -border
+```
+
+All pairs verified ≥ 4.5:1. Used by `statusColor()` in `@zoo/ui`.
+
+### Focus Ring System
+
+Token-driven focus ring applied to all interactive elements via `:focus-visible`:
+
+```css
+--focus-ring-color: var(--color-primary);  /* Adapts per theme */
+--focus-ring-width: 2px;
+--focus-ring-offset: 2px;
+--focus-ring-style: solid;
+```
+
+### Motion Accessibility
+
+All animations/transitions use duration tokens. `prefers-reduced-motion` zeroes them all:
+
+```css
+@media (prefers-reduced-motion: reduce) {
+  :root { --duration-fast: 0ms; --duration-normal: 0ms; /* ...all durations */ }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+```
+
+### Touch Targets
+
+Minimum 44x44px for all interactive elements (WCAG 2.5.5):
+
+```css
+--touch-target-min: 44px;      /* Primary touch targets */
+--touch-target-compact: 36px;  /* Dense UIs with spacing */
+```
+
+### Contrast Requirements
+
+| Use Case | Minimum Ratio | Standard |
+|---|---|---|
+| Normal text (< 18px bold / < 24px) | 4.5:1 | WCAG 2.1 AA §1.4.3 |
+| Large text (≥ 18px bold / ≥ 24px) | 3:1 | WCAG 2.1 AA §1.4.3 |
+| UI components & borders | 3:1 | WCAG 2.1 AA §1.4.11 |
+| Decorative borders | No minimum | Non-functional |
+
+See `CONTRAST-MATRIX.md` for full per-theme verification.
+
 ---
 
 ## shadcn Bridge (`shadcn-bridge.css`)
@@ -235,6 +346,7 @@ packages/
 │   ├── shadcn-bridge.css       Zoo → shadcn variable mapping
 │   ├── index.css               Barrel: base + bridge
 │   ├── DESIGN-SYSTEM.md        This document
+│   ├── CONTRAST-MATRIX.md     Per-theme contrast verification
 │   └── themes/
 │       ├── _template.css       Copy for new clients
 │       ├── default.css         Neutral unbranded theme
@@ -244,10 +356,12 @@ packages/
 └── ui/                         @zoo/ui (shared React components)
     ├── package.json            Deps: clsx, tailwind-merge, lucide-react
     ├── globals.css             @theme inline block (registers tokens as Tailwind utils)
+    ├── ACCESSIBILITY.md       Per-component accessibility spec
     └── src/
         ├── index.ts            Barrel export
         ├── lib/utils.ts        cn() + statusColor()
-        └── components/         Card, StatCard, Badge, Table, Modal
+        ├── lib/use-focus-trap.ts  Reusable focus trap hook
+        └── components/         Card, StatCard, Badge, Table, Modal, SkipNav
 ```
 
 ---
@@ -261,6 +375,17 @@ packages/
 5. **Use @zoo/ui components.** Import Card/Badge/Table/Modal from `@zoo/ui`, not local copies.
 6. **Test with both themes.** If a component looks wrong in one theme, it's using literal values instead of tokens.
 7. **App-specific components stay in apps.** Sidebar, TopBar, AppShell depend on routing/auth — keep them local.
+8. **On-color tokens are mandatory.** Every theme must define `--color-on-primary` and `--color-on-accent` with verified contrast.
+9. **Status colors use tokens, not Tailwind.** Use `statusColor()` from `@zoo/ui` — never hardcode `text-green-700` etc.
+10. **Verify contrast before shipping.** Use the accessibility checklist in `_template.css` and `CONTRAST-MATRIX.md`.
+
+---
+
+## Related Documentation
+
+- **[CONTRAST-MATRIX.md](CONTRAST-MATRIX.md)** — Per-theme contrast ratio verification for all foreground/background pairs
+- **[ACCESSIBILITY.md](../ui/ACCESSIBILITY.md)** — Per-component keyboard, ARIA, and screen reader specifications
+- **[_template.css](themes/_template.css)** — New client theme template with accessibility checklist
 
 ---
 

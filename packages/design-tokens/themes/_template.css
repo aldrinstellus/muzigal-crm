@@ -12,8 +12,19 @@
    2. Replace only the variables you need to override
    3. Everything not overridden inherits from base.css
    4. Import in your app's globals.css:
+        @import "tailwindcss";
         @import "@zoo/ui/globals.css";
         @import "@zoo/design-tokens/themes/[client-name]";
+
+   ACCESSIBILITY CHECKLIST (verify before shipping):
+   [ ] --color-text on --color-bg ≥ 7:1
+   [ ] --color-text-secondary on --color-bg ≥ 4.5:1
+   [ ] --color-text-muted on --color-bg-subtle ≥ 4.5:1
+   [ ] --color-on-primary on --color-primary ≥ 4.5:1
+   [ ] --color-on-accent on --color-accent ≥ 4.5:1
+   [ ] --color-border-strong on --color-bg ≥ 3:1
+   [ ] --color-accent on --color-bg ≥ 4.5:1 (if used for text)
+   Use: https://webaim.org/resources/contrastchecker/
    ================================================================ */
 
 :root {
@@ -23,6 +34,10 @@
   /* --color-primary-light: #000000; */
   /* --color-accent: #000000; */
   /* --color-accent-warm: #000000; */
+
+  /* ── On-color tokens (REQUIRED — verified contrast on paired bg) ── */
+  /* --color-on-primary: #ffffff;   /* Must be ≥ 4.5:1 on --color-primary */
+  /* --color-on-accent: #000000;    /* Must be ≥ 4.5:1 on --color-accent */
 
   /* ── Typography (RECOMMENDED — defines personality) ── */
   /* --font-display: "YourFont", sans-serif; */
