@@ -100,9 +100,9 @@ export function AnimatedStats({ stats }: { stats: StatItem[] }) {
               className="bg-[var(--color-surface)] rounded-2xl p-5 text-center shadow-[var(--shadow-md)] border border-[var(--color-border-light)] hover:shadow-[var(--shadow-lg)] transition-shadow group"
             >
               <div
-                className={`w-12 h-12 ${accent.bg} rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform`}
+                className={`w-12 h-12 ${accent.bg} ${accent.text} rounded-xl flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform`}
               >
-                <Icon className={`w-6 h-6 ${accent.text}`} weight="duotone" />
+                <Icon size={24} weight="duotone" />
               </div>
               {num > 0 ? (
                 <CountUp target={num} suffix={suffix} />

@@ -6,9 +6,18 @@
     "date": "2024-12-15",
     "year": 2024,
     "category": "annual-day",
-    "images": [],
-    "videoUrl": "",
-    "tags": ["annual-day", "performance", "dance", "celebration"],
+    "images": [
+      "https://picsum.photos/seed/kidzee-annual1/800/500",
+      "https://picsum.photos/seed/kidzee-annual2/800/500",
+      "https://picsum.photos/seed/kidzee-annual3/800/500"
+    ],
+    "videoUrl": "https://www.youtube.com/watch?v=example1",
+    "tags": [
+      "annual-day",
+      "performance",
+      "dance",
+      "celebration"
+    ],
     "createdAt": "2024-12-16T00:00:00.000Z",
     "updatedAt": "2024-12-16T00:00:00.000Z"
   },
@@ -19,8 +28,16 @@
     "date": "2024-11-20",
     "year": 2024,
     "category": "sports-day",
-    "images": [],
-    "tags": ["sports", "racing", "teamwork", "outdoor"],
+    "images": [
+      "https://picsum.photos/seed/kidzee-sports1/800/500",
+      "https://picsum.photos/seed/kidzee-sports2/800/500"
+    ],
+    "tags": [
+      "sports",
+      "racing",
+      "teamwork",
+      "outdoor"
+    ],
     "createdAt": "2024-11-21T00:00:00.000Z",
     "updatedAt": "2024-11-21T00:00:00.000Z"
   },
@@ -31,8 +48,18 @@
     "date": "2024-10-28",
     "year": 2024,
     "category": "festival",
-    "images": [],
-    "tags": ["diwali", "festival", "crafts", "celebration"],
+    "images": [
+      "https://picsum.photos/seed/kidzee-diwali1/800/500",
+      "https://picsum.photos/seed/kidzee-diwali2/800/500",
+      "https://picsum.photos/seed/kidzee-diwali3/800/500",
+      "https://picsum.photos/seed/kidzee-diwali4/800/500"
+    ],
+    "tags": [
+      "diwali",
+      "festival",
+      "crafts",
+      "celebration"
+    ],
     "createdAt": "2024-10-29T00:00:00.000Z",
     "updatedAt": "2024-10-29T00:00:00.000Z"
   },
@@ -43,8 +70,16 @@
     "date": "2024-08-15",
     "year": 2024,
     "category": "cultural",
-    "images": [],
-    "tags": ["independence-day", "patriotic", "flag", "cultural"],
+    "images": [
+      "https://picsum.photos/seed/kidzee-independence1/800/500",
+      "https://picsum.photos/seed/kidzee-independence2/800/500"
+    ],
+    "tags": [
+      "independence-day",
+      "patriotic",
+      "flag",
+      "cultural"
+    ],
     "createdAt": "2024-08-16T00:00:00.000Z",
     "updatedAt": "2024-08-16T00:00:00.000Z"
   },
@@ -55,8 +90,17 @@
     "date": "2024-07-10",
     "year": 2024,
     "category": "art-craft",
-    "images": [],
-    "tags": ["art", "craft", "exhibition", "creativity"],
+    "images": [
+      "https://picsum.photos/seed/kidzee-artcraft1/800/500",
+      "https://picsum.photos/seed/kidzee-artcraft2/800/500",
+      "https://picsum.photos/seed/kidzee-artcraft3/800/500"
+    ],
+    "tags": [
+      "art",
+      "craft",
+      "exhibition",
+      "creativity"
+    ],
     "createdAt": "2024-07-11T00:00:00.000Z",
     "updatedAt": "2024-07-11T00:00:00.000Z"
   },
@@ -67,8 +111,15 @@
     "date": "2023-03-25",
     "year": 2023,
     "category": "graduation",
-    "images": [],
-    "tags": ["graduation", "farewell", "ceremony"],
+    "images": [
+      "https://picsum.photos/seed/kidzee-grad1/800/500",
+      "https://picsum.photos/seed/kidzee-grad2/800/500"
+    ],
+    "tags": [
+      "graduation",
+      "farewell",
+      "ceremony"
+    ],
     "createdAt": "2023-03-26T00:00:00.000Z",
     "updatedAt": "2023-03-26T00:00:00.000Z"
   },
@@ -79,8 +130,17 @@
     "date": "2023-09-15",
     "year": 2023,
     "category": "field-trip",
-    "images": [],
-    "tags": ["zoo", "field-trip", "animals", "learning"],
+    "images": [
+      "https://picsum.photos/seed/kidzee-zoo1/800/500",
+      "https://picsum.photos/seed/kidzee-zoo2/800/500",
+      "https://picsum.photos/seed/kidzee-zoo3/800/500"
+    ],
+    "tags": [
+      "zoo",
+      "field-trip",
+      "animals",
+      "learning"
+    ],
     "createdAt": "2023-09-16T00:00:00.000Z",
     "updatedAt": "2023-09-16T00:00:00.000Z"
   },
@@ -91,8 +151,16 @@
     "date": "2023-12-22",
     "year": 2023,
     "category": "festival",
-    "images": [],
-    "tags": ["christmas", "carnival", "santa", "games"],
+    "images": [
+      "https://picsum.photos/seed/kidzee-christmas1/800/500",
+      "https://picsum.photos/seed/kidzee-christmas2/800/500"
+    ],
+    "tags": [
+      "christmas",
+      "carnival",
+      "santa",
+      "games"
+    ],
     "createdAt": "2023-12-23T00:00:00.000Z",
     "updatedAt": "2023-12-23T00:00:00.000Z"
   },
@@ -103,8 +171,16 @@
     "date": "2023-06-12",
     "year": 2023,
     "category": "workshop",
-    "images": [],
-    "tags": ["science", "workshop", "experiments", "learning"],
+    "images": [
+      "https://picsum.photos/seed/kidzee-science1/800/500",
+      "https://picsum.photos/seed/kidzee-science2/800/500"
+    ],
+    "tags": [
+      "science",
+      "workshop",
+      "experiments",
+      "learning"
+    ],
     "createdAt": "2023-06-13T00:00:00.000Z",
     "updatedAt": "2023-06-13T00:00:00.000Z"
   },
@@ -115,8 +191,17 @@
     "date": "2023-02-14",
     "year": 2023,
     "category": "competition",
-    "images": [],
-    "tags": ["fancy-dress", "competition", "costumes", "creativity"],
+    "images": [
+      "https://picsum.photos/seed/kidzee-fancydress1/800/500",
+      "https://picsum.photos/seed/kidzee-fancydress2/800/500",
+      "https://picsum.photos/seed/kidzee-fancydress3/800/500"
+    ],
+    "tags": [
+      "fancy-dress",
+      "competition",
+      "costumes",
+      "creativity"
+    ],
     "createdAt": "2023-02-15T00:00:00.000Z",
     "updatedAt": "2023-02-15T00:00:00.000Z"
   }

@@ -4,6 +4,7 @@ import type { Activity, ActivityCategory } from "@/lib/types";
 import { CATEGORY_LABELS } from "@/lib/types";
 import { getShareUrls } from "@/lib/social";
 import { useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   MaskHappy,
@@ -17,13 +18,15 @@ import {
   MusicNotes,
   Star,
   ShareNetwork,
-  Link,
   Play,
   Calendar,
   Copy,
   Check,
   ChatCircleDots,
   XLogo,
+  Images,
+  Heart,
+  ArrowSquareOut,
 } from "@phosphor-icons/react";
 import type { Icon } from "@phosphor-icons/react";
 
@@ -70,9 +73,13 @@ export function ActivityCard({
 }) {
   const [showShare, setShowShare] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const shareUrls = getShareUrls(activity);
   const CategoryIcon = ICON_MAP[activity.category];
   const categoryColor = COLOR_MAP[activity.category];
+  const hasImages = activity.images && activity.images.length > 0 && !imgError;
+  const heroImage = hasImages ? activity.images[0] : null;
+  const extraImageCount = hasImages ? activity.images.length - 1 : 0;
 
   const handleCopy = async () => {
     await navigator.clipboard.writeText(shareUrls.copyLink);
@@ -83,110 +90,167 @@ export function ActivityCard({
   return (
     <motion.div
       id={`activity-${activity.id}`}
-      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      initial={{ opacity: 0, y: 24, scale: 0.97 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{
         type: "spring",
-        stiffness: 300,
-        damping: 25,
-        delay: index * 0.08,
+        stiffness: 260,
+        damping: 24,
+        delay: index * 0.06,
       }}
-      whileHover={{
-        y: -4,
-        boxShadow: "0 12px 32px rgba(0,0,0,0.12)",
-      }}
-      className="relative rounded-2xl bg-white overflow-hidden"
+      className="group relative rounded-2xl bg-white overflow-hidden cursor-default"
       style={{
-        boxShadow: "0 4px 16px rgba(0,0,0,0.06)",
+        boxShadow: "0 2px 12px rgba(101, 49, 142, 0.06)",
       }}
     >
-      {/* Left accent bar */}
-      <div
-        className="absolute left-0 top-0 bottom-0 w-1"
-        style={{ backgroundColor: categoryColor }}
-      />
+      {/* Hero Image */}
+      {heroImage ? (
+        <div className="relative h-48 sm:h-52 overflow-hidden">
+          <Image
+            src={heroImage}
+            alt={activity.title}
+            fill
+            sizes="(max-width: 768px) 100vw, 50vw"
+            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            onError={() => setImgError(true)}
+          />
+          {/* Gradient overlay for readability */}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
 
-      <div className="p-6 pl-7">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex-1">
-            {/* Category badge */}
-            <div className="flex items-center gap-2.5 mb-3">
-              <div
-                className="flex items-center justify-center w-9 h-9 rounded-full"
-                style={{ backgroundColor: categoryColor }}
-              >
-                <CategoryIcon size={18} weight="fill" color="#ffffff" />
-              </div>
-              <span
-                className="text-xs font-semibold px-2.5 py-1 rounded-full"
-                style={{
-                  backgroundColor: `${categoryColor}14`,
-                  color: categoryColor,
-                }}
-              >
-                {CATEGORY_LABELS[activity.category]}
-              </span>
-            </div>
-
-            {/* Title */}
-            <h3
-              className="text-lg font-bold text-[var(--color-text)] mb-2"
-              style={{ fontFamily: "var(--font-display)" }}
+          {/* Category badge — floating on image */}
+          <div className="absolute top-3 left-3">
+            <div
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-white text-xs font-semibold backdrop-blur-sm"
+              style={{ backgroundColor: `${categoryColor}CC` }}
             >
-              {activity.title}
-            </h3>
+              <CategoryIcon size={14} weight="fill" />
+              {CATEGORY_LABELS[activity.category]}
+            </div>
+          </div>
 
-            {/* Description */}
-            <p className="text-[var(--color-text-secondary)] text-sm leading-relaxed mb-3 line-clamp-3">
-              {activity.description}
-            </p>
+          {/* Image count badge */}
+          {extraImageCount > 0 && (
+            <div className="absolute top-3 right-3 flex items-center gap-1 px-2 py-1 rounded-full bg-black/50 text-white text-xs font-semibold backdrop-blur-sm">
+              <Images size={14} weight="bold" />
+              +{extraImageCount}
+            </div>
+          )}
 
-            {/* Date */}
-            <div className="flex items-center gap-2 text-xs text-[var(--color-text-secondary)]">
-              <Calendar size={14} weight="bold" />
-              <span>
+          {/* Video indicator */}
+          {activity.videoUrl && (
+            <a
+              href={activity.videoUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="absolute bottom-3 right-3 flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-red-600/90 text-white text-xs font-semibold backdrop-blur-sm hover:bg-red-600 transition-colors"
+            >
+              <Play size={14} weight="fill" />
+              Watch
+            </a>
+          )}
+
+          {/* Date stamp on image */}
+          <div className="absolute bottom-3 left-3 flex items-center gap-1.5 text-white/90 text-xs font-medium">
+            <Calendar size={13} weight="bold" />
+            {new Date(activity.date).toLocaleDateString("en-IN", {
+              day: "numeric",
+              month: "short",
+              year: "numeric",
+            })}
+          </div>
+        </div>
+      ) : (
+        /* Fallback: colored header strip when no image */
+        <div
+          className="h-3 w-full"
+          style={{
+            background: `linear-gradient(90deg, ${categoryColor}, ${categoryColor}88)`,
+          }}
+        />
+      )}
+
+      {/* Content */}
+      <div className="p-5">
+        {/* Category badge (only when no hero image) */}
+        {!heroImage && (
+          <div className="flex items-center gap-2.5 mb-3">
+            <div
+              className="flex items-center justify-center w-8 h-8 rounded-full"
+              style={{ backgroundColor: categoryColor }}
+            >
+              <CategoryIcon size={16} weight="fill" color="#ffffff" />
+            </div>
+            <span
+              className="text-xs font-semibold px-2 py-0.5 rounded-full"
+              style={{
+                backgroundColor: `${categoryColor}14`,
+                color: categoryColor,
+              }}
+            >
+              {CATEGORY_LABELS[activity.category]}
+            </span>
+            {!heroImage && (
+              <span className="ml-auto text-xs text-[var(--color-text-muted)] flex items-center gap-1">
+                <Calendar size={12} weight="bold" />
                 {new Date(activity.date).toLocaleDateString("en-IN", {
                   day: "numeric",
-                  month: "long",
+                  month: "short",
                   year: "numeric",
                 })}
               </span>
-            </div>
-
-            {/* Tags */}
-            {activity.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-3">
-                {activity.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="text-xs px-2.5 py-0.5 rounded-full"
-                    style={{
-                      backgroundColor: `${categoryColor}0F`,
-                      color: "var(--color-text-secondary)",
-                    }}
-                  >
-                    #{tag}
-                  </span>
-                ))}
-              </div>
             )}
           </div>
+        )}
 
-          {/* Share button */}
+        {/* Title + Share */}
+        <div className="flex items-start justify-between gap-2">
+          <h3
+            className="text-base font-bold text-[var(--color-text)] leading-snug"
+            style={{ fontFamily: "var(--font-display)" }}
+          >
+            {activity.title}
+          </h3>
           <button
             onClick={() => setShowShare(!showShare)}
-            className="p-2 rounded-full transition-colors"
+            className="shrink-0 p-1.5 rounded-full transition-all duration-200 hover:scale-110"
             style={{
               backgroundColor: showShare ? `${categoryColor}18` : "transparent",
-              color: showShare
-                ? categoryColor
-                : "var(--color-text-secondary)",
+              color: showShare ? categoryColor : "var(--color-text-muted)",
             }}
             aria-label="Share activity"
           >
-            <ShareNetwork size={18} weight="bold" />
+            <ShareNetwork size={16} weight="bold" />
           </button>
         </div>
+
+        {/* Description */}
+        <p className="text-[var(--color-text-secondary)] text-sm leading-relaxed mt-2 line-clamp-2">
+          {activity.description}
+        </p>
+
+        {/* Tags */}
+        {activity.tags.length > 0 && (
+          <div className="flex flex-wrap gap-1.5 mt-3">
+            {activity.tags.slice(0, 4).map((tag) => (
+              <span
+                key={tag}
+                className="text-[10px] font-medium px-2 py-0.5 rounded-full transition-colors"
+                style={{
+                  backgroundColor: `${categoryColor}0C`,
+                  color: "var(--color-text-secondary)",
+                  border: `1px solid ${categoryColor}18`,
+                }}
+              >
+                #{tag}
+              </span>
+            ))}
+            {activity.tags.length > 4 && (
+              <span className="text-[10px] text-[var(--color-text-muted)] px-1">
+                +{activity.tags.length - 4}
+              </span>
+            )}
+          </div>
+        )}
 
         {/* Share panel */}
         <AnimatePresence>
@@ -195,22 +259,22 @@ export function ActivityCard({
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              transition={{ type: "spring", stiffness: 300, damping: 28 }}
               className="overflow-hidden"
             >
-              <div className="mt-4 pt-4 border-t border-[var(--color-border-light)]">
-                <p className="text-xs font-semibold text-[var(--color-text-secondary)] mb-2">
-                  Share this activity:
+              <div className="mt-4 pt-3 border-t border-[var(--color-border-light)]">
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-[var(--color-text-muted)] mb-2">
+                  Share
                 </p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5">
                   <a
                     href={shareUrls.facebook}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-white text-xs rounded-full transition-opacity hover:opacity-85"
+                    className="flex items-center gap-1 px-2.5 py-1.5 text-white text-[11px] font-medium rounded-lg transition-all hover:opacity-85 active:scale-95"
                     style={{ backgroundColor: SOCIAL_COLORS.facebook }}
                   >
-                    <Link size={14} weight="bold" />
+                    <ArrowSquareOut size={12} weight="bold" />
                     Facebook
                   </a>
 
@@ -219,10 +283,10 @@ export function ActivityCard({
                       href={shareUrls.youtube}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-1.5 text-white text-xs rounded-full transition-opacity hover:opacity-85"
+                      className="flex items-center gap-1 px-2.5 py-1.5 text-white text-[11px] font-medium rounded-lg transition-all hover:opacity-85 active:scale-95"
                       style={{ backgroundColor: SOCIAL_COLORS.youtube }}
                     >
-                      <Play size={14} weight="fill" />
+                      <Play size={12} weight="fill" />
                       YouTube
                     </a>
                   )}
@@ -231,10 +295,10 @@ export function ActivityCard({
                     href={shareUrls.whatsapp}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-white text-xs rounded-full transition-opacity hover:opacity-85"
+                    className="flex items-center gap-1 px-2.5 py-1.5 text-white text-[11px] font-medium rounded-lg transition-all hover:opacity-85 active:scale-95"
                     style={{ backgroundColor: SOCIAL_COLORS.whatsapp }}
                   >
-                    <ChatCircleDots size={14} weight="fill" />
+                    <ChatCircleDots size={12} weight="bold" />
                     WhatsApp
                   </a>
 
@@ -242,48 +306,30 @@ export function ActivityCard({
                     href={shareUrls.twitter}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-white text-xs rounded-full transition-opacity hover:opacity-85"
+                    className="flex items-center gap-1 px-2.5 py-1.5 text-white text-[11px] font-medium rounded-lg transition-all hover:opacity-85 active:scale-95"
                     style={{ backgroundColor: SOCIAL_COLORS.twitter }}
                   >
-                    <XLogo size={14} weight="bold" />
+                    <XLogo size={12} weight="bold" />
                     Post
                   </a>
 
                   <button
                     onClick={handleCopy}
-                    className="flex items-center gap-1.5 px-3 py-1.5 text-white text-xs rounded-full transition-opacity hover:opacity-85"
+                    className="flex items-center gap-1 px-2.5 py-1.5 text-white text-[11px] font-medium rounded-lg transition-all hover:opacity-85 active:scale-95"
                     style={{ backgroundColor: SOCIAL_COLORS.copy }}
                   >
                     {copied ? (
-                      <Check size={14} weight="bold" />
+                      <Check size={12} weight="bold" />
                     ) : (
-                      <Copy size={14} weight="bold" />
+                      <Copy size={12} weight="bold" />
                     )}
-                    {copied ? "Copied!" : "Copy Link"}
+                    {copied ? "Copied" : "Link"}
                   </button>
                 </div>
-                <p className="text-xs text-[var(--color-text-muted)] mt-2">
-                  Tip: For Instagram, copy the link and share via the Instagram
-                  app.
-                </p>
               </div>
             </motion.div>
           )}
         </AnimatePresence>
-
-        {/* Video link */}
-        {activity.videoUrl && (
-          <a
-            href={activity.videoUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-1.5 mt-3 text-xs font-semibold transition-opacity hover:opacity-75"
-            style={{ color: SOCIAL_COLORS.youtube }}
-          >
-            <Play size={16} weight="fill" />
-            Watch Video
-          </a>
-        )}
       </div>
     </motion.div>
   );
