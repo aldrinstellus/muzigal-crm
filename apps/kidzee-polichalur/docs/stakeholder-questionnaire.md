@@ -191,6 +191,52 @@ Is there anything we haven't covered that you'd like the platform to do? Any spe
 
 ---
 
+## 12. Privacy & Consent (Important for children)
+
+| Question | Your Answer |
+|----------|-------------|
+| Do parents sign photo/video consent forms for public sharing? | |
+| Should children's faces be blurred on social media posts? | |
+| Are there any photos/videos that should NEVER be shared publicly? | |
+| Any data privacy regulations you need to comply with? | |
+| Should parents be able to opt out of their child appearing in posts? | |
+
+---
+
+## 13. Content Moderation & Kidzee Corporate
+
+| Question | Your Answer |
+|----------|-------------|
+| Who reviews content before it goes on social media? (especially with children) | |
+| Does Kidzee corporate have branding guidelines you must follow? | |
+| Does Kidzee corporate provide any central platform or marketing tools? | |
+| Are there franchise restrictions on what you can post on social media? | |
+| Do you need approval from Kidzee corporate before posting? | |
+
+---
+
+## 14. Reference & Inspiration
+
+| Question | Your Answer |
+|----------|-------------|
+| Any other Kidzee branch website or social media you like? (share links) | |
+| Any other preschool website or social media you admire? | |
+| Any specific design style you prefer? (modern, playful, minimal, colorful) | |
+| Any features you've seen on other platforms that you want? | |
+
+---
+
+## 15. Mobile & Language
+
+| Question | Your Answer |
+|----------|-------------|
+| Will you primarily upload activities from phone or computer? | |
+| Do you need a mobile app, or is a mobile-friendly website enough? | |
+| Platform language: English only, or also Tamil/Hindi? | |
+| Do parents prefer English or Tamil for communications? | |
+
+---
+
 **Thank you for filling this out, Imtiaz! We'll review your answers and come back with a detailed plan and timeline.**
 
 *— Aldrin Stellus, ZOO CRM*
