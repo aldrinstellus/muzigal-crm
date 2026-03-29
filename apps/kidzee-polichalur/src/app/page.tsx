@@ -59,7 +59,7 @@ export default async function HomePage() {
           <KolamPattern className="w-20 h-20" />
         </div>
 
-        <div className="max-w-5xl mx-auto text-center relative z-10">
+        <div className="max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto text-center relative z-10">
           <Image
             src="/kidzee-logo.svg"
             alt="Kidzee"
@@ -67,7 +67,7 @@ export default async function HomePage() {
             height={65}
             className="mx-auto mb-6 drop-shadow-lg"
           />
-          <h1 className="text-4xl sm:text-6xl font-bold mb-4 drop-shadow-lg font-[var(--font-display)] text-white">
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 drop-shadow-lg font-[var(--font-display)] text-white">
             Kidzee Polichalur
           </h1>
           <p className="text-lg sm:text-xl text-white/90 max-w-2xl mx-auto mb-8">
@@ -105,8 +105,8 @@ export default async function HomePage() {
       />
 
       {/* Recent Activities -- on lavender background (brand DNA) */}
-      <section className="py-12 px-4 bg-[var(--color-bg-brand)]">
-        <div className="max-w-5xl mx-auto">
+      <section className="py-12 px-4 sm:px-6 lg:px-8 bg-[var(--color-bg-brand)]">
+        <div className="max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto">
           <div className="flex items-center justify-between mb-8">
             <h2 className="text-2xl sm:text-3xl font-bold font-[var(--font-display)] text-[var(--color-text)]">
               Recent Activities
@@ -132,7 +132,7 @@ export default async function HomePage() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
               {recentActivities.map((activity, i) => (
                 <ActivityCard key={activity.id} activity={activity} index={i} />
               ))}
@@ -142,8 +142,8 @@ export default async function HomePage() {
       </section>
 
       {/* Browse by Category */}
-      <section className="py-12 px-4">
-        <div className="max-w-5xl mx-auto text-center">
+      <section className="py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto text-center">
           <h2 className="text-2xl sm:text-3xl font-bold font-[var(--font-display)] text-[var(--color-text)] mb-6">
             Browse by Category
           </h2>
@@ -153,11 +153,11 @@ export default async function HomePage() {
 
       {/* Browse by Year -- with peacock feather illustration */}
       {years.length > 0 && (
-        <section className="relative py-12 px-4 bg-[var(--color-bg-brand)] overflow-hidden">
+        <section className="relative py-12 px-4 sm:px-6 lg:px-8 bg-[var(--color-bg-brand)] overflow-hidden">
           <div className="absolute bottom-4 right-[4%] text-[var(--color-primary)] opacity-[0.10] pointer-events-none hidden sm:block" aria-hidden="true">
             <PeacockFeather className="w-16 h-auto" />
           </div>
-          <div className="max-w-5xl mx-auto text-center relative z-10">
+          <div className="max-w-5xl lg:max-w-6xl xl:max-w-7xl mx-auto text-center relative z-10">
             <h2 className="text-2xl sm:text-3xl font-bold font-[var(--font-display)] text-[var(--color-text)] mb-6">
               Browse by Year
             </h2>

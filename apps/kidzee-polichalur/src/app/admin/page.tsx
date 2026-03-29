@@ -928,7 +928,7 @@ export default function AdminDashboardPage() {
                         return (
                           <div key={item.key} className="flex items-center gap-3">
                             <span className="flex items-center gap-1.5 w-28 min-w-0">
-                              <CatIcon size={14} weight="fill" color={color} className="flex-shrink-0" />
+                              <span className="flex-shrink-0"><CatIcon size={14} weight="fill" color={color} /></span>
                               <span className="text-xs font-semibold text-[var(--color-text)] truncate">{item.label}</span>
                             </span>
                             <div className="flex-1 h-7 bg-gray-50 rounded-lg overflow-hidden relative">
@@ -972,7 +972,7 @@ export default function AdminDashboardPage() {
                           className="rounded-xl p-4 text-center"
                           style={{ backgroundColor: cfg.bg }}
                         >
-                          <SIcon size={24} weight="fill" color={cfg.color} className="mx-auto mb-1" />
+                          <span className="mx-auto mb-1 flex justify-center"><SIcon size={24} weight="fill" color={cfg.color} /></span>
                           <p className="text-2xl font-extrabold" style={{ color: cfg.color }}>
                             {socialSummary[status]}
                           </p>
