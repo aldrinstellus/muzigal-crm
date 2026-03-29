@@ -31,3 +31,4 @@ exports/*.pdf
 .vscode/
 .idea/
 *.sw?
+.claude/worktrees/
