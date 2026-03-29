@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Save, Send, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
 import { activeApi as api } from '../../api/client';
-import Card from '../../components/ui/Card';
+import { Card } from '@zoo/ui';
 
 export default function Settings() {
   const [config, setConfig] = useState<Record<string, string>>({});

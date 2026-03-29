@@ -59,4 +59,11 @@
   --gradient-hero: linear-gradient(135deg, #FFC107, #FD7E14, #E91E8C);
   --gradient-cta: linear-gradient(135deg, #65318E, #4A2366);
   --gradient-surface: linear-gradient(180deg, #FFFBF5, #FFF8F0);
+
+  /* ── Chart palette (brand-derived) ── */
+  --chart-1: #65318E;
+  --chart-2: #FD7E14;
+  --chart-3: #E91E8C;
+  --chart-4: #198754;
+  --chart-5: #FFC107;
 }

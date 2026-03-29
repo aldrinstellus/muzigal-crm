@@ -1,24 +1,8 @@
 @import "tailwindcss";
-
-@theme {
-  --color-primary: #18181b;
-  --color-accent: #2563eb;
-  --color-accent-hover: #1d4ed8;
-  --color-accent-light: #eff6ff;
-  --color-surface: #fafafa;
-  --color-surface-elevated: #ffffff;
-  --color-border: #e4e4e7;
-  --color-muted: #71717a;
-  --color-success: #16a34a;
-  --color-warning: #d97706;
-  --color-danger: #dc2626;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
-}
+@import "@zoo/ui/globals.css";
+@import "@zoo/design-tokens/themes/muzigal";
 
 body {
-  font-family: var(--font-sans);
-  background-color: var(--color-surface);
-  color: var(--color-primary);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   margin: 0;

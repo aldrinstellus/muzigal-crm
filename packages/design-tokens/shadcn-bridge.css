@@ -1,0 +1,68 @@
+/* ================================================================
+   shadcn/ui Bridge Layer
+   ================================================================
+   Maps ZOO design tokens (--color-*) to shadcn/ui expected
+   variable names (--background, --foreground, --primary, etc.).
+
+   This lets all shadcn components automatically use the active
+   ZOO theme without any component-level changes.
+   ================================================================ */
+
+:root {
+  /* ── Core ── */
+  --background: var(--color-bg);
+  --foreground: var(--color-text);
+
+  /* ── Card ── */
+  --card: var(--color-surface);
+  --card-foreground: var(--color-text);
+
+  /* ── Popover ── */
+  --popover: var(--color-surface);
+  --popover-foreground: var(--color-text);
+
+  /* ── Primary ── */
+  --primary: var(--color-primary);
+  --primary-foreground: var(--color-text-inverse);
+
+  /* ── Secondary ── */
+  --secondary: var(--color-bg-subtle);
+  --secondary-foreground: var(--color-text);
+
+  /* ── Muted ── */
+  --muted: var(--color-bg-alt);
+  --muted-foreground: var(--color-text-muted);
+
+  /* ── Accent ── */
+  --accent: var(--color-bg-subtle);
+  --accent-foreground: var(--color-text);
+
+  /* ── Destructive ── */
+  --destructive: var(--color-error);
+  --destructive-foreground: var(--color-text-inverse);
+
+  /* ── Border / Input / Ring ── */
+  --border: var(--color-border);
+  --input: var(--color-border);
+  --ring: var(--color-primary);
+
+  /* ── Radius ── */
+  --radius: var(--radius-lg);
+
+  /* ── Sidebar (shadcn sidebar component) ── */
+  --sidebar: var(--color-surface);
+  --sidebar-foreground: var(--color-text);
+  --sidebar-primary: var(--color-primary);
+  --sidebar-primary-foreground: var(--color-text-inverse);
+  --sidebar-accent: var(--color-bg-subtle);
+  --sidebar-accent-foreground: var(--color-text);
+  --sidebar-border: var(--color-border-light);
+  --sidebar-ring: var(--color-primary);
+
+  /* ── Chart colors (shadcn chart + Recharts) ── */
+  --chart-1: var(--color-accent);
+  --chart-2: var(--color-primary);
+  --chart-3: var(--color-success);
+  --chart-4: var(--color-warning);
+  --chart-5: var(--color-secondary);
+}

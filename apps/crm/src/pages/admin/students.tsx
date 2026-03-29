@@ -2,10 +2,8 @@ import { useEffect, useState } from 'react';
 import { Search, Plus, AlertCircle } from 'lucide-react';
 import { activeApi as api } from '../../api/client';
 import { formatDate, formatPhone } from '../../lib/utils';
-import Table from '../../components/ui/Table';
-import type { Column } from '../../components/ui/Table';
-import Badge from '../../components/ui/Badge';
-import Modal from '../../components/ui/Modal';
+import { Table, Badge, Modal } from '@zoo/ui';
+import type { Column } from '@zoo/ui';
 
 type Student = Record<string, unknown>;
 

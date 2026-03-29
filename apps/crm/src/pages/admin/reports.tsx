@@ -7,7 +7,7 @@ import {
 } from 'recharts';
 import { activeApi as api } from '../../api/client';
 import { formatCurrency } from '../../lib/utils';
-import Card from '../../components/ui/Card';
+import { Card } from '@zoo/ui';
 
 interface ReportData {
   monthlyRevenue?: Array<{ month: string; amount: number }>;

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Save, AlertCircle, CheckCircle } from 'lucide-react';
 import { activeApi as api } from '../../api/client';
 import { cn } from '../../lib/utils';
-import Card from '../../components/ui/Card';
+import { Card } from '@zoo/ui';
 
 type ClassItem = Record<string, unknown>;
 type AttendanceRecord = Record<string, unknown>;

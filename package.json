@@ -1,0 +1,8 @@
+{
+  "name": "zoo-crm-monorepo",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

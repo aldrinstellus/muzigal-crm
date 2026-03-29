@@ -1,36 +1,51 @@
 # ZOO CRM — Master Design System
 
 > **The white-labeling architecture for all ZOO CRM client apps.**
-> Version 1.0 | March 29, 2026
+> Version 2.0 | March 29, 2026
 
 ---
 
 ## How It Works
 
 ```
-┌─────────────────────────────────────────┐
-│  base.css (Master — neutral defaults)   │  ← Universal foundation
-│  ~120 CSS variables: colors, fonts,     │     Every app imports this
-│  spacing, shadows, motion, layout       │
-└──────────────────┬──────────────────────┘
-                   │
-        ┌──────────┴──────────┐
-        │                     │
-┌───────▼────────┐  ┌────────▼────────┐
-│  muzigal.css   │  │  kidzee.css     │  ← Brand overrides (~20 vars each)
-│  Navy + Blue   │  │  Purple + Yellow │     Only what's different
-│  Inter font    │  │  Fredoka font   │
-│  Sharp radius  │  │  Round radius   │
-└───────┬────────┘  └────────┬────────┘
-        │                    │
-┌───────▼────────┐  ┌────────▼────────┐
-│  apps/crm/     │  │  apps/kidzee-   │  ← App imports base + theme
-│  globals.css   │  │  polichalur/    │
-│                │  │  globals.css    │
-└────────────────┘  └─────────────────┘
+┌─────────────────────────────────────────────────┐
+│  @zoo/design-tokens                              │
+│  ┌────────────────────────────────────────────┐  │
+│  │  base.css (Master — neutral defaults)      │  │  ← 120 CSS variables
+│  │  colors, fonts, spacing, shadows, motion   │  │
+│  └──────────────────┬─────────────────────────┘  │
+│                     │                            │
+│  ┌──────────────────▼─────────────────────────┐  │
+│  │  shadcn-bridge.css                         │  │  ← Maps zoo → shadcn names
+│  │  --color-primary → --primary               │  │     So Tailwind classes work
+│  │  --color-bg → --background                 │  │
+│  └────────────────────────────────────────────┘  │
+│                                                  │
+│  ┌────────────┐  ┌────────────┐  ┌───────────┐  │
+│  │ muzigal.css│  │ kidzee.css │  │ default   │  │  ← ~20 overrides each
+│  │ Navy+Blue  │  │ Purple+Yel │  │ Neutral   │  │
+│  └────────────┘  └────────────┘  └───────────┘  │
+└──────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────┐
+│  @zoo/ui                                         │
+│  ┌────────────────────────────────────────────┐  │
+│  │  globals.css                               │  │  ← @theme inline block
+│  │  Registers all tokens as Tailwind utils    │  │     bg-primary, text-muted, etc.
+│  └────────────────────────────────────────────┘  │
+│  ┌────────────────────────────────────────────┐  │
+│  │  Shared Components                         │  │  ← Card, Badge, Table, Modal,
+│  │  cn() + statusColor() utilities            │  │     StatCard + utilities
+│  └────────────────────────────────────────────┘  │
+└──────────────────────────────────────────────────┘
+
+App globals.css (3 lines):
+  @import "tailwindcss";
+  @import "@zoo/ui/globals.css";
+  @import "@zoo/design-tokens/themes/muzigal";
 ```
 
-**Key principle:** Base defines ~120 variables with neutral defaults. Each theme overrides ~20 variables. The app inherits everything else. Change one variable → the entire app rebrands.
+**Key principle:** Base defines ~120 variables with neutral defaults. Each theme overrides ~20 variables. The app inherits everything else. Change one theme import → the entire app rebrands.
 
 ---
 
@@ -44,8 +59,10 @@ cp packages/design-tokens/themes/_template.css \
 # 2. Fill in brand colors, fonts, personality
 vim packages/design-tokens/themes/newclient.css
 
-# 3. In the app's globals.css, import base + theme
-#    (or copy the variables into the app's :root)
+# 3. In the app's globals.css:
+@import "tailwindcss";
+@import "@zoo/ui/globals.css";
+@import "@zoo/design-tokens/themes/newclient";
 ```
 
 ---
@@ -86,6 +103,29 @@ Only override if the brand demands it.
 | `--gradient-hero` | Hero section gradient |
 | `--gradient-cta` | CTA button gradient |
 | `--color-border` | Warm vs cool border tones |
+| `--chart-1..5` | Brand-derived chart palette |
+
+---
+
+## Shared UI Components (@zoo/ui)
+
+All components use semantic tokens — they rebrand automatically with the theme.
+
+| Component | Import | Replaces hardcoded... |
+|-----------|--------|-----------------------|
+| `Card` | `import { Card } from '@zoo/ui'` | `bg-white border-zinc-200` → `bg-card border-border` |
+| `StatCard` | `import { StatCard } from '@zoo/ui'` | `bg-blue-50 text-blue-600` → `bg-primary/10 text-primary` |
+| `Badge` | `import { Badge } from '@zoo/ui'` | `bg-zinc-100 text-zinc-600` → `bg-muted text-muted-foreground` |
+| `Table` | `import { Table } from '@zoo/ui'` | `border-zinc-200 text-zinc-700` → `border-border text-foreground/80` |
+| `Modal` | `import { Modal } from '@zoo/ui'` | `bg-white text-zinc-900` → `bg-card text-foreground` |
+
+**Utilities:**
+```ts
+import { cn, statusColor } from '@zoo/ui';
+
+cn('px-4 py-2', isActive && 'bg-primary')  // clsx + tailwind-merge
+statusColor('Active')  // → 'bg-emerald-50 text-emerald-700 border-emerald-200'
+```
 
 ---
 
@@ -101,7 +141,6 @@ Only override if the brand demands it.
 | Radius | Sharp (0.5-0.75rem) |
 | Shadows | Subtle, barely visible |
 | Background | Pure white |
-| Vibe | "Serious music academy" |
 
 ### Kidzee (`themes/kidzee.css`)
 | Aspect | Value |
@@ -113,7 +152,6 @@ Only override if the brand demands it.
 | Radius | Round (1-1.5rem) |
 | Shadows | Purple-tinted, warmer |
 | Background | Warm cream `#FFFBF5` |
-| Vibe | "Fun preschool" |
 
 ---
 
@@ -165,28 +203,65 @@ Z-index:   --z-base through --z-toast (8 layers)
 
 ---
 
-## Rules
+## shadcn Bridge (`shadcn-bridge.css`)
 
-1. **Never hardcode hex values in components.** Always use `var(--color-*)`.
-2. **Base defines, themes override.** Don't duplicate base values in themes.
-3. **Semantic over literal.** Use `--color-error` not `--color-red`. Use `--color-primary` not `--color-purple`.
-4. **Themes are thin.** A theme should be ~20 overrides, not 120 copies.
-5. **Test with both themes.** If a component looks wrong in one theme, the component is using literal values instead of tokens.
+Maps ZOO tokens to shadcn/ui expected variable names so that Tailwind classes like `bg-primary`, `text-muted-foreground`, `border-border` work automatically:
+
+| shadcn Variable | ZOO Token |
+|----------------|-----------|
+| `--background` | `--color-bg` |
+| `--foreground` | `--color-text` |
+| `--primary` | `--color-primary` |
+| `--primary-foreground` | `--color-text-inverse` |
+| `--secondary` | `--color-bg-subtle` |
+| `--muted` | `--color-bg-alt` |
+| `--muted-foreground` | `--color-text-muted` |
+| `--accent` | `--color-bg-subtle` |
+| `--destructive` | `--color-error` |
+| `--border` | `--color-border` |
+| `--card` | `--color-surface` |
+| `--sidebar-*` | `--color-surface/primary/border-light` |
+| `--chart-1..5` | Brand-derived palette per theme |
 
 ---
 
 ## File Structure
 
 ```
-packages/design-tokens/
-├── base.css                  ← Master foundation (~120 tokens)
-├── DESIGN-SYSTEM.md          ← This document
-├── themes/
-│   ├── _template.css         ← Copy this for new clients
-│   ├── muzigal.css           ← Muzigal Music Academy
-│   └── kidzee.css            ← Kidzee Polichalur
+packages/
+├── design-tokens/              @zoo/design-tokens (pure CSS, zero JS)
+│   ├── package.json            npm package with exports map
+│   ├── base.css                Master foundation (~120 tokens)
+│   ├── shadcn-bridge.css       Zoo → shadcn variable mapping
+│   ├── index.css               Barrel: base + bridge
+│   ├── DESIGN-SYSTEM.md        This document
+│   └── themes/
+│       ├── _template.css       Copy for new clients
+│       ├── default.css         Neutral unbranded theme
+│       ├── muzigal.css         Muzigal Music Academy
+│       └── kidzee.css          Kidzee Polichalur
+│
+└── ui/                         @zoo/ui (shared React components)
+    ├── package.json            Deps: clsx, tailwind-merge, lucide-react
+    ├── globals.css             @theme inline block (registers tokens as Tailwind utils)
+    └── src/
+        ├── index.ts            Barrel export
+        ├── lib/utils.ts        cn() + statusColor()
+        └── components/         Card, StatCard, Badge, Table, Modal
 ```
 
 ---
 
-*This is a living document. Update when adding tokens, themes, or clients.*
+## Rules
+
+1. **Never hardcode hex values in components.** Always use `var(--color-*)` or Tailwind semantic classes.
+2. **Base defines, themes override.** Don't duplicate base values in themes.
+3. **Semantic over literal.** Use `--color-error` not `--color-red`. Use `--color-primary` not `--color-purple`.
+4. **Themes are thin.** A theme should be ~20 overrides, not 120 copies.
+5. **Use @zoo/ui components.** Import Card/Badge/Table/Modal from `@zoo/ui`, not local copies.
+6. **Test with both themes.** If a component looks wrong in one theme, it's using literal values instead of tokens.
+7. **App-specific components stay in apps.** Sidebar, TopBar, AppShell depend on routing/auth — keep them local.
+
+---
+
+*This is a living document. Update when adding tokens, themes, components, or clients.*

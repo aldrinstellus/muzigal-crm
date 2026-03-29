@@ -1,0 +1,7 @@
+/* ZOO CRM Design Tokens — Barrel Import
+   Usage: @import "@zoo/design-tokens";
+   This imports the neutral base + shadcn bridge.
+   Then import a theme: @import "@zoo/design-tokens/themes/muzigal"; */
+
+@import "./base.css";
+@import "./shadcn-bridge.css";

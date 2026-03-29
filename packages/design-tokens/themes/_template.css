@@ -11,7 +11,9 @@
    1. Copy this file as [client-name].css
    2. Replace only the variables you need to override
    3. Everything not overridden inherits from base.css
-   4. Import in your app: @import "base.css" then @import "[client].css"
+   4. Import in your app's globals.css:
+        @import "@zoo/ui/globals.css";
+        @import "@zoo/design-tokens/themes/[client-name]";
    ================================================================ */
 
 :root {
@@ -34,6 +36,13 @@
 
   /* ── Shadows (OPTIONAL — brand-tinted shadows) ── */
   /* --shadow-glow: 0 0 20px rgba(PRIMARY_R, PRIMARY_G, PRIMARY_B, 0.15); */
+
+  /* ── Chart palette (RECOMMENDED — 5 brand-derived colors for charts) ── */
+  /* --chart-1: var(--color-primary); */
+  /* --chart-2: var(--color-accent); */
+  /* --chart-3: #16a34a; */
+  /* --chart-4: #d97706; */
+  /* --chart-5: var(--color-secondary); */
 
   /* ── Gradients (OPTIONAL — hero/CTA gradients) ── */
   /* --gradient-hero: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); */

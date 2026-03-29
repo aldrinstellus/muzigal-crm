@@ -1,5 +1,5 @@
 {
-  "name": "zoo-docs",
+  "name": "zoo-muzigal-borewell",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -8,6 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "@zoo/design-tokens": "*",
+    "@zoo/ui": "*",
     "@supabase/supabase-js": "^2.100.1",
     "@tailwindcss/postcss": "^4.2.2",
     "@types/node": "^25.5.0",

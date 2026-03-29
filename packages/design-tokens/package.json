@@ -1,0 +1,12 @@
+{
+  "name": "@zoo/design-tokens",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ZOO CRM master design tokens — pure CSS variables for white-label theming",
+  "exports": {
+    ".": "./index.css",
+    "./base": "./base.css",
+    "./bridge": "./shadcn-bridge.css",
+    "./themes/*": "./themes/*.css"
+  }
+}
