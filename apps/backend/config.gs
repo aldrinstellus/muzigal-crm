@@ -86,6 +86,7 @@ function clearConfigCache() {
 function validateConfig() {
   var requiredKeys = [
     'WHATSAPP_TOKEN',
+    'WHATSAPP_TOKEN_TYPE',
     'PHONE_NUMBER_ID',
     'TEMPLATE_NAME',
     'CLAUDE_API_KEY',
@@ -106,5 +107,141 @@ function validateConfig() {
     }
   });
 
+  // Validate WHATSAPP_TOKEN_TYPE has a recognized value
+  var tokenType = readConfigFromSheet_('WHATSAPP_TOKEN_TYPE');
+  if (tokenType && tokenType !== '(placeholder)' && tokenType !== 'temporary' && tokenType !== 'system_user') {
+    invalid.push('WHATSAPP_TOKEN_TYPE (invalid value: "' + tokenType + '", expected "temporary" or "system_user")');
+  }
+
   return invalid;
+}
+
+/**
+ * Returns the configured WhatsApp token type.
+ * @return {string} "temporary" or "system_user" (defaults to "temporary")
+ */
+function getWhatsAppTokenType() {
+  var tokenType = getConfig('WHATSAPP_TOKEN_TYPE');
+  if (tokenType === 'system_user') {
+    return 'system_user';
+  }
+  return 'temporary';
+}
+
+/**
+ * Returns whether the WhatsApp token is a permanent System User token.
+ * @return {boolean}
+ */
+function isSystemUserToken() {
+  return getWhatsAppTokenType() === 'system_user';
+}
+
+/**
+ * Validates the WhatsApp token by making a lightweight API call to Meta.
+ * Calls the GET /PHONE_NUMBER_ID endpoint which returns phone number info
+ * without sending any messages.
+ *
+ * @return {Object} { valid: boolean, tokenType: string, error: string, details: string }
+ */
+function validateWhatsAppToken() {
+  var token = getConfig('WHATSAPP_TOKEN');
+  var phoneNumberId = getConfig('PHONE_NUMBER_ID');
+  var tokenType = getWhatsAppTokenType();
+
+  if (!token || token === '(placeholder)') {
+    return {
+      valid: false,
+      tokenType: tokenType,
+      error: 'WHATSAPP_TOKEN is not configured. Add your token in the Config tab.',
+      details: ''
+    };
+  }
+
+  if (!phoneNumberId || phoneNumberId === '(placeholder)') {
+    return {
+      valid: false,
+      tokenType: tokenType,
+      error: 'PHONE_NUMBER_ID is not configured. Add your Phone Number ID in the Config tab.',
+      details: ''
+    };
+  }
+
+  // Make a lightweight GET request to verify the token works.
+  // This endpoint returns the phone number details without sending a message.
+  var url = 'https://graph.facebook.com/v19.0/' + phoneNumberId;
+
+  try {
+    var response = UrlFetchApp.fetch(url, {
+      method: 'get',
+      headers: { 'Authorization': 'Bearer ' + token },
+      muteHttpExceptions: true
+    });
+
+    var code = response.getResponseCode();
+    var body = JSON.parse(response.getContentText());
+
+    if (code === 200) {
+      var details = 'Phone: ' + (body.display_phone_number || 'N/A') +
+                    ', Name: ' + (body.verified_name || 'N/A') +
+                    ', Quality: ' + (body.quality_rating || 'N/A');
+      Logger.log('WhatsApp token valid (' + tokenType + '). ' + details);
+      return {
+        valid: true,
+        tokenType: tokenType,
+        error: '',
+        details: details
+      };
+    }
+
+    // Handle specific error codes with actionable messages
+    var errorMsg = '';
+    var metaError = body.error || {};
+    var metaCode = metaError.code || 0;
+    var metaSubcode = metaError.error_subcode || 0;
+
+    if (code === 401 || metaCode === 190) {
+      // OAuth exception — token expired or invalid
+      if (metaSubcode === 463 || metaSubcode === 467) {
+        // 463 = expired, 467 = invalid/logged out
+        if (tokenType === 'temporary') {
+          errorMsg = 'WhatsApp token has EXPIRED. Temporary tokens last only 24 hours. ' +
+                     'Go to developers.facebook.com > Your App > WhatsApp > API Setup > ' +
+                     'generate a new temporary token, then update WHATSAPP_TOKEN in the Config tab. ' +
+                     'TIP: Switch to a System User token for a permanent solution (set WHATSAPP_TOKEN_TYPE to "system_user").';
+        } else {
+          errorMsg = 'WhatsApp System User token is INVALID. This should not expire. ' +
+                     'Check that: (1) the System User still exists in Meta Business Manager, ' +
+                     '(2) it has whatsapp_business_messaging permission, ' +
+                     '(3) the token was generated for the correct app. ' +
+                     'Regenerate at: Business Manager > Business Settings > System Users > Generate New Token.';
+        }
+      } else {
+        errorMsg = 'WhatsApp token is invalid (Meta error code ' + metaCode + '). ';
+        if (tokenType === 'temporary') {
+          errorMsg += 'The 24-hour temporary token may have expired. Generate a new one at developers.facebook.com.';
+        } else {
+          errorMsg += 'Verify the System User token in Meta Business Manager > System Users.';
+        }
+      }
+    } else {
+      errorMsg = 'WhatsApp API returned HTTP ' + code + ': ' + (metaError.message || JSON.stringify(body));
+    }
+
+    Logger.log('WhatsApp token validation failed (' + tokenType + '): ' + errorMsg);
+    return {
+      valid: false,
+      tokenType: tokenType,
+      error: errorMsg,
+      details: ''
+    };
+
+  } catch (e) {
+    Logger.log('WhatsApp token validation error: ' + e.message);
+    return {
+      valid: false,
+      tokenType: tokenType,
+      error: 'Could not reach WhatsApp API: ' + e.message,
+      details: ''
+    };
+  }
 }
