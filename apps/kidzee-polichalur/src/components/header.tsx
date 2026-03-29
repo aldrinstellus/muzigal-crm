@@ -22,14 +22,12 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 text-white font-bold text-xl">
-            <span className="bg-white rounded-lg px-1.5 py-0.5">
-              <Image
-                src="/kidzee-logo.svg"
-                alt="Kidzee"
-                width={80}
-                height={26}
-              />
-            </span>
+            <Image
+              src="/kidzee-logo.svg"
+              alt="Kidzee"
+              width={80}
+              height={26}
+            />
             <span className="hidden sm:inline font-[var(--font-display)]">Polichalur</span>
           </Link>
 

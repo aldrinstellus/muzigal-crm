@@ -9,14 +9,12 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <div className="flex items-center gap-2 font-bold text-lg mb-3 font-[var(--font-display)]">
-              <span className="bg-white rounded-lg px-1.5 py-0.5">
-                <Image
-                  src="/kidzee-logo.svg"
-                  alt="Kidzee"
-                  width={80}
-                  height={26}
-                />
-              </span>
+              <Image
+                src="/kidzee-logo.svg"
+                alt="Kidzee"
+                width={80}
+                height={26}
+              />
               Polichalur
             </div>
             <p className="text-white/80 text-sm">

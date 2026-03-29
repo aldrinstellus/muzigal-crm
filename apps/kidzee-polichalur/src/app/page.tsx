@@ -45,15 +45,14 @@ export default async function HomePage() {
         />
 
         <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div className="mx-auto mb-6 bg-white rounded-2xl p-3 w-fit shadow-lg">
-            <Image
-              src="/kidzee-logo.svg"
-              alt="Kidzee"
-              width={160}
-              height={52}
-            />
-          </div>
-          <h1 className="text-4xl sm:text-6xl font-bold mb-4 drop-shadow-lg font-[var(--font-display)]">
+          <Image
+            src="/kidzee-logo.svg"
+            alt="Kidzee"
+            width={200}
+            height={65}
+            className="mx-auto mb-6 drop-shadow-lg"
+          />
+          <h1 className="text-4xl sm:text-6xl font-bold mb-4 drop-shadow-lg font-[var(--font-display)] text-white">
             Kidzee Polichalur
           </h1>
           <p className="text-lg sm:text-xl text-white/90 max-w-2xl mx-auto mb-8">
