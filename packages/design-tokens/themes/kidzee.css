@@ -64,7 +64,7 @@
   --duration-normal: 200ms;
 
   /* ── Gradients ── */
-  --gradient-hero: linear-gradient(135deg, #65318E, #8B5CB8, #EBE1FF);
+  --gradient-hero: linear-gradient(135deg, #4A2366, #65318E, #8B5CB8);
   --gradient-cta: linear-gradient(135deg, #65318E, #4A2366);
   --gradient-surface: linear-gradient(180deg, #FFFBF5, #FFF8F0);
 

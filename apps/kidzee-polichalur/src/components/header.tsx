@@ -22,15 +22,15 @@ export function Header() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="flex items-center gap-2 text-white font-bold text-xl">
-            <Image
-              src="/kidzee-logo.svg"
-              alt="Kidzee"
-              width={36}
-              height={36}
-              className="brightness-0 invert"
-            />
-            <span className="hidden sm:inline font-[var(--font-display)]">Kidzee Polichalur</span>
-            <span className="sm:hidden font-[var(--font-display)]">Kidzee</span>
+            <span className="bg-white rounded-lg px-1.5 py-0.5">
+              <Image
+                src="/kidzee-logo.svg"
+                alt="Kidzee"
+                width={80}
+                height={26}
+              />
+            </span>
+            <span className="hidden sm:inline font-[var(--font-display)]">Polichalur</span>
           </Link>
 
           {/* Desktop nav */}

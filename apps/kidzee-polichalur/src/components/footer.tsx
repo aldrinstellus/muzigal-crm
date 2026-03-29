@@ -9,14 +9,15 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
             <div className="flex items-center gap-2 font-bold text-lg mb-3 font-[var(--font-display)]">
-              <Image
-                src="/kidzee-logo.svg"
-                alt="Kidzee"
-                width={28}
-                height={28}
-                className="brightness-0 invert"
-              />
-              Kidzee Polichalur
+              <span className="bg-white rounded-lg px-1.5 py-0.5">
+                <Image
+                  src="/kidzee-logo.svg"
+                  alt="Kidzee"
+                  width={80}
+                  height={26}
+                />
+              </span>
+              Polichalur
             </div>
             <p className="text-white/80 text-sm">
               Nurturing young minds with love, creativity, and joy. Your child&apos;s first step to a bright future.

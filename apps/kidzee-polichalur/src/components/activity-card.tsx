@@ -8,13 +8,13 @@ import { Calendar, Share2, Globe, Play, Copy, Check, MessageCircle } from "lucid
 import { useState } from "react";
 
 const CARD_COLORS = [
-  "from-pink-100 to-rose-50 border-pink-200",
-  "from-blue-100 to-sky-50 border-blue-200",
-  "from-green-100 to-emerald-50 border-green-200",
-  "from-yellow-100 to-amber-50 border-yellow-200",
   "from-purple-100 to-violet-50 border-purple-200",
-  "from-orange-100 to-red-50 border-orange-200",
-  "from-cyan-100 to-teal-50 border-cyan-200",
+  "from-fuchsia-100 to-purple-50 border-fuchsia-200",
+  "from-violet-100 to-indigo-50 border-violet-200",
+  "from-pink-100 to-fuchsia-50 border-pink-200",
+  "from-amber-100 to-yellow-50 border-amber-200",
+  "from-purple-50 to-pink-50 border-purple-200",
+  "from-indigo-100 to-violet-50 border-indigo-200",
 ];
 
 export function ActivityCard({ activity, index = 0 }: { activity: Activity; index?: number }) {
@@ -38,7 +38,7 @@ export function ActivityCard({ activity, index = 0 }: { activity: Activity; inde
         <div className="flex-1">
           <div className="flex items-center gap-2 mb-2">
             <span className="text-2xl">{CATEGORY_EMOJIS[activity.category]}</span>
-            <span className="text-xs font-semibold px-2 py-1 bg-white/60 rounded-full text-gray-700">
+            <span className="text-xs font-semibold px-2 py-1 bg-white/60 rounded-full text-[var(--color-text-secondary)]">
               {CATEGORY_LABELS[activity.category]}
             </span>
           </div>
@@ -73,7 +73,7 @@ export function ActivityCard({ activity, index = 0 }: { activity: Activity; inde
 
       {/* Share panel */}
       {showShare && (
-        <div className="mt-4 pt-4 border-t border-gray-200/50">
+        <div className="mt-4 pt-4 border-t border-[var(--color-border-light)]/50">
           <p className="text-xs font-semibold text-[var(--color-text-secondary)] mb-2">Share this activity:</p>
           <div className="flex flex-wrap gap-2">
             <a
@@ -125,7 +125,7 @@ export function ActivityCard({ activity, index = 0 }: { activity: Activity; inde
               {copied ? "Copied!" : "Copy Link"}
             </button>
           </div>
-          <p className="text-xs text-gray-400 mt-2">
+          <p className="text-xs text-[var(--color-text-muted)] mt-2">
             Tip: For Instagram, copy the link and share via the Instagram app.
           </p>
 

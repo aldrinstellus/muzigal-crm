@@ -9,10 +9,10 @@ export function YearSelector({ years, activeYear }: { years: number[]; activeYea
       <Link
         href="/activities"
         className={cn(
-          "px-4 py-2 rounded-full text-sm font-semibold transition-all",
+          "px-4 py-2 rounded-[var(--radius-blob)] text-sm font-semibold transition-all",
           !activeYear
-            ? "bg-[var(--color-primary)] text-white shadow-md"
-            : "bg-white text-gray-600 hover:bg-[var(--color-primary-light)]/20 border border-gray-200"
+            ? "bg-[var(--color-primary)] text-white shadow-[var(--shadow-md)]"
+            : "bg-[var(--color-surface)] text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-light)]/20 border border-[var(--color-border-light)]"
         )}
       >
         All Years
@@ -22,10 +22,10 @@ export function YearSelector({ years, activeYear }: { years: number[]; activeYea
           key={year}
           href={`/activities/${year}`}
           className={cn(
-            "px-4 py-2 rounded-full text-sm font-semibold transition-all",
+            "px-4 py-2 rounded-[var(--radius-blob)] text-sm font-semibold transition-all",
             activeYear === year
-              ? "bg-[var(--color-primary)] text-white shadow-md"
-              : "bg-white text-gray-600 hover:bg-[var(--color-primary-light)]/20 border border-gray-200"
+              ? "bg-[var(--color-primary)] text-white shadow-[var(--shadow-md)]"
+              : "bg-[var(--color-surface)] text-[var(--color-text-secondary)] hover:bg-[var(--color-primary-light)]/20 border border-[var(--color-border-light)]"
           )}
         >
           {year}
