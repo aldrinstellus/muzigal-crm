@@ -38,16 +38,20 @@
   --color-on-primary: #ffffff;      /* White on purple — 7.5:1 */
   --color-on-accent: #4A2366;       /* Purple-dark on yellow — 8.2:1 */
 
+  /* ── Brand section background (lavender — from kidzee.com DNA) ── */
+  --color-bg-brand: #EBE1FF;
+
   /* ── Typography (playful, child-friendly) ── */
   --font-display: "Fredoka", "Segoe UI", sans-serif;
-  --font-body: "Lato", "Segoe UI", sans-serif;
-  --font-accent: "Sniglet", "Comic Sans MS", cursive;
+  --font-body: "Sniglet", "Lato", "Segoe UI", sans-serif;
+  --font-accent: "Lato", "Segoe UI", sans-serif;
 
   /* ── Radius (rounder — playful feel) ── */
   --radius-lg: 0.75rem;
   --radius-xl: 1rem;
   --radius-2xl: 1.5rem;
   --radius-3xl: 2rem;
+  --radius-blob: 15px 5px;     /* Asymmetric — from kidzee.com brand DNA */
 
   /* ── Shadows (warmer tones) ── */
   --shadow-sm: 0 1px 3px rgba(101, 49, 142, 0.06);
@@ -60,7 +64,7 @@
   --duration-normal: 200ms;
 
   /* ── Gradients ── */
-  --gradient-hero: linear-gradient(135deg, #FFC107, #FD7E14, #E91E8C);
+  --gradient-hero: linear-gradient(135deg, #65318E, #8B5CB8, #EBE1FF);
   --gradient-cta: linear-gradient(135deg, #65318E, #4A2366);
   --gradient-surface: linear-gradient(180deg, #FFFBF5, #FFF8F0);
 
