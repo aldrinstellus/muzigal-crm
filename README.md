@@ -6,9 +6,10 @@ Generic CRM platform for academies, schools, and training centers. Zero infrastr
 
 ```
 apps/
-├── crm/        React + Vite frontend (Vercel)
-├── docs/       Next.js documentation portal (Vercel)
-└── backend/    Google Apps Script backend (clasp)
+├── crm/                 React + Vite CRM frontend (Vercel)
+├── docs/                Next.js documentation portal (Vercel)
+├── backend/             Google Apps Script backend (clasp)
+└── kidzee-polichalur/   Next.js preschool activity platform (Vercel)
 ```
 
 ## Apps
@@ -49,9 +50,22 @@ clasp open         # open in browser
 
 **Deploy:** Google Apps Script web app
 
-## Current Customer
+### Kidzee Polichalur (`apps/kidzee-polichalur/`)
+Next.js 16 preschool activity platform. Public activity listing, admin dashboard, year-based browsing.
 
-**Muzigal** — Music academy, Whitefield, Bangalore. Contacts: Cecil & Giri.
+```bash
+cd apps/kidzee-polichalur
+npm install
+npm run dev        # localhost:3000
+npm run build
+```
+
+**Deploy:** Vercel — https://kidzee-polichalur.vercel.app
+
+## Customers
+
+1. **Muzigal** — Music academy, Whitefield, Bangalore. Contacts: Cecil & Giri.
+2. **Kidzee Polichalur** — Preschool, Polichalur, Chennai. Contact: Imtiaz.
 
 ## Tech Stack
 

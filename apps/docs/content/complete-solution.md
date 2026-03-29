@@ -475,8 +475,8 @@ The system has been tested across **5 personas** covering every role that intera
 
 | Repo | Contents |
 |------|---------|
-| `aldrinstellus/muzigal-crm` | CRM frontend (React, 2,614 LOC) |
-| `aldrinstellus/whatsapp-class-notifications` | Backend + WhatsApp system (GAS, 4,115 LOC) |
+| `aldrinstellus/zoo-crm` | CRM frontend (React, 2,614 LOC) |
+| `aldrinstellus/zoo-crm (apps/backend)` | Backend + WhatsApp system (GAS, 4,115 LOC) |
 
 <div class="page-break"></div>
 

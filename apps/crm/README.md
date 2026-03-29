@@ -51,7 +51,7 @@ Custom music academy CRM built for [Muzigal](https://muzigal.com), Whitefield, B
 | Charts | Recharts |
 | Icons | lucide-react |
 | Hosting | Vercel |
-| Backend | Google Apps Script + Google Sheets ([repo](https://github.com/aldrinstellus/whatsapp-class-notifications)) |
+| Backend | Google Apps Script + Google Sheets ([repo](https://github.com/aldrinstellus/zoo-crm (apps/backend))) |
 | Testing | Vitest + React Testing Library |
 
 ---
@@ -141,7 +141,7 @@ This is the frontend half of a two-repo system:
 
 | Repo | Purpose | LOC |
 |------|---------|-----|
-| [whatsapp-class-notifications](https://github.com/aldrinstellus/whatsapp-class-notifications) | Backend -- Google Apps Script, WhatsApp API, 25+ REST endpoints | 4,115 |
+| [whatsapp-class-notifications](https://github.com/aldrinstellus/zoo-crm (apps/backend)) | Backend -- Google Apps Script, WhatsApp API, 25+ REST endpoints | 4,115 |
 | **muzigal-crm** (this repo) | Frontend -- React CRM dashboard and public enrollment | 2,614 |
 | **Total** | | **6,729** |
 

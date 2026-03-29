@@ -23,7 +23,7 @@ The backend has expanded from 8 files (1,615 LOC) to **12 files (4,115 LOC)** wi
 
 | | |
 |---|---|
-| **Frontend repo** | [aldrinstellus/muzigal-crm](https://github.com/aldrinstellus/muzigal-crm) |
+| **Frontend repo** | [aldrinstellus/zoo-crm](https://github.com/aldrinstellus/zoo-crm) |
 | **Live app** | [zoo-crm-app.vercel.app](https://zoo-crm-app.vercel.app) |
 | **Admin dashboard** | [zoo-crm-app.vercel.app/admin](https://zoo-crm-app.vercel.app/admin) |
 | **Tests** | 109 passing across 4 suites, 5 personas |

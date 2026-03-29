@@ -561,7 +561,7 @@ The frontend is a React 19 + TypeScript + Tailwind CSS application deployed on V
 
 | | |
 |---|---|
-| **Frontend repo** | [github.com/aldrinstellus/muzigal-crm](https://github.com/aldrinstellus/muzigal-crm) |
+| **Frontend repo** | [github.com/aldrinstellus/zoo-crm](https://github.com/aldrinstellus/zoo-crm) |
 | **Live app** | [zoo-crm-app.vercel.app](https://zoo-crm-app.vercel.app) |
 | **Tech stack** | React 19, TypeScript, Tailwind CSS, Vite, Recharts, Vercel |
 
