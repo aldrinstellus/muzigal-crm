@@ -1,7 +1,7 @@
 "use client";
 
 import type { Activity } from "@/lib/types";
-import { CATEGORY_EMOJIS } from "@/lib/types";
+import { CategoryIcon } from "@/components/category-icon";
 import { Globe, Send, X, ImageIcon, CheckCircle, Loader2 } from "lucide-react";
 import { useState } from "react";
 
@@ -88,7 +88,7 @@ export function SocialShareButton({ activity }: { activity: Activity }) {
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <h4 className="text-sm font-bold text-[var(--color-text)] flex items-center gap-1.5">
-          {CATEGORY_EMOJIS[activity.category]} Schedule Social Post
+          <CategoryIcon category={activity.category} size={16} /> Schedule Social Post
         </h4>
         <button
           onClick={() => {

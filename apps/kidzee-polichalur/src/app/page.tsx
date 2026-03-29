@@ -3,7 +3,16 @@ import Image from "next/image";
 import { getActivities, getAvailableYears } from "@/lib/data";
 import { ActivityCard } from "@/components/activity-card";
 import { WaveDivider } from "@/components/wave-divider";
-import { ArrowRight, Star, Users, Calendar, Trophy } from "lucide-react";
+import { AnimatedStats } from "@/components/animated-stats";
+import { HeroShimmer } from "@/components/hero-shimmer";
+import { AutoRickshaw } from "@/components/illustrations/auto-rickshaw";
+import { PalmTree } from "@/components/illustrations/palm-tree";
+import { KolamPattern } from "@/components/illustrations/kolam-pattern";
+import { PeacockFeather } from "@/components/illustrations/peacock-feather";
+import {
+  ArrowRight,
+  Sparkle,
+} from "@phosphor-icons/react/dist/ssr";
 
 export const dynamic = "force-dynamic";
 
@@ -16,33 +25,36 @@ export default async function HomePage() {
 
   return (
     <div>
-      {/* Hero Section — purple gradient (brand DNA) */}
+      {/* Hero Section -- purple gradient (brand DNA) with Chennai/India motifs */}
       <section className="relative bg-gradient-to-br from-[#4A2366] via-[#65318E] to-[#8B5CB8] text-white py-16 sm:py-24 px-4 overflow-hidden">
-        {/* Decorative illustrations */}
-        <Image
-          src="/decorative/butterfly.png"
-          alt=""
-          width={80}
-          height={80}
-          className="absolute top-8 left-[5%] opacity-30 rotate-12 pointer-events-none hidden sm:block"
-          aria-hidden="true"
-        />
-        <Image
-          src="/decorative/balloon.png"
-          alt=""
-          width={60}
-          height={100}
-          className="absolute top-12 right-[8%] opacity-25 -rotate-6 pointer-events-none hidden sm:block"
-          aria-hidden="true"
-        />
-        <Image
-          src="/decorative/bird.png"
-          alt=""
-          width={50}
-          height={50}
-          className="absolute bottom-16 left-[10%] opacity-20 pointer-events-none hidden md:block"
-          aria-hidden="true"
-        />
+        {/* Animated shimmer overlay */}
+        <HeroShimmer />
+
+        {/* Kolam pattern -- repeating subtle background */}
+        <div className="absolute inset-0 pointer-events-none opacity-[0.04]" aria-hidden="true">
+          <div
+            className="w-full h-full"
+            style={{
+              backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='50' cy='50' r='3' fill='white'/%3E%3Ccircle cx='50' cy='35' r='2' fill='white'/%3E%3Ccircle cx='50' cy='65' r='2' fill='white'/%3E%3Ccircle cx='35' cy='50' r='2' fill='white'/%3E%3Ccircle cx='65' cy='50' r='2' fill='white'/%3E%3Ccircle cx='39' cy='39' r='1.5' fill='white'/%3E%3Ccircle cx='61' cy='39' r='1.5' fill='white'/%3E%3Ccircle cx='39' cy='61' r='1.5' fill='white'/%3E%3Ccircle cx='61' cy='61' r='1.5' fill='white'/%3E%3Cpath d='M50 35 Q65 35 65 50 Q65 65 50 65 Q35 65 35 50 Q35 35 50 35' stroke='white' stroke-width='1.5' fill='none' opacity='0.6'/%3E%3Cpath d='M50 35 Q58 25 65 35' stroke='white' stroke-width='1.2' fill='none'/%3E%3Cpath d='M65 50 Q75 58 65 65' stroke='white' stroke-width='1.2' fill='none'/%3E%3Cpath d='M50 65 Q42 75 35 65' stroke='white' stroke-width='1.2' fill='none'/%3E%3Cpath d='M35 50 Q25 42 35 35' stroke='white' stroke-width='1.2' fill='none'/%3E%3C/svg%3E")`,
+              backgroundSize: "80px 80px",
+            }}
+          />
+        </div>
+
+        {/* Auto-rickshaw -- bottom left */}
+        <div className="absolute bottom-4 left-[3%] text-white opacity-20 pointer-events-none hidden sm:block">
+          <AutoRickshaw className="w-32 h-auto sm:w-40" />
+        </div>
+
+        {/* Palm tree -- right side */}
+        <div className="absolute -bottom-4 right-[4%] text-white opacity-[0.12] pointer-events-none hidden sm:block">
+          <PalmTree className="w-28 h-auto sm:w-36" />
+        </div>
+
+        {/* Kolam accent -- top right decorative */}
+        <div className="absolute top-6 right-[8%] text-white opacity-[0.10] pointer-events-none hidden md:block">
+          <KolamPattern className="w-20 h-20" />
+        </div>
 
         <div className="max-w-5xl mx-auto text-center relative z-10">
           <Image
@@ -64,7 +76,7 @@ export default async function HomePage() {
               href="/activities"
               className="inline-flex items-center gap-2 bg-white text-[var(--color-primary)] px-6 py-3 rounded-[var(--radius-blob)] font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all"
             >
-              Explore Activities <ArrowRight className="w-5 h-5" />
+              Explore Activities <ArrowRight size={20} weight="bold" />
             </Link>
             <Link
               href="/admin"
@@ -76,31 +88,20 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Wave divider: hero → stats */}
+      {/* Wave divider: hero -> stats */}
       <WaveDivider from="#8B5CB8" to="var(--color-bg)" />
 
-      {/* Stats Section */}
-      <section className="py-12 px-4 -mt-8">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[
-            { icon: Calendar, label: "Years of Activities", value: years.length || "2+" },
-            { icon: Star, label: "Total Activities", value: activities.length || "10+" },
-            { icon: Users, label: "Happy Students", value: "500+" },
-            { icon: Trophy, label: "Events Per Year", value: "20+" },
-          ].map((stat) => (
-            <div
-              key={stat.label}
-              className="bg-[var(--color-surface)] rounded-2xl p-5 text-center shadow-[var(--shadow-md)] border border-[var(--color-border-light)] hover:shadow-[var(--shadow-lg)] transition-shadow"
-            >
-              <stat.icon className="w-8 h-8 text-[var(--color-primary)] mx-auto mb-2" />
-              <div className="text-2xl font-bold font-[var(--font-display)] text-[var(--color-text)]">{stat.value}</div>
-              <div className="text-xs text-[var(--color-text-secondary)] mt-1">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Stats Section -- animated count-up with Phosphor duotone icons */}
+      <AnimatedStats
+        stats={[
+          { iconName: "CalendarDots", label: "Years of Activities", value: String(years.length || "2+"), color: "purple" },
+          { iconName: "Star", label: "Total Activities", value: String(activities.length || "10+"), color: "orange" },
+          { iconName: "UsersThree", label: "Happy Students", value: "500+", color: "pink" },
+          { iconName: "Trophy", label: "Events Per Year", value: "20+", color: "emerald" },
+        ]}
+      />
 
-      {/* Recent Activities — on lavender background (brand DNA) */}
+      {/* Recent Activities -- on lavender background (brand DNA) */}
       <section className="py-12 px-4 bg-[var(--color-bg-brand)]">
         <div className="max-w-5xl mx-auto">
           <div className="flex items-center justify-between mb-8">
@@ -111,15 +112,21 @@ export default async function HomePage() {
               href="/activities"
               className="text-[var(--color-primary)] hover:text-[var(--color-primary-dark)] font-semibold text-sm flex items-center gap-1"
             >
-              View All <ArrowRight className="w-4 h-4" />
+              View All <ArrowRight size={16} weight="bold" />
             </Link>
           </div>
 
           {recentActivities.length === 0 ? (
             <div className="text-center py-16 bg-[var(--color-surface)] rounded-2xl border-2 border-dashed border-[var(--color-border-light)]">
-              <div className="text-5xl mb-4">🌟</div>
-              <p className="text-[var(--color-text-secondary)] text-lg">No activities yet!</p>
-              <p className="text-[var(--color-text-muted)] text-sm mt-1">Activities will appear here once uploaded by admin.</p>
+              <div className="flex justify-center mb-4">
+                <Sparkle size={48} weight="duotone" color="var(--color-primary-light)" />
+              </div>
+              <p className="text-[var(--color-text-secondary)] text-lg font-semibold">
+                No activities yet!
+              </p>
+              <p className="text-[var(--color-text-muted)] text-sm mt-1">
+                Activities will appear here once uploaded by admin.
+              </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -131,17 +138,12 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* Browse by Year — cream bg with decorative fish */}
+      {/* Browse by Year -- with peacock feather illustration */}
       {years.length > 0 && (
         <section className="relative py-12 px-4 overflow-hidden">
-          <Image
-            src="/decorative/fish.png"
-            alt=""
-            width={60}
-            height={40}
-            className="absolute bottom-6 right-[5%] opacity-15 pointer-events-none hidden sm:block"
-            aria-hidden="true"
-          />
+          <div className="absolute bottom-4 right-[4%] text-[var(--color-primary)] opacity-[0.10] pointer-events-none hidden sm:block" aria-hidden="true">
+            <PeacockFeather className="w-16 h-auto" />
+          </div>
           <div className="max-w-5xl mx-auto text-center relative z-10">
             <h2 className="text-2xl sm:text-3xl font-bold font-[var(--font-display)] text-[var(--color-text)] mb-6">
               Browse by Year
