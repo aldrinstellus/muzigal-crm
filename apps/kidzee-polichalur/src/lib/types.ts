@@ -37,6 +37,7 @@ export const CATEGORY_LABELS: Record<ActivityCategory, string> = {
   other: "Other",
 };
 
+/** @deprecated Use CATEGORY_ICONS with the CategoryIcon component instead */
 export const CATEGORY_EMOJIS: Record<ActivityCategory, string> = {
   "annual-day": "🎭",
   "sports-day": "🏃",
@@ -48,4 +49,18 @@ export const CATEGORY_EMOJIS: Record<ActivityCategory, string> = {
   competition: "🏆",
   cultural: "🎶",
   other: "📌",
+};
+
+/** Phosphor icon component names for each activity category */
+export const CATEGORY_ICONS: Record<ActivityCategory, string> = {
+  "annual-day": "MaskHappy",
+  "sports-day": "Trophy",
+  "art-craft": "PaintBrush",
+  "field-trip": "Bus",
+  festival: "Confetti",
+  graduation: "GraduationCap",
+  workshop: "Wrench",
+  competition: "Medal",
+  cultural: "MusicNotes",
+  other: "Star",
 };

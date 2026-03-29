@@ -74,4 +74,34 @@
   --chart-3: #E91E8C;
   --chart-4: #198754;
   --chart-5: #FFC107;
+
+  /* ── Card gradient palette — purple family with warm accents ── */
+  --color-card-1-from: #F3E8FF;
+  --color-card-1-to: #EDE9FE;
+  --color-card-1-border: #DDD6FE;
+  --color-card-2-from: #FDF2F8;
+  --color-card-2-to: #FCE7F3;
+  --color-card-2-border: #FBCFE8;
+  --color-card-3-from: #FFF7ED;
+  --color-card-3-to: #FFEDD5;
+  --color-card-3-border: #FED7AA;
+  --color-card-4-from: #F0FDF4;
+  --color-card-4-to: #DCFCE7;
+  --color-card-4-border: #BBF7D0;
+  --color-card-5-from: #EFF6FF;
+  --color-card-5-to: #DBEAFE;
+  --color-card-5-border: #BFDBFE;
+
+  /* ── Social platform colors ── */
+  --color-social-facebook: #1877F2;
+  --color-social-whatsapp: #25D366;
+  --color-social-youtube: #FF0000;
+  --color-social-twitter: #1DA1F2;
+  --color-social-instagram: #E4405F;
+
+  /* ── Fun decorative colors for badges/ribbons ── */
+  --color-fun-sun: #FBBF24;
+  --color-fun-sky: #38BDF8;
+  --color-fun-grass: #4ADE80;
+  --color-fun-coral: #FB7185;
 }
