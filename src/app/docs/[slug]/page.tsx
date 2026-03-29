@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { getDoc, getAllDocs } from "@/lib/docs";
+import { LogoutButton } from "@/components/logout-button";
 
 export async function generateStaticParams() {
   const docs = getAllDocs();
@@ -57,6 +58,8 @@ export default async function DocPage({ params }: { params: Promise<{ slug: stri
                 {nextDoc.title} &rarr;
               </Link>
             )}
+            <span className="text-gray-200">|</span>
+            <LogoutButton className="text-sm text-gray-400 hover:text-gray-700 transition-colors" />
           </div>
         </div>
       </header>

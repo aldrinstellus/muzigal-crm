@@ -1,5 +1,7 @@
 import Link from "next/link";
+import { cookies } from "next/headers";
 import { getAllDocs } from "@/lib/docs";
+import { LogoutButton } from "@/components/logout-button";
 
 const AUDIENCE_COLORS: Record<string, string> = {
   "Owners / Decision Makers": "bg-blue-50 text-blue-700 border-blue-200",
@@ -7,11 +9,33 @@ const AUDIENCE_COLORS: Record<string, string> = {
   "Staff / Operations": "bg-amber-50 text-amber-700 border-amber-200",
 };
 
-export default function Home() {
+export default async function Home() {
   const docs = getAllDocs();
+  const cookieStore = await cookies();
+  const authCookie = cookieStore.get("muzigal_auth");
+  let isAdmin = false;
+  if (authCookie?.value) {
+    try {
+      const [b64] = authCookie.value.split(".");
+      const payload = JSON.parse(atob(b64));
+      isAdmin = payload.role === "admin";
+    } catch { /* ignore */ }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50">
+      {/* Top nav */}
+      <nav className="bg-[#12121f] text-white">
+        <div className="max-w-4xl mx-auto px-6 h-11 flex items-center justify-end gap-4 text-sm">
+          {isAdmin && (
+            <Link href="/admin" className="text-gray-400 hover:text-white transition-colors">
+              Admin
+            </Link>
+          )}
+          <LogoutButton />
+        </div>
+      </nav>
+
       {/* Header */}
       <header className="bg-[#1a1a2e] text-white">
         <div className="max-w-4xl mx-auto px-6 py-16">

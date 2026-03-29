@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { LogoutButton } from "@/components/logout-button";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -12,7 +13,10 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
             <span className="text-gray-600">|</span>
             <span className="font-semibold text-sm">Admin</span>
           </div>
-          <span className="text-xs text-gray-500">muzigal-zoo</span>
+          <div className="flex items-center gap-4">
+            <span className="text-xs text-gray-500">muzigal-zoo</span>
+            <LogoutButton />
+          </div>
         </div>
       </header>
       {children}
