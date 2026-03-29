@@ -34,9 +34,14 @@ async function ensureDataFile() {
 }
 
 export async function getSocialPosts(): Promise<SocialPost[]> {
-  await ensureDataFile();
-  const raw = await fs.readFile(DATA_FILE, "utf-8");
-  return JSON.parse(raw) as SocialPost[];
+  try {
+    await ensureDataFile();
+    const raw = await fs.readFile(DATA_FILE, "utf-8");
+    return JSON.parse(raw) as SocialPost[];
+  } catch {
+    // Read-only filesystem (e.g., Vercel) — return empty array
+    return [];
+  }
 }
 
 export async function addSocialPost(post: SocialPost): Promise<SocialPost> {

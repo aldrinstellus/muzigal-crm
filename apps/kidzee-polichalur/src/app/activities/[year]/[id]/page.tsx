@@ -21,6 +21,7 @@ import {
   MusicNotes,
   Star,
 } from "@phosphor-icons/react/dist/ssr";
+import { ActivityEventSchema, BreadcrumbSchema } from "@/components/structured-data";
 import type { Metadata } from "next";
 
 export const dynamic = "force-dynamic";
@@ -77,10 +78,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const ogImage = activity.images.length > 0 ? activity.images[0] : "/kidzee-logo.png";
 
   return {
-    title: `${activity.title} — Kidzee Polichalur`,
+    title: activity.title,
     description,
     openGraph: {
-      title: `${activity.title} — Kidzee Polichalur`,
+      title: activity.title,
       description,
       images: [{ url: ogImage }],
     },
@@ -112,8 +113,19 @@ export default async function ActivityDetailPage({ params }: PageProps) {
     { label: activity.title },
   ];
 
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "https://kidzee-polichalur.vercel.app";
+
   return (
     <div className="min-h-screen bg-[var(--color-bg)]">
+      <ActivityEventSchema activity={activity} />
+      <BreadcrumbSchema
+        items={[
+          { name: "Home", url: BASE_URL },
+          { name: "Activities", url: `${BASE_URL}/activities` },
+          { name: String(year), url: `${BASE_URL}/activities/${year}` },
+          { name: activity.title },
+        ]}
+      />
       {/* Hero Image */}
       {heroImage && (
         <div className="relative w-full h-[280px] sm:h-[400px]">

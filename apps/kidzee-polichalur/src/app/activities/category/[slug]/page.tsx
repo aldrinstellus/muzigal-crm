@@ -65,7 +65,7 @@ export async function generateMetadata({
     return { title: "Category Not Found" };
   }
   return {
-    title: `${CATEGORY_LABELS[category]} Activities — Kidzee Polichalur`,
+    title: `${CATEGORY_LABELS[category]} Activities`,
   };
 }
 

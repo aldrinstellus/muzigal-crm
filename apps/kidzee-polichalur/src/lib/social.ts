@@ -1,9 +1,13 @@
 import type { Activity } from "./types";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+function getBaseUrl(): string {
+  if (typeof window !== "undefined") return window.location.origin;
+  return process.env.NEXT_PUBLIC_BASE_URL || "https://kidzee-polichalur.vercel.app";
+}
 
 export function getShareUrls(activity: Activity) {
-  const activityUrl = `${BASE_URL}/activities/${activity.year}#activity-${activity.id}`;
+  const BASE_URL = getBaseUrl();
+  const activityUrl = `${BASE_URL}/activities/${activity.year}/${activity.id}`;
   const text = `${activity.title} - Kidzee Polichalur`;
   const encodedUrl = encodeURIComponent(activityUrl);
   const encodedText = encodeURIComponent(text);
