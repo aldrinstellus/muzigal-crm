@@ -10,6 +10,11 @@ apps/
 ├── muzigal-borewell/    Muzigal docs portal (Vercel)
 ├── backend/             Google Apps Script backend (clasp)
 └── kidzee-polichalur/   Next.js preschool activity platform (Vercel)
+
+packages/
+└── design-tokens/       Master design system + client themes
+    ├── base.css         Unstyled foundation (~120 CSS variables)
+    └── themes/          Client brand overrides (muzigal, kidzee)
 ```
 
 ## Apps

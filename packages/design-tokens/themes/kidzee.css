@@ -1,0 +1,62 @@
+/* ================================================================
+   KIDZEE POLICHALUR — Brand Theme Override
+   ================================================================
+   Client: Kidzee Polichalur, Polichalur, Tamil Nadu
+   Personality: Playful, warm, child-friendly, colorful
+   Primary: Purple (#65318E) — from kidzee.com official brand
+   Accent: Yellow (#FFF200) — from kidzee.com official brand
+   Fonts: Fredoka (display), Lato (body), Sniglet (accent)
+   ================================================================ */
+
+:root {
+  /* ── Brand Colors ── */
+  --color-primary: #65318E;
+  --color-primary-dark: #4A2366;
+  --color-primary-light: #8B5CB8;
+  --color-accent: #FFF200;
+  --color-accent-warm: #FFC107;
+
+  --color-secondary: #FD7E14;
+  --color-tertiary: #E91E8C;
+
+  /* ── Surfaces (warm cream tones) ── */
+  --color-bg: #FFFBF5;
+  --color-bg-alt: #FFF8F0;
+  --color-bg-subtle: #FFF3E0;
+  --color-surface: #ffffff;
+  --color-surface-hover: #FFFBF5;
+  --color-border: #E8D5C4;
+  --color-border-light: #F5EDE5;
+  --color-border-strong: #D4C4B0;
+
+  /* ── Text ── */
+  --color-text: #282828;
+  --color-text-secondary: #6C757D;
+  --color-text-muted: #ADB5BD;
+
+  /* ── Typography (playful, child-friendly) ── */
+  --font-display: "Fredoka", "Segoe UI", sans-serif;
+  --font-body: "Lato", "Segoe UI", sans-serif;
+  --font-accent: "Sniglet", "Comic Sans MS", cursive;
+
+  /* ── Radius (rounder — playful feel) ── */
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-2xl: 1.5rem;
+  --radius-3xl: 2rem;
+
+  /* ── Shadows (warmer tones) ── */
+  --shadow-sm: 0 1px 3px rgba(101, 49, 142, 0.06);
+  --shadow-md: 0 4px 8px rgba(101, 49, 142, 0.08);
+  --shadow-lg: 0 10px 20px rgba(101, 49, 142, 0.10);
+  --shadow-glow: 0 0 20px rgba(101, 49, 142, 0.15);
+
+  /* ── Motion (slightly bouncier — playful) ── */
+  --easing-default: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --duration-normal: 200ms;
+
+  /* ── Gradients ── */
+  --gradient-hero: linear-gradient(135deg, #FFC107, #FD7E14, #E91E8C);
+  --gradient-cta: linear-gradient(135deg, #65318E, #4A2366);
+  --gradient-surface: linear-gradient(180deg, #FFFBF5, #FFF8F0);
+}

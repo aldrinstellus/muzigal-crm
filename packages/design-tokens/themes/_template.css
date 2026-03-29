@@ -1,0 +1,40 @@
+/* ================================================================
+   [CLIENT NAME] — Brand Theme Override
+   ================================================================
+   Client: [Company name, location]
+   Personality: [2-4 adjectives]
+   Primary: [hex] — [why this color]
+   Accent: [hex] — [why this color]
+   ================================================================
+
+   INSTRUCTIONS:
+   1. Copy this file as [client-name].css
+   2. Replace only the variables you need to override
+   3. Everything not overridden inherits from base.css
+   4. Import in your app: @import "base.css" then @import "[client].css"
+   ================================================================ */
+
+:root {
+  /* ── Brand Colors (REQUIRED — these define the brand) ── */
+  /* --color-primary: #000000; */
+  /* --color-primary-dark: #000000; */
+  /* --color-primary-light: #000000; */
+  /* --color-accent: #000000; */
+  /* --color-accent-warm: #000000; */
+
+  /* ── Typography (RECOMMENDED — defines personality) ── */
+  /* --font-display: "YourFont", sans-serif; */
+  /* --font-body: "YourFont", sans-serif; */
+
+  /* ── Surfaces (OPTIONAL — warm/cool tone) ── */
+  /* --color-bg: #ffffff; */
+
+  /* ── Radius (OPTIONAL — sharp=professional, round=friendly) ── */
+  /* --radius-xl: 0.75rem; */
+
+  /* ── Shadows (OPTIONAL — brand-tinted shadows) ── */
+  /* --shadow-glow: 0 0 20px rgba(PRIMARY_R, PRIMARY_G, PRIMARY_B, 0.15); */
+
+  /* ── Gradients (OPTIONAL — hero/CTA gradients) ── */
+  /* --gradient-hero: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark)); */
+}

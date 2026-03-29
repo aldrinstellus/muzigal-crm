@@ -1,0 +1,212 @@
+/* ================================================================
+   ZOO CRM — Master Design Tokens (Base Layer)
+   ================================================================
+
+   This is the UNSTYLED foundation. All values are neutral/generic.
+   Client themes override these variables to create branded experiences.
+
+   Usage in any app:
+     @import "../../packages/design-tokens/base.css";
+     @import "../../packages/design-tokens/themes/kidzee.css";
+
+   To create a new client theme:
+     1. Copy themes/_template.css
+     2. Override only the variables you need
+     3. Import base.css + your-theme.css in the app's globals.css
+   ================================================================ */
+
+:root {
+  /* ════════════════════════════════════════
+     BRAND COLORS
+     Override these per client. Everything else
+     references these, so changing them rebrands
+     the entire app.
+     ════════════════════════════════════════ */
+  --color-primary: #374151;        /* Gray-700 — neutral, no brand */
+  --color-primary-dark: #1f2937;   /* Gray-800 */
+  --color-primary-light: #6b7280;  /* Gray-500 */
+  --color-accent: #3b82f6;         /* Blue-500 — safe default accent */
+  --color-accent-warm: #f59e0b;    /* Amber-500 */
+
+  /* ── Extended brand palette ── */
+  --color-secondary: #6b7280;      /* Gray-500 */
+  --color-tertiary: #9ca3af;       /* Gray-400 */
+
+  /* ════════════════════════════════════════
+     SEMANTIC COLORS
+     Rarely need to override — universal meanings.
+     ════════════════════════════════════════ */
+  --color-success: #16a34a;        /* Green-600 */
+  --color-success-light: #dcfce7;  /* Green-100 */
+  --color-warning: #d97706;        /* Amber-600 */
+  --color-warning-light: #fef3c7;  /* Amber-100 */
+  --color-error: #dc2626;          /* Red-600 */
+  --color-error-light: #fee2e2;    /* Red-100 */
+  --color-info: #0284c7;           /* Sky-600 */
+  --color-info-light: #e0f2fe;     /* Sky-100 */
+
+  /* ════════════════════════════════════════
+     NEUTRALS & SURFACES
+     ════════════════════════════════════════ */
+  --color-text: #1f2937;           /* Gray-800 — primary text */
+  --color-text-secondary: #6b7280; /* Gray-500 — secondary text */
+  --color-text-muted: #9ca3af;     /* Gray-400 — muted/placeholder */
+  --color-text-inverse: #ffffff;   /* White — text on dark backgrounds */
+
+  --color-bg: #ffffff;             /* Page background */
+  --color-bg-alt: #f9fafb;        /* Alternate section background */
+  --color-bg-subtle: #f3f4f6;     /* Subtle background (code blocks, inputs) */
+  --color-surface: #ffffff;        /* Card/panel surface */
+  --color-surface-hover: #f9fafb; /* Surface on hover */
+
+  --color-border: #e5e7eb;        /* Default border */
+  --color-border-light: #f3f4f6;  /* Subtle border */
+  --color-border-strong: #d1d5db; /* Emphasized border */
+
+  /* ════════════════════════════════════════
+     TYPOGRAPHY
+     ════════════════════════════════════════ */
+  --font-display: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-body: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-accent: ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-mono: ui-monospace, "Courier New", monospace;
+
+  /* ── Type Scale (Major Third — 1.25 ratio) ── */
+  --text-xs: 0.75rem;      /* 12px */
+  --text-sm: 0.875rem;     /* 14px */
+  --text-body: 1rem;       /* 16px — base */
+  --text-body-lg: 1.125rem;/* 18px */
+  --text-h4: 1.25rem;      /* 20px */
+  --text-h3: 1.5rem;       /* 24px */
+  --text-h2: 2rem;         /* 32px */
+  --text-h1: 2.5rem;       /* 40px */
+  --text-display: 3rem;    /* 48px */
+
+  /* ── Line Heights ── */
+  --leading-tight: 1.25;
+  --leading-snug: 1.375;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 1.75;
+
+  /* ── Font Weights ── */
+  --weight-light: 300;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  --weight-black: 900;
+
+  /* ════════════════════════════════════════
+     SPACING (4px base unit)
+     ════════════════════════════════════════ */
+  --space-0: 0;
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+
+  /* ════════════════════════════════════════
+     BORDER RADIUS
+     ════════════════════════════════════════ */
+  --radius-none: 0;
+  --radius-sm: 0.25rem;    /* 4px */
+  --radius-md: 0.375rem;   /* 6px */
+  --radius-lg: 0.5rem;     /* 8px */
+  --radius-xl: 0.75rem;    /* 12px */
+  --radius-2xl: 1rem;      /* 16px */
+  --radius-3xl: 1.5rem;    /* 24px */
+  --radius-full: 9999px;   /* Pill/circle */
+
+  /* ════════════════════════════════════════
+     SHADOWS & ELEVATION
+     ════════════════════════════════════════ */
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+  --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.10);
+  --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.10);
+  --shadow-2xl: 0 25px 50px rgba(0, 0, 0, 0.15);
+  --shadow-inner: inset 0 2px 4px rgba(0, 0, 0, 0.05);
+
+  /* ── Brand glow (override per client) ── */
+  --shadow-glow: 0 0 20px rgba(59, 130, 246, 0.15);
+
+  /* ════════════════════════════════════════
+     MOTION & TRANSITIONS
+     ════════════════════════════════════════ */
+  --duration-instant: 50ms;
+  --duration-fast: 100ms;
+  --duration-normal: 150ms;
+  --duration-moderate: 200ms;
+  --duration-slow: 300ms;
+  --duration-slower: 500ms;
+  --duration-lazy: 1000ms;
+
+  --easing-default: ease-in-out;
+  --easing-in: ease-in;
+  --easing-out: ease-out;
+  --easing-bounce: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --easing-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ════════════════════════════════════════
+     LAYOUT
+     ════════════════════════════════════════ */
+  --max-width-sm: 640px;
+  --max-width-md: 768px;
+  --max-width-lg: 1024px;
+  --max-width-xl: 1280px;
+  --max-width-2xl: 1536px;
+  --max-width-prose: 65ch;
+
+  /* ── Z-Index Scale ── */
+  --z-base: 0;
+  --z-dropdown: 10;
+  --z-sticky: 20;
+  --z-header: 30;
+  --z-overlay: 40;
+  --z-modal: 50;
+  --z-popover: 60;
+  --z-toast: 70;
+
+  /* ════════════════════════════════════════
+     GRADIENTS (override per client)
+     ════════════════════════════════════════ */
+  --gradient-hero: linear-gradient(135deg, var(--color-primary), var(--color-primary-dark));
+  --gradient-cta: linear-gradient(135deg, var(--color-accent), var(--color-primary));
+  --gradient-surface: linear-gradient(180deg, var(--color-bg), var(--color-bg-alt));
+}
+
+/* ── Base element styles ── */
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--leading-loose);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  line-height: var(--leading-tight);
+  color: var(--color-text);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+::selection {
+  background: var(--color-primary);
+  color: var(--color-text-inverse);
+}
