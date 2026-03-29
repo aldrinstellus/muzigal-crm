@@ -3,6 +3,16 @@
  *
  * Reads key-value pairs from the Config tab.
  * Caches values for 10 minutes to reduce sheet reads.
+ *
+ * WhatsApp Token Types:
+ *   - "temporary" (default): 24-hour token from Meta Developer dashboard.
+ *     Must be refreshed daily. The system warns when API calls fail due to expiry.
+ *   - "system_user": Permanent token from a Meta System User. Does not expire.
+ *     Created in Meta Business Manager > Business Settings > System Users.
+ *     Recommended for production deployments.
+ *
+ * The token value itself is always stored in the WHATSAPP_TOKEN config key.
+ * Set WHATSAPP_TOKEN_TYPE to "system_user" or "temporary" to control behavior.
  */
 
 var CONFIG_CACHE_PREFIX_ = 'cfg_';
