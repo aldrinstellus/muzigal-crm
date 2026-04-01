@@ -120,3 +120,109 @@ describe('Seed data integrity', () => {
     expect(new Set(names).size).toBe(names.length);
   });
 });
+
+// ════════════════════════════════════════════════════════════
+// Dashboard metrics deep drill-down verification
+// ════════════════════════════════════════════════════════════
+
+describe('Dashboard metrics accuracy', () => {
+  const students = seedData.students as Array<{
+    Active: boolean; Subjects: string; Instrument: string;
+    ExpiryDate: string | null; Phone: string;
+  }>;
+
+  it('all 255 students are Active', () => {
+    const active = students.filter(s => s.Active);
+    expect(active).toHaveLength(255);
+  });
+
+  it('subject breakdown totals 255', () => {
+    const subjects: Record<string, number> = {};
+    for (const s of students) {
+      subjects[s.Subjects] = (subjects[s.Subjects] || 0) + 1;
+    }
+    const total = Object.values(subjects).reduce((a, b) => a + b, 0);
+    expect(total).toBe(255);
+  });
+
+  it('Piano count is 104', () => {
+    expect(students.filter(s => s.Subjects === 'Piano').length).toBe(104);
+  });
+
+  it('Guitar count is 66', () => {
+    expect(students.filter(s => s.Subjects === 'Guitar').length).toBe(66);
+  });
+
+  it('Drums count is 35', () => {
+    expect(students.filter(s => s.Subjects === 'Drums').length).toBe(35);
+  });
+
+  it('Carnatic Vocals count is 17', () => {
+    expect(students.filter(s => s.Subjects === 'Carnatic Vocals').length).toBe(17);
+  });
+
+  it('Hindustani Vocals count is 14', () => {
+    expect(students.filter(s => s.Subjects === 'Hindustani Vocals').length).toBe(14);
+  });
+
+  it('Violin count is 10', () => {
+    expect(students.filter(s => s.Subjects === 'Violin').length).toBe(10);
+  });
+
+  it('Western Vocals count is 9', () => {
+    expect(students.filter(s => s.Subjects === 'Western Vocals').length).toBe(9);
+  });
+
+  it('zero students have empty phones', () => {
+    const empty = students.filter(s => !s.Phone || s.Phone === '');
+    expect(empty).toHaveLength(0);
+  });
+
+  it('expiring within 30 days count is 18', () => {
+    const now = new Date('2026-04-01');
+    const cutoff = new Date('2026-05-01');
+    const expiring = students.filter(s => {
+      if (!s.ExpiryDate) return false;
+      const d = new Date(s.ExpiryDate);
+      return d >= now && d <= cutoff;
+    });
+    expect(expiring.length).toBe(18);
+  });
+});
+
+// ════════════════════════════════════════════════════════════
+// Guide page existence verification
+// ════════════════════════════════════════════════════════════
+
+describe('Guide page', () => {
+  it('guide.tsx exists and has all 8 sections', () => {
+    const { readFileSync } = require('fs');
+    const { join } = require('path');
+    const content = readFileSync(join(__dirname, '..', 'pages', 'guide.tsx'), 'utf-8');
+    expect(content).toContain('Getting Started');
+    expect(content).toContain('Dashboard');
+    expect(content).toContain('Students');
+    expect(content).toContain('Broadcast');
+    expect(content).toContain('Test Message');
+    expect(content).toContain('Settings');
+    expect(content).toContain('Limitation');
+    expect(content).toContain('Adapting');
+  });
+
+  it('guide route is wired in App.tsx', () => {
+    const { readFileSync } = require('fs');
+    const { join } = require('path');
+    const app = readFileSync(join(__dirname, '..', 'App.tsx'), 'utf-8');
+    expect(app).toContain('guide');
+    expect(app).toContain('Guide');
+  });
+
+  it('guide nav item is in Sidebar', () => {
+    const { readFileSync } = require('fs');
+    const { join } = require('path');
+    const sidebar = readFileSync(join(__dirname, '..', 'components', 'layout', 'Sidebar.tsx'), 'utf-8');
+    expect(sidebar).toContain('/dashboard/guide');
+    expect(sidebar).toContain('Guide');
+    expect(sidebar).toContain('BookOpen');
+  });
+});

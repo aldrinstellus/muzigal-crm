@@ -7,6 +7,7 @@ import {
   Settings,
   LogOut,
   Users,
+  BookOpen,
 } from 'lucide-react';
 import { cn, getInitials } from '../../lib/utils';
 import { useAuth } from '../../auth/useAuth';
@@ -16,6 +17,7 @@ const navItems = [
   { to: '/dashboard/students', icon: Users, label: 'Students' },
   { to: '/dashboard/broadcast', icon: Send, label: 'Broadcast' },
   { to: '/dashboard/test', icon: MessageCircle, label: 'Test Message' },
+  { to: '/dashboard/guide', icon: BookOpen, label: 'Guide' },
   { to: '/dashboard/settings', icon: Settings, label: 'Settings' },
 ];
 

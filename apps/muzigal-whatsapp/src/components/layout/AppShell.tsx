@@ -8,6 +8,7 @@ const titleMap: Record<string, string> = {
   '/dashboard/students': 'Students',
   '/dashboard/broadcast': 'Broadcast',
   '/dashboard/test': 'Test Message',
+  '/dashboard/guide': 'Guide',
   '/dashboard/settings': 'Settings',
 };
 
