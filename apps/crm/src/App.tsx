@@ -12,6 +12,7 @@ const Enrollment = lazy(() => import('./pages/admin/enrollment'));
 const Payments = lazy(() => import('./pages/admin/payments'));
 const Attendance = lazy(() => import('./pages/admin/attendance'));
 const Reports = lazy(() => import('./pages/admin/reports'));
+const WhatsApp = lazy(() => import('./pages/admin/whatsapp'));
 const Settings = lazy(() => import('./pages/admin/settings'));
 const PublicEnrollment = lazy(() => import('./pages/index'));
 
@@ -43,6 +44,7 @@ export default function App() {
             <Route path="payments" element={<Payments />} />
             <Route path="attendance" element={<Attendance />} />
             <Route path="reports" element={<Reports />} />
+            <Route path="whatsapp" element={<WhatsApp />} />
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
