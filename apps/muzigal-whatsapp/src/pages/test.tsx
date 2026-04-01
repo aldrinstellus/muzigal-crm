@@ -39,71 +39,79 @@ export default function TestMessage() {
   };
 
   return (
-    <div className="space-y-6 max-w-2xl">
-      <Card title="Send Test Message">
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-1">Phone Number</label>
-            <input
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="919876543210"
-              className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
-            />
-            <p className="text-xs text-zinc-400 mt-1">Enter number with country code, no + or spaces (e.g. 919876543210)</p>
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-1">Message</label>
-            <textarea
-              value={message}
-              onChange={(e) => setMessage(e.target.value)}
-              rows={3}
-              className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
-            />
-          </div>
-          <button
-            onClick={handleSend}
-            disabled={sending || !phone.trim()}
-            className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors disabled:opacity-50"
-          >
-            <Send size={14} />
-            {sending ? 'Sending...' : 'Send Test Message'}
-          </button>
-          {result && (
-            <div className={cn(
-              'flex items-center gap-2 p-3 rounded-xl text-sm',
-              result.success
-                ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
-                : 'bg-red-50 border border-red-200 text-red-700'
-            )}>
-              {result.success ? <CheckCircle size={14} /> : <AlertCircle size={14} />}
-              {result.text}
+    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      {/* Left: Send form */}
+      <div className="lg:col-span-3">
+        <Card title="Send Test Message">
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 mb-1">Phone Number</label>
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="919876543210"
+                className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+              />
+              <p className="text-xs text-zinc-400 mt-1">Enter number with country code, no + or spaces (e.g. 919876543210)</p>
             </div>
-          )}
-        </div>
-      </Card>
-
-      {history.length > 0 && (
-        <Card title="Recent Tests">
-          <div className="space-y-2">
-            {history.map((entry, i) => (
-              <div key={i} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-zinc-50">
-                <div className="min-w-0">
-                  <p className="text-sm text-zinc-700 font-medium">{entry.phone}</p>
-                  <p className="text-xs text-zinc-400 truncate">{entry.message}</p>
-                </div>
-                <div className="flex items-center gap-2 shrink-0">
-                  <span className="text-xs text-zinc-400">{entry.time}</span>
-                  <span className={cn(
-                    'w-2 h-2 rounded-full',
-                    entry.success ? 'bg-emerald-500' : 'bg-red-500'
-                  )} />
-                </div>
+            <div>
+              <label className="block text-sm font-medium text-zinc-700 mb-1">Message</label>
+              <textarea
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                rows={3}
+                className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
+              />
+            </div>
+            <button
+              onClick={handleSend}
+              disabled={sending || !phone.trim()}
+              className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors disabled:opacity-50"
+            >
+              <Send size={14} />
+              {sending ? 'Sending...' : 'Send Test Message'}
+            </button>
+            {result && (
+              <div className={cn(
+                'flex items-center gap-2 p-3 rounded-xl text-sm',
+                result.success
+                  ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
+                  : 'bg-red-50 border border-red-200 text-red-700'
+              )}>
+                {result.success ? <CheckCircle size={14} /> : <AlertCircle size={14} />}
+                {result.text}
               </div>
-            ))}
+            )}
           </div>
         </Card>
-      )}
+      </div>
+
+      {/* Right: History */}
+      <div className="lg:col-span-2">
+        <Card title="Recent Tests">
+          {history.length === 0 ? (
+            <p className="text-sm text-zinc-400 text-center py-8">No tests sent yet</p>
+          ) : (
+            <div className="space-y-2">
+              {history.map((entry, i) => (
+                <div key={i} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-zinc-50">
+                  <div className="min-w-0">
+                    <p className="text-sm text-zinc-700 font-medium">{entry.phone}</p>
+                    <p className="text-xs text-zinc-400 truncate">{entry.message}</p>
+                  </div>
+                  <div className="flex items-center gap-2 shrink-0">
+                    <span className="text-xs text-zinc-400">{entry.time}</span>
+                    <span className={cn(
+                      'w-2 h-2 rounded-full',
+                      entry.success ? 'bg-emerald-500' : 'bg-red-500'
+                    )} />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </Card>
+      </div>
     </div>
   );
 }

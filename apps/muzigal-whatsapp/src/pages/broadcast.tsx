@@ -126,8 +126,24 @@ export default function Broadcast() {
     { value: 'expiring', label: 'Expiring', icon: Clock },
   ];
 
+  // Recipients list for preview
+  const recipientList = useMemo(() => {
+    if (targetType === 'all') return students;
+    if (targetType === 'class') {
+      const cls = classes.find(c => c.ClassID === selectedClass);
+      return cls ? students.filter(s => cls.StudentIDs.includes(s.StudentID)) : [];
+    }
+    if (targetType === 'subject') return subjectStudents;
+    if (targetType === 'expiring') return expiringStudents;
+    if (targetType === 'student') {
+      const s = students.find(st => st.StudentID === selectedStudent);
+      return s ? [s] : [];
+    }
+    return [];
+  }, [targetType, students, classes, selectedClass, subjectStudents, expiringStudents, selectedStudent]);
+
   return (
-    <div className="space-y-6 max-w-2xl">
+    <div className="space-y-6">
       {error && (
         <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
           <AlertCircle size={14} />{error}
@@ -139,6 +155,9 @@ export default function Broadcast() {
         </div>
       )}
 
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+      {/* Left: Send form (3 cols) */}
+      <div className="lg:col-span-3">
       <Card title="Send WhatsApp Message">
         <div className="space-y-4">
           {/* Target type */}
@@ -329,6 +348,34 @@ export default function Broadcast() {
           </div>
         </div>
       </Card>
+      </div>
+
+      {/* Right: Recipient Preview (2 cols) */}
+      <div className="lg:col-span-2">
+        <Card title={`Recipients (${recipientCount})`}>
+          {recipientCount === 0 ? (
+            <p className="text-sm text-zinc-400 text-center py-8">Select a target to see recipients</p>
+          ) : (
+            <div className="space-y-1 max-h-[520px] overflow-y-auto">
+              {recipientList.slice(0, 100).map((s) => (
+                <div key={s.StudentID} className="flex items-center gap-3 py-1.5 px-2 rounded-lg hover:bg-zinc-50">
+                  <div className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-[10px] font-semibold shrink-0">
+                    {s.Name.charAt(0)}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm text-zinc-800 truncate">{s.Name}</p>
+                    <p className="text-[11px] text-zinc-400 truncate">{s.Instrument} · {s.Phone}</p>
+                  </div>
+                </div>
+              ))}
+              {recipientList.length > 100 && (
+                <p className="text-xs text-zinc-400 text-center py-2">+ {recipientList.length - 100} more</p>
+              )}
+            </div>
+          )}
+        </Card>
+      </div>
+      </div>
     </div>
   );
 }

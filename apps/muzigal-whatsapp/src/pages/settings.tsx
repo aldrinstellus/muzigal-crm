@@ -99,7 +99,7 @@ export default function Settings() {
 
   if (loading) {
     return (
-      <div className="space-y-6 max-w-3xl">
+      <div className="space-y-6">
         <div className="h-14 bg-zinc-100 rounded-xl animate-pulse" />
         <div className="h-96 bg-zinc-100 rounded-xl animate-pulse" />
       </div>
@@ -115,7 +115,7 @@ export default function Settings() {
   }
 
   return (
-    <div className="space-y-6 max-w-3xl">
+    <div className="space-y-6">
       {/* Alerts */}
       {error && (
         <div className="flex items-center gap-2 p-3 bg-red-50 border border-red-200 rounded-xl text-red-700 text-sm">
