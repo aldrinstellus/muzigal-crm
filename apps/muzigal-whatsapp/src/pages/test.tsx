@@ -3,6 +3,7 @@ import { Send, AlertCircle, CheckCircle } from 'lucide-react';
 import { activeApi as api } from '../api/client';
 import { cn } from '../lib/utils';
 import { Card } from '@zoo/ui';
+import { Input, Textarea, Button, Label } from '../components/ui/form';
 
 export default function TestMessage() {
   const [phone, setPhone] = useState('');
@@ -45,32 +46,26 @@ export default function TestMessage() {
         <Card title="Send Test Message">
           <div className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-1">Phone Number</label>
-              <input
+              <Label>Phone Number</Label>
+              <Input
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="919876543210"
-                className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
               />
               <p className="text-xs text-zinc-400 mt-1">Enter number with country code, no + or spaces (e.g. 919876543210)</p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-1">Message</label>
-              <textarea
+              <Label>Message</Label>
+              <Textarea
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
                 rows={3}
-                className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent resize-none"
               />
             </div>
-            <button
-              onClick={handleSend}
-              disabled={sending || !phone.trim()}
-              className="inline-flex items-center gap-2 px-5 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors disabled:opacity-50"
-            >
+            <Button onClick={handleSend} disabled={sending || !phone.trim()}>
               <Send size={14} />
               {sending ? 'Sending...' : 'Send Test Message'}
-            </button>
+            </Button>
             {result && (
               <div className={cn(
                 'flex items-center gap-2 p-3 rounded-xl text-sm',

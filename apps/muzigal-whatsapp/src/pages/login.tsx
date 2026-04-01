@@ -3,6 +3,7 @@ import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../auth/useAuth';
 import { CLIENT } from '../config/client';
 import { activeApi as api, setToken } from '../api/client';
+import { Input, Button, Label } from '../components/ui/form';
 import { getMode, setMode, type AppMode } from '../lib/mode';
 import { MessageCircle } from 'lucide-react';
 
@@ -119,25 +120,23 @@ export default function Login() {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-1">Email</label>
-              <input
+              <Label>Email</Label>
+              <Input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
                 autoComplete="email"
-                className="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-1">Password</label>
-              <input
+              <Label>Password</Label>
+              <Input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter your password"
                 autoComplete="current-password"
-                className="w-full px-3 py-2 border border-zinc-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent"
               />
             </div>
 
@@ -147,13 +146,9 @@ export default function Login() {
               </div>
             )}
 
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-2.5 bg-emerald-600 text-white rounded-lg text-sm font-medium hover:bg-emerald-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-            >
+            <Button type="submit" disabled={loading} className="w-full py-2.5">
               {loading ? 'Signing in...' : 'Sign in'}
-            </button>
+            </Button>
           </form>
         </div>
 

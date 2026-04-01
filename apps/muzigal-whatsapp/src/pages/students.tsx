@@ -2,6 +2,7 @@ import { useEffect, useState, useMemo } from 'react';
 import { Search, ChevronDown, ChevronUp } from 'lucide-react';
 import { activeApi as api } from '../api/client';
 import { Card } from '@zoo/ui';
+import { Input, Select, Button } from '../components/ui/form';
 import type { Student } from '../types';
 
 const SUBJECTS = ['All', 'Piano', 'Guitar', 'Drums', 'Carnatic Vocals', 'Western Vocals', 'Violin', 'Hindustani Vocals'];
@@ -99,22 +100,22 @@ export default function Students() {
       <div className="flex flex-wrap items-center gap-3">
         <div className="relative flex-1 min-w-[240px]">
           <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" />
-          <input
+          <Input
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name, ID, phone, or email..."
-            className="w-full pl-9 pr-3 py-2 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+            className="pl-9"
           />
         </div>
-        <select value={subjectFilter} onChange={(e) => setSubjectFilter(e.target.value)} className="px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white">
+        <Select value={subjectFilter} onChange={(e) => setSubjectFilter(e.target.value)} className="w-auto">
           {SUBJECTS.map(s => <option key={s} value={s}>{s === 'All' ? 'All Subjects' : s}</option>)}
-        </select>
-        <select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white">
+        </Select>
+        <Select value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)} className="w-auto">
           {STATUSES.map(s => <option key={s} value={s}>{s === 'All' ? 'All Statuses' : s}</option>)}
-        </select>
-        <select value={durationFilter} onChange={(e) => setDurationFilter(e.target.value)} className="px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white">
+        </Select>
+        <Select value={durationFilter} onChange={(e) => setDurationFilter(e.target.value)} className="w-auto">
           {DURATIONS.map(d => <option key={d} value={d}>{d === 'All' ? 'All Durations' : d}</option>)}
-        </select>
+        </Select>
       </div>
 
       {/* Count */}
@@ -188,20 +189,16 @@ export default function Students() {
               Page {page} of {totalPages}
             </p>
             <div className="flex gap-1">
-              <button
+              <Button variant="secondary" className="px-3 py-1 text-xs"
                 onClick={() => setPage(p => Math.max(1, p - 1))}
-                disabled={page === 1}
-                className="px-3 py-1 text-xs font-medium text-zinc-600 border border-zinc-200 rounded-md hover:bg-zinc-50 disabled:opacity-50"
-              >
+                disabled={page === 1}>
                 Prev
-              </button>
-              <button
+              </Button>
+              <Button variant="secondary" className="px-3 py-1 text-xs"
                 onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                disabled={page === totalPages}
-                className="px-3 py-1 text-xs font-medium text-zinc-600 border border-zinc-200 rounded-md hover:bg-zinc-50 disabled:opacity-50"
-              >
+                disabled={page === totalPages}>
                 Next
-              </button>
+              </Button>
             </div>
           </div>
         )}

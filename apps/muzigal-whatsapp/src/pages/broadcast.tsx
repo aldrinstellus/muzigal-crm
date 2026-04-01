@@ -3,6 +3,7 @@ import { Send, AlertCircle, CheckCircle, Users, User, MessageCircle, Music, Cloc
 import { activeApi as api } from '../api/client';
 import { cn } from '../lib/utils';
 import { Card } from '@zoo/ui';
+import { Input, Select, Textarea, Button, Label } from '../components/ui/form';
 import type { Student, DerivedClass } from '../types';
 
 type TargetType = 'all' | 'class' | 'subject' | 'student' | 'expiring';
@@ -162,7 +163,7 @@ export default function Broadcast() {
         <div className="space-y-4">
           {/* Target type */}
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-2">Send to</label>
+            <Label className="mb-2">Send to</Label>
             <div className="flex flex-wrap gap-2">
               {targets.map((opt) => (
                 <button
@@ -185,13 +186,12 @@ export default function Broadcast() {
           {/* Class/Batch selector */}
           {targetType === 'class' && (
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-1">Batch</label>
-              <input
-                type="text"
+              <Label>Batch</Label>
+              <Input
                 value={classSearch}
                 onChange={(e) => setClassSearch(e.target.value)}
                 placeholder="Search batches..."
-                className="w-full px-3 py-2 mb-2 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="mb-2"
               />
               <div className="max-h-48 overflow-y-auto border border-zinc-200 rounded-lg">
                 {filteredClasses.length === 0 ? (
@@ -218,7 +218,7 @@ export default function Broadcast() {
           {/* Subject selector */}
           {targetType === 'subject' && (
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-1">Subject</label>
+              <Label>Subject</Label>
               <div className="flex flex-wrap gap-2">
                 {SUBJECTS.map((sub) => {
                   const count = students.filter(s => s.Subjects === sub || s.Instrument === sub).length;
@@ -244,13 +244,12 @@ export default function Broadcast() {
           {/* Student selector */}
           {targetType === 'student' && (
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-1">Student</label>
-              <input
-                type="text"
+              <Label>Student</Label>
+              <Input
                 value={studentSearch}
                 onChange={(e) => setStudentSearch(e.target.value)}
                 placeholder="Search by name, ID, or phone..."
-                className="w-full px-3 py-2 mb-2 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent"
+                className="mb-2"
               />
               <div className="max-h-48 overflow-y-auto border border-zinc-200 rounded-lg">
                 {filteredStudents.length === 0 ? (
@@ -280,19 +279,15 @@ export default function Broadcast() {
           {/* Expiring selector */}
           {targetType === 'expiring' && (
             <div>
-              <label className="block text-sm font-medium text-zinc-700 mb-1">Expiring within</label>
+              <Label>Expiring within</Label>
               <div className="flex items-center gap-3">
-                <select
-                  value={expiryDays}
-                  onChange={(e) => setExpiryDays(e.target.value)}
-                  className="px-3 py-2 border border-zinc-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent bg-white"
-                >
+                <Select value={expiryDays} onChange={(e) => setExpiryDays(e.target.value)} className="w-auto">
                   <option value="7">7 days</option>
                   <option value="14">14 days</option>
                   <option value="30">30 days</option>
                   <option value="60">60 days</option>
                   <option value="90">90 days</option>
-                </select>
+                </Select>
                 <span className="text-sm text-zinc-500">{expiringStudents.length} students expiring</span>
               </div>
             </div>
