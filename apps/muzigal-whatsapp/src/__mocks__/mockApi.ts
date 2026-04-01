@@ -1,5 +1,6 @@
 import { CLIENT } from '../config/client';
 import { mockStudents, mockClasses, mockEnquiries, mockBatches, mockConfig, mockMessageLog } from './mockData';
+import type { AppSettings, ConnectionTestResult, MessageTemplate } from '../types';
 
 const delay = (ms: number) => new Promise(r => setTimeout(r, ms));
 const LATENCY = 300;
@@ -7,6 +8,70 @@ const LATENCY = 300;
 function ok<T>(data: T) {
   return { status: 'ok' as const, data };
 }
+
+// ── Demo settings state (in-memory, persists during session) ──
+const demoSettings: AppSettings = {
+  provider: {
+    provider: 'meta',
+    whatsappToken: 'EAAM5X064FqABO3zZC...(demo-token)',
+    tokenType: 'temporary',
+    phoneNumberId: '1085043881349577',
+    wabaId: '284901754710853',
+    apiVersion: 'v19.0',
+    twilioAccountSid: '',
+    twilioAuthToken: '',
+    twilioFromNumber: '',
+    gupshupApiKey: '',
+    gupshupSourcePhone: '',
+    gupshupAppName: '',
+    customWebhookUrl: '',
+    customHeaders: '',
+    webhookUrl: 'https://script.google.com/macros/s/DEMO_DEPLOY_ID/exec',
+    webhookSecret: 'demo-webhook-secret-2026',
+    connectionStatus: 'connected',
+    lastTestedAt: new Date(Date.now() - 3600000).toISOString(),
+  },
+  business: {
+    academyName: CLIENT.name,
+    fullName: CLIENT.fullName,
+    email: CLIENT.email,
+    phone: CLIENT.phone,
+    website: 'https://muzigal.com',
+    address: 'HSR Layout, Bangalore 560102',
+    admins: CLIENT.admins.map(a => ({ email: a.email, name: a.name, role: 'admin' as const, active: true })),
+    teachers: CLIENT.teachers.map(t => ({ ...t, active: true })),
+    templates: [
+      { id: 'tpl_01', name: 'class_update', language: 'en', category: 'UTILITY', body: 'Hi {{1}}, your {{2}} class update: {{3}}', status: 'APPROVED' as const, variables: ['student_name', 'subject', 'message'] },
+      { id: 'tpl_02', name: 'fee_reminder', language: 'en', category: 'UTILITY', body: 'Hi {{1}}, your fee of {{2}} is due on {{3}}. Please clear it at the earliest. - Muzigal', status: 'APPROVED' as const, variables: ['student_name', 'amount', 'due_date'] },
+      { id: 'tpl_03', name: 'welcome_message', language: 'en', category: 'MARKETING', body: 'Welcome to Muzigal, {{1}}! Your {{2}} classes begin {{3}}. See you soon!', status: 'APPROVED' as const, variables: ['student_name', 'subject', 'start_date'] },
+      { id: 'tpl_04', name: 'class_cancellation', language: 'en', category: 'UTILITY', body: 'Hi {{1}}, your {{2}} class on {{3}} has been cancelled. Next class: {{4}}.', status: 'APPROVED' as const, variables: ['student_name', 'subject', 'date', 'next_date'] },
+      { id: 'tpl_05', name: 'demo_invite', language: 'en', category: 'MARKETING', body: 'Hi {{1}}, we have a free demo for {{2}} this {{3}}. Would you like to attend?', status: 'PENDING' as const, variables: ['name', 'instrument', 'day'] },
+    ],
+  },
+  automation: {
+    dailyScheduleEnabled: true,
+    dailySendHour: 8,
+    dailySendMinute: 0,
+    timezone: 'Asia/Kolkata',
+    feeReminderEnabled: true,
+    feeReminderDaysBefore: 3,
+    aiEnabled: false,
+    aiProvider: 'claude',
+    aiApiKey: '',
+    aiModel: 'claude-sonnet-4-20250514',
+    retryAttempts: 2,
+    retryDelayMs: 5000,
+    rateLimitMs: 200,
+  },
+  dataSource: {
+    googleSheetUrl: '',
+    autoSyncEnabled: false,
+    autoSyncIntervalMinutes: 60,
+    lastSyncedAt: null,
+    lastImportFile: 'MS Data Migration (2).xlsx',
+    lastImportAt: new Date().toISOString(),
+  },
+};
 
 export const mockApi = {
   // --- Auth ---
@@ -119,7 +184,39 @@ export const mockApi = {
     return ok(mockMessageLog);
   },
 
-  // --- Config ---
+  // --- Settings (structured) ---
+  getSettings: async (): Promise<{ status: 'ok'; data: AppSettings }> => {
+    await delay(LATENCY);
+    return ok({ ...demoSettings });
+  },
+
+  saveSettings: async (section: string, data: Partial<AppSettings>): Promise<{ status: 'ok'; message: string }> => {
+    await delay(LATENCY * 2);
+    if (section === 'provider' && data.provider) Object.assign(demoSettings.provider, data.provider);
+    if (section === 'business' && data.business) Object.assign(demoSettings.business, data.business);
+    if (section === 'automation' && data.automation) Object.assign(demoSettings.automation, data.automation);
+    if (section === 'dataSource' && data.dataSource) Object.assign(demoSettings.dataSource, data.dataSource);
+    return { status: 'ok' as const, message: `${section} settings saved` };
+  },
+
+  testConnection: async (): Promise<{ status: 'ok'; data: ConnectionTestResult }> => {
+    await delay(1200); // Simulate real network latency
+    demoSettings.provider.connectionStatus = 'connected';
+    demoSettings.provider.lastTestedAt = new Date().toISOString();
+    return ok({
+      success: true,
+      message: 'WhatsApp Cloud API connection successful',
+      details: `Provider: Meta Cloud API (${demoSettings.provider.apiVersion}) · Phone: ${demoSettings.provider.phoneNumberId} · Token type: ${demoSettings.provider.tokenType}`,
+      latencyMs: 187,
+    });
+  },
+
+  listTemplates: async (): Promise<{ status: 'ok'; data: MessageTemplate[] }> => {
+    await delay(LATENCY);
+    return ok(demoSettings.business.templates);
+  },
+
+  // --- Legacy Config (backward compat) ---
   getConfig: async () => {
     await delay(LATENCY);
     return { status: 'ok' as const, config: mockConfig };
@@ -133,6 +230,16 @@ export const mockApi = {
   // --- Health ---
   health: async () => {
     await delay(LATENCY);
-    return { status: 'ok' as const, timestamp: new Date().toISOString(), triggerCount: 2, mode: 'mock' };
+    return {
+      status: 'ok' as const,
+      timestamp: new Date().toISOString(),
+      triggerCount: 4,
+      mode: 'mock',
+      whatsapp: demoSettings.provider.connectionStatus,
+      activeStudents: mockStudents.filter(s => s.Active).length,
+      dailySchedule: demoSettings.automation.dailyScheduleEnabled ? 'enabled' : 'disabled',
+      feeReminders: demoSettings.automation.feeReminderEnabled ? 'enabled' : 'disabled',
+      aiComposer: demoSettings.automation.aiEnabled ? 'enabled' : 'disabled',
+    };
   },
 };

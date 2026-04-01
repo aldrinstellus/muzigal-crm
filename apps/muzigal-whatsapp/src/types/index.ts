@@ -157,6 +157,117 @@ export interface MuzigalDataset {
   };
 }
 
+// ═══════════════════════════════════════════════
+// ── Settings / Admin Configuration Types ──
+// ═══════════════════════════════════════════════
+
+export type Provider = 'meta' | 'twilio' | 'gupshup' | 'custom';
+export type TokenType = 'temporary' | 'system_user';
+export type ConnectionStatus = 'connected' | 'disconnected' | 'token_expiring' | 'error' | 'untested';
+
+export interface ProviderConfig {
+  provider: Provider;
+  // Meta Cloud API
+  whatsappToken: string;
+  tokenType: TokenType;
+  phoneNumberId: string;
+  wabaId: string;
+  apiVersion: string;
+  // Twilio
+  twilioAccountSid: string;
+  twilioAuthToken: string;
+  twilioFromNumber: string;
+  // Gupshup
+  gupshupApiKey: string;
+  gupshupSourcePhone: string;
+  gupshupAppName: string;
+  // Custom webhook
+  customWebhookUrl: string;
+  customHeaders: string;
+  // Shared
+  webhookUrl: string;
+  webhookSecret: string;
+  connectionStatus: ConnectionStatus;
+  lastTestedAt: string | null;
+}
+
+export interface BusinessProfile {
+  academyName: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  website: string;
+  address: string;
+  admins: AdminUser[];
+  teachers: Teacher[];
+  templates: MessageTemplate[];
+}
+
+export interface AdminUser {
+  email: string;
+  name: string;
+  role: 'admin' | 'staff';
+  active: boolean;
+}
+
+export interface Teacher {
+  id: string;
+  name: string;
+  email: string;
+  phone: string;
+  instrument: string;
+  active: boolean;
+}
+
+export interface MessageTemplate {
+  id: string;
+  name: string;
+  language: string;
+  category: string;
+  body: string;
+  status: 'APPROVED' | 'PENDING' | 'REJECTED';
+  variables: string[];
+}
+
+export interface AutomationConfig {
+  dailyScheduleEnabled: boolean;
+  dailySendHour: number;
+  dailySendMinute: number;
+  timezone: string;
+  feeReminderEnabled: boolean;
+  feeReminderDaysBefore: number;
+  aiEnabled: boolean;
+  aiProvider: 'claude' | 'none';
+  aiApiKey: string;
+  aiModel: string;
+  retryAttempts: number;
+  retryDelayMs: number;
+  rateLimitMs: number;
+}
+
+export interface DataSourceConfig {
+  googleSheetUrl: string;
+  autoSyncEnabled: boolean;
+  autoSyncIntervalMinutes: number;
+  lastSyncedAt: string | null;
+  lastImportFile: string | null;
+  lastImportAt: string | null;
+}
+
+export interface AppSettings {
+  provider: ProviderConfig;
+  business: BusinessProfile;
+  automation: AutomationConfig;
+  dataSource: DataSourceConfig;
+}
+
+export interface ConnectionTestResult {
+  success: boolean;
+  message: string;
+  details?: string;
+  latencyMs?: number;
+}
+
 // ── Message log (existing, unchanged) ──
 export interface MessageLogEntry {
   id: string;

@@ -90,7 +90,17 @@ export const api = {
   getMessageLog: () =>
     request<Array<Record<string, unknown>>>('get_message_log'),
 
-  // --- Config ---
+  // --- Settings (structured) ---
+  getSettings: () =>
+    request('get_settings'),
+  saveSettings: (section: string, data: Record<string, unknown>) =>
+    request('save_settings', 'POST', undefined, { section, ...data }),
+  testConnection: () =>
+    request('test_connection', 'POST'),
+  listTemplates: () =>
+    request('list_templates'),
+
+  // --- Config (legacy) ---
   getConfig: () =>
     request<Record<string, string>>('get_config'),
   setConfig: (key: string, value: string) =>
