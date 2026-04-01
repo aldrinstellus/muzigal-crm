@@ -5,6 +5,7 @@ import TopBar from './TopBar';
 
 const titleMap: Record<string, string> = {
   '/dashboard': 'Dashboard',
+  '/dashboard/students': 'Students',
   '/dashboard/broadcast': 'Broadcast',
   '/dashboard/test': 'Test Message',
   '/dashboard/settings': 'Settings',

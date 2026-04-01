@@ -1,7 +1,9 @@
-import { useEffect, useState } from 'react';
-import { Save, AlertCircle, CheckCircle, RefreshCw } from 'lucide-react';
+import { useEffect, useState, useRef } from 'react';
+import { Save, AlertCircle, CheckCircle, RefreshCw, Upload, Database } from 'lucide-react';
 import { activeApi as api } from '../api/client';
 import { Card } from '@zoo/ui';
+import { parseExcelToDataset } from '../data/excelParser';
+import seedMeta from '../data/seed.json';
 
 export default function Settings() {
   const [config, setConfig] = useState<Record<string, string>>({});
@@ -14,6 +16,13 @@ export default function Settings() {
   const [health, setHealth] = useState<Record<string, unknown> | null>(null);
   const [checkingHealth, setCheckingHealth] = useState(false);
 
+  // Data import
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [importing, setImporting] = useState(false);
+  const [importResult, setImportResult] = useState('');
+
+  const meta = (seedMeta as { meta?: { generatedAt?: string; counts?: Record<string, number> } }).meta;
+
   useEffect(() => {
     api.getConfig()
       .then((res) => {
@@ -23,7 +32,7 @@ export default function Settings() {
           setConfig(res.data as Record<string, string>);
         }
       })
-      .catch((err) => setError(err.message))
+      .catch((err: Error) => setError(err.message))
       .finally(() => setLoading(false));
   }, []);
 
@@ -58,6 +67,28 @@ export default function Settings() {
     }
   };
 
+  const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImporting(true);
+    setImportResult('');
+    setError('');
+    try {
+      const buffer = await file.arrayBuffer();
+      const dataset = parseExcelToDataset(buffer, file.name);
+      setImportResult(
+        `Parsed "${file.name}": ${dataset.meta.counts.students} students, ` +
+        `${dataset.meta.counts.enquiries} enquiries, ${dataset.meta.counts.batches} batches, ` +
+        `${dataset.meta.counts.classes} classes`
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to parse Excel file');
+    } finally {
+      setImporting(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   return (
     <div className="space-y-6 max-w-2xl">
       {error && (
@@ -70,6 +101,57 @@ export default function Settings() {
           <CheckCircle size={14} />{success}
         </div>
       )}
+
+      {/* Data Management */}
+      <Card title="Data Management">
+        <div className="space-y-4">
+          {/* Current data summary */}
+          <div className="flex items-start gap-3 p-3 bg-zinc-50 border border-zinc-200 rounded-lg">
+            <Database size={16} className="text-zinc-500 mt-0.5 shrink-0" />
+            <div className="text-sm">
+              <p className="font-medium text-zinc-700">Current Data</p>
+              {meta?.counts ? (
+                <div className="mt-1 text-zinc-500 space-y-0.5">
+                  <p>{meta.counts.students} students · {meta.counts.enquiries} enquiries · {meta.counts.batches} batches · {meta.counts.classes} classes</p>
+                  {meta.generatedAt && (
+                    <p className="text-xs text-zinc-400">Generated: {new Date(meta.generatedAt).toLocaleString()}</p>
+                  )}
+                </div>
+              ) : (
+                <p className="text-zinc-400 mt-1">No seed data loaded</p>
+              )}
+            </div>
+          </div>
+
+          {/* Import Excel */}
+          <div>
+            <label className="block text-sm font-medium text-zinc-700 mb-2">Import Excel File</label>
+            <div className="flex items-center gap-3">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".xlsx,.xls"
+                onChange={handleImport}
+                className="hidden"
+              />
+              <button
+                onClick={() => fileInputRef.current?.click()}
+                disabled={importing}
+                className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-200 hover:bg-zinc-50 rounded-lg transition-colors disabled:opacity-50"
+              >
+                <Upload size={14} />
+                {importing ? 'Parsing...' : 'Choose .xlsx File'}
+              </button>
+              <p className="text-xs text-zinc-400">Upload a new Excel migration file to preview data</p>
+            </div>
+            {importResult && (
+              <div className="mt-2 flex items-center gap-2 p-2 bg-emerald-50 border border-emerald-200 rounded-lg text-emerald-700 text-xs">
+                <CheckCircle size={12} />{importResult}
+              </div>
+            )}
+          </div>
+        </div>
+      </Card>
 
       {/* Config */}
       <Card title="WhatsApp Configuration">

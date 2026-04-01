@@ -1,21 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Send, MessageCircle, Users, CheckCircle, AlertCircle } from 'lucide-react';
+import { Send, MessageCircle, Users, CheckCircle, AlertCircle, BookOpen, Clock } from 'lucide-react';
 import { activeApi as api } from '../api/client';
 import { Card, StatCard } from '@zoo/ui';
 import { cn, formatDate } from '../lib/utils';
-
-type MessageLogEntry = {
-  id: string;
-  type: string;
-  target: string;
-  message: string;
-  sentBy: string;
-  sentAt: string;
-  recipients: number;
-  delivered: number;
-  failed: number;
-};
+import type { MessageLogEntry, Student, Enquiry } from '../types';
 
 const typeColors: Record<string, string> = {
   daily_schedule: 'bg-blue-100 text-blue-700',
@@ -38,16 +27,22 @@ const typeLabels: Record<string, string> = {
 export default function Dashboard() {
   const navigate = useNavigate();
   const [log, setLog] = useState<MessageLogEntry[]>([]);
-  const [students, setStudents] = useState<any[]>([]);
+  const [students, setStudents] = useState<Student[]>([]);
+  const [enquiries, setEnquiries] = useState<Enquiry[]>([]);
+  const [expiringCount, setExpiringCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     Promise.all([
       api.getMessageLog?.()?.catch(() => ({ data: [] })) || Promise.resolve({ data: [] }),
       api.listStudents()?.catch(() => ({ data: [] })),
-    ]).then(([logRes, studentsRes]) => {
-      if (logRes?.status === 'ok' || logRes?.data) setLog(logRes.data || []);
-      if (studentsRes?.status === 'ok') setStudents(((studentsRes.data as any[]) || []).filter((s: any) => s.Active));
+      api.listEnquiries?.()?.catch(() => ({ data: [] })) || Promise.resolve({ data: [] }),
+      api.listStudents?.({ expiring_days: '30' })?.catch(() => ({ data: [] })) || Promise.resolve({ data: [] }),
+    ]).then(([logRes, studentsRes, enquiriesRes, expiringRes]) => {
+      if (logRes?.status === 'ok' || logRes?.data) setLog((logRes.data || []) as MessageLogEntry[]);
+      if (studentsRes?.status === 'ok') setStudents(((studentsRes.data as Student[]) || []).filter(s => s.Active));
+      if (enquiriesRes?.status === 'ok') setEnquiries((enquiriesRes.data || []) as Enquiry[]);
+      if (expiringRes?.status === 'ok') setExpiringCount(((expiringRes.data as Student[]) || []).length);
     }).finally(() => setLoading(false));
   }, []);
 
@@ -79,15 +74,16 @@ export default function Dashboard() {
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard
+          label="Active Students"
+          value={students.length}
+          icon={<Users size={20} />}
+          trend={`${enquiries.length} enquiries`}
+        />
+        <StatCard
           label="Messages Sent"
           value={totalSent}
           icon={<Send size={20} />}
           trend={`${log.length} total messages`}
-        />
-        <StatCard
-          label="Active Students"
-          value={students.length}
-          icon={<Users size={20} />}
         />
         <StatCard
           label="Delivery Rate"
@@ -96,14 +92,15 @@ export default function Dashboard() {
           trendUp={deliveryRate >= 95}
         />
         <StatCard
-          label="Failed"
-          value={totalFailed}
-          icon={<AlertCircle size={20} />}
+          label="Expiring Soon"
+          value={expiringCount}
+          icon={<Clock size={20} />}
+          trend="within 30 days"
         />
       </div>
 
       {/* Quick Actions */}
-      <div className="flex gap-3">
+      <div className="flex flex-wrap gap-3">
         <button
           onClick={() => navigate('/dashboard/broadcast')}
           className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors"
@@ -117,6 +114,13 @@ export default function Dashboard() {
         >
           <MessageCircle size={14} />
           Send Test
+        </button>
+        <button
+          onClick={() => navigate('/dashboard/students')}
+          className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-zinc-700 bg-white border border-zinc-200 hover:bg-zinc-50 rounded-lg transition-colors"
+        >
+          <BookOpen size={14} />
+          View Students
         </button>
       </div>
 

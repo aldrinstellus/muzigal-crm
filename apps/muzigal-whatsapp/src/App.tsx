@@ -8,6 +8,7 @@ const Dashboard = lazy(() => import('./pages/dashboard'));
 const Broadcast = lazy(() => import('./pages/broadcast'));
 const Test = lazy(() => import('./pages/test'));
 const Settings = lazy(() => import('./pages/settings'));
+const Students = lazy(() => import('./pages/students'));
 
 function Loading() {
   return <div className="flex items-center justify-center min-h-screen text-muted-foreground">Loading…</div>;
@@ -29,6 +30,7 @@ export default function App() {
             <Route index element={<Dashboard />} />
             <Route path="broadcast" element={<Broadcast />} />
             <Route path="test" element={<Test />} />
+            <Route path="students" element={<Students />} />
             <Route path="settings" element={<Settings />} />
           </Route>
         </Routes>
