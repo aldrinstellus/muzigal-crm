@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { CheckCircle, Loader2, Eye, EyeOff } from 'lucide-react';
 import { Card } from '@zoo/ui';
-import { cn } from '../../lib/utils';
+import { Switch } from '../ui/Switch';
 import type { AutomationConfig as AutomationConfigType } from '../../types';
 
 interface Props {
@@ -9,25 +9,6 @@ interface Props {
   onChange: (config: AutomationConfigType) => void;
   onSave: () => void;
   saving: boolean;
-}
-
-function Toggle({ enabled, onToggle, label, description }: { enabled: boolean; onToggle: () => void; label: string; description: string }) {
-  return (
-    <div className="flex items-start gap-4">
-      <button onClick={onToggle}
-        className={cn('relative mt-0.5 w-10 h-6 rounded-full transition-colors shrink-0',
-          enabled ? 'bg-emerald-500' : 'bg-zinc-300'
-        )}>
-        <span className={cn('absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform',
-          enabled ? 'translate-x-[18px]' : 'translate-x-0.5'
-        )} />
-      </button>
-      <div>
-        <p className="text-sm font-medium text-zinc-800">{label}</p>
-        <p className="text-xs text-zinc-400 mt-0.5">{description}</p>
-      </div>
-    </div>
-  );
 }
 
 export default function AutomationConfig({ config, onChange, onSave, saving }: Props) {
@@ -43,32 +24,34 @@ export default function AutomationConfig({ config, onChange, onSave, saving }: P
       {/* Daily Schedule */}
       <Card title="Daily Schedule Notifications">
         <div className="space-y-4">
-          <Toggle
-            enabled={config.dailyScheduleEnabled}
-            onToggle={() => update({ dailyScheduleEnabled: !config.dailyScheduleEnabled })}
-            label="Send daily class reminders"
-            description="Automatically sends schedule reminders to all students with classes that day"
-          />
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-zinc-800">Send daily class reminders</p>
+              <p className="text-xs text-zinc-400 mt-0.5">Automatically sends schedule reminders to all students with classes that day</p>
+            </div>
+            <Switch checked={config.dailyScheduleEnabled} onCheckedChange={(v) => update({ dailyScheduleEnabled: v })} />
+          </div>
 
           {config.dailyScheduleEnabled && (
-            <div className="ml-14 space-y-3">
-              <div className="flex items-center gap-3">
-                <label className="text-sm text-zinc-600 w-20">Send at</label>
-                <select value={config.dailySendHour} onChange={(e) => update({ dailySendHour: parseInt(e.target.value) })}
-                  className="px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                  {hours.map(h => <option key={h} value={h}>{String(h).padStart(2, '0')}</option>)}
-                </select>
-                <span className="text-zinc-400">:</span>
-                <select value={config.dailySendMinute} onChange={(e) => update({ dailySendMinute: parseInt(e.target.value) })}
-                  className="px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                  {minutes.map(m => <option key={m} value={m}>{String(m).padStart(2, '0')}</option>)}
-                </select>
-                <span className="text-sm text-zinc-500">{config.timezone}</span>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-zinc-100">
+              <div>
+                <label className="block text-sm font-medium text-zinc-700 mb-1">Send at</label>
+                <div className="flex items-center gap-2">
+                  <select value={config.dailySendHour} onChange={(e) => update({ dailySendHour: parseInt(e.target.value) })}
+                    className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    {hours.map(h => <option key={h} value={h}>{String(h).padStart(2, '0')}</option>)}
+                  </select>
+                  <span className="text-zinc-400">:</span>
+                  <select value={config.dailySendMinute} onChange={(e) => update({ dailySendMinute: parseInt(e.target.value) })}
+                    className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                    {minutes.map(m => <option key={m} value={m}>{String(m).padStart(2, '0')}</option>)}
+                  </select>
+                </div>
               </div>
-              <div className="flex items-center gap-3">
-                <label className="text-sm text-zinc-600 w-20">Timezone</label>
+              <div>
+                <label className="block text-sm font-medium text-zinc-700 mb-1">Timezone</label>
                 <select value={config.timezone} onChange={(e) => update({ timezone: e.target.value })}
-                  className="px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                  className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                   <option value="Asia/Kolkata">Asia/Kolkata (IST)</option>
                   <option value="Asia/Dubai">Asia/Dubai (GST)</option>
                   <option value="America/New_York">America/New_York (EST)</option>
@@ -83,27 +66,25 @@ export default function AutomationConfig({ config, onChange, onSave, saving }: P
       {/* Fee Reminders */}
       <Card title="Fee Reminders">
         <div className="space-y-4">
-          <Toggle
-            enabled={config.feeReminderEnabled}
-            onToggle={() => update({ feeReminderEnabled: !config.feeReminderEnabled })}
-            label="Automatic fee reminders"
-            description="Sends payment reminders before the due date and on overdue"
-          />
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-zinc-800">Automatic fee reminders</p>
+              <p className="text-xs text-zinc-400 mt-0.5">Sends payment reminders before the due date and on overdue</p>
+            </div>
+            <Switch checked={config.feeReminderEnabled} onCheckedChange={(v) => update({ feeReminderEnabled: v })} />
+          </div>
 
           {config.feeReminderEnabled && (
-            <div className="ml-14">
-              <div className="flex items-center gap-3">
-                <label className="text-sm text-zinc-600">Remind</label>
-                <select value={config.feeReminderDaysBefore} onChange={(e) => update({ feeReminderDaysBefore: parseInt(e.target.value) })}
-                  className="px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                  <option value={1}>1 day</option>
-                  <option value={2}>2 days</option>
-                  <option value={3}>3 days</option>
-                  <option value={5}>5 days</option>
-                  <option value={7}>7 days</option>
-                </select>
-                <span className="text-sm text-zinc-600">before due date</span>
-              </div>
+            <div className="pt-2 border-t border-zinc-100">
+              <label className="block text-sm font-medium text-zinc-700 mb-1">Remind before due date</label>
+              <select value={config.feeReminderDaysBefore} onChange={(e) => update({ feeReminderDaysBefore: parseInt(e.target.value) })}
+                className="px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                <option value={1}>1 day before</option>
+                <option value={2}>2 days before</option>
+                <option value={3}>3 days before</option>
+                <option value={5}>5 days before</option>
+                <option value={7}>7 days before</option>
+              </select>
             </div>
           )}
         </div>
@@ -112,23 +93,33 @@ export default function AutomationConfig({ config, onChange, onSave, saving }: P
       {/* AI Message Composition */}
       <Card title="AI Message Composition">
         <div className="space-y-4">
-          <Toggle
-            enabled={config.aiEnabled}
-            onToggle={() => update({ aiEnabled: !config.aiEnabled })}
-            label="AI-powered messages"
-            description="Use Claude to compose context-aware, personalized messages instead of static templates"
-          />
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-zinc-800">AI-powered messages</p>
+              <p className="text-xs text-zinc-400 mt-0.5">Use Claude to compose context-aware, personalized messages instead of static templates</p>
+            </div>
+            <Switch checked={config.aiEnabled} onCheckedChange={(v) => update({ aiEnabled: v })} />
+          </div>
 
           {config.aiEnabled && (
-            <div className="ml-14 space-y-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-zinc-100">
               <div>
                 <label className="block text-sm font-medium text-zinc-700 mb-1">AI Provider</label>
                 <select value={config.aiProvider} onChange={(e) => update({ aiProvider: e.target.value as 'claude' | 'none' })}
-                  className="px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                  className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
                   <option value="claude">Claude (Anthropic)</option>
                 </select>
               </div>
               <div>
+                <label className="block text-sm font-medium text-zinc-700 mb-1">Model</label>
+                <select value={config.aiModel} onChange={(e) => update({ aiModel: e.target.value })}
+                  className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                  <option value="claude-sonnet-4-20250514">Claude Sonnet 4 (Recommended)</option>
+                  <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (Faster)</option>
+                  <option value="claude-opus-4-6">Claude Opus 4.6 (Most capable)</option>
+                </select>
+              </div>
+              <div className="sm:col-span-2">
                 <label className="block text-sm font-medium text-zinc-700 mb-1">API Key</label>
                 <div className="relative">
                   <input
@@ -143,15 +134,6 @@ export default function AutomationConfig({ config, onChange, onSave, saving }: P
                     {showAiKey ? <EyeOff size={14} /> : <Eye size={14} />}
                   </button>
                 </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-zinc-700 mb-1">Model</label>
-                <select value={config.aiModel} onChange={(e) => update({ aiModel: e.target.value })}
-                  className="px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
-                  <option value="claude-sonnet-4-20250514">Claude Sonnet 4 (Recommended)</option>
-                  <option value="claude-haiku-4-5-20251001">Claude Haiku 4.5 (Faster)</option>
-                  <option value="claude-opus-4-6">Claude Opus 4.6 (Most capable)</option>
-                </select>
               </div>
             </div>
           )}
@@ -182,7 +164,7 @@ export default function AutomationConfig({ config, onChange, onSave, saving }: P
             </select>
           </div>
           <div>
-            <label className="block text-sm font-medium text-zinc-700 mb-1">Rate Limit (between sends)</label>
+            <label className="block text-sm font-medium text-zinc-700 mb-1">Rate Limit</label>
             <select value={config.rateLimitMs} onChange={(e) => update({ rateLimitMs: parseInt(e.target.value) })}
               className="w-full px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
               <option value={100}>100ms</option>

@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react';
 import { Upload, Database, Link, CheckCircle, AlertCircle, Loader2 } from 'lucide-react';
 import { Card } from '@zoo/ui';
+import { Switch } from '../ui/Switch';
 import { parseExcelToDataset } from '../../data/excelParser';
 import type { DataSourceConfig } from '../../types';
 import seedMeta from '../../data/seed.json';
@@ -132,19 +133,16 @@ export default function DataSource({ config, onChange, onSave, saving }: Props) 
             <p className="text-xs text-zinc-400 mt-1">The sheet must have the same tab structure as the migration Excel file</p>
           </div>
 
-          <div className="flex items-start gap-4">
-            <button onClick={() => update({ autoSyncEnabled: !config.autoSyncEnabled })}
-              className={`relative mt-0.5 w-10 h-6 rounded-full transition-colors shrink-0 ${config.autoSyncEnabled ? 'bg-emerald-500' : 'bg-zinc-300'}`}>
-              <span className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform ${config.autoSyncEnabled ? 'translate-x-[18px]' : 'translate-x-0.5'}`} />
-            </button>
+          <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-zinc-800">Auto-sync</p>
-              <p className="text-xs text-zinc-400">Automatically refresh data from Google Sheet at a set interval</p>
+              <p className="text-xs text-zinc-400 mt-0.5">Automatically refresh data from Google Sheet at a set interval</p>
             </div>
+            <Switch checked={config.autoSyncEnabled} onCheckedChange={(v) => update({ autoSyncEnabled: v })} />
           </div>
 
           {config.autoSyncEnabled && (
-            <div className="ml-14">
+            <div className="pt-2 border-t border-zinc-100">
               <label className="block text-sm font-medium text-zinc-700 mb-1">Sync Interval</label>
               <select value={config.autoSyncIntervalMinutes} onChange={(e) => update({ autoSyncIntervalMinutes: parseInt(e.target.value) })}
                 className="px-3 py-2 border border-zinc-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
