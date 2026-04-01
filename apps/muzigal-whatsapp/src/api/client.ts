@@ -70,11 +70,15 @@ export const api = {
       'login', 'GET', { credentials }
     ),
 
-  // --- Students & Classes (for broadcast) ---
+  // --- Students & Classes ---
   listStudents: (filters?: Record<string, string>) =>
     request<Array<Record<string, unknown>>>('list_students', 'GET', filters),
   listClasses: (filters?: Record<string, string>) =>
     request<Array<Record<string, unknown>>>('list_classes', 'GET', filters),
+  listEnquiries: (filters?: Record<string, string>) =>
+    request<Array<Record<string, unknown>>>('list_enquiries', 'GET', filters),
+  listBatches: (filters?: Record<string, string>) =>
+    request<Array<Record<string, unknown>>>('list_batches', 'GET', filters),
 
   // --- WhatsApp ---
   sendTest: (phone: string, message: string) =>
@@ -83,6 +87,8 @@ export const api = {
     request('send_override', 'POST', undefined, {
       target_type: targetType, target_value: targetValue, message, sent_by: sentBy,
     }),
+  getMessageLog: () =>
+    request<Array<Record<string, unknown>>>('get_message_log'),
 
   // --- Config ---
   getConfig: () =>

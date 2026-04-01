@@ -1,28 +1,15 @@
 import { CLIENT } from '../config/client';
+import seedData from '../data/seed.json';
+import type { Student, Enquiry, Batch, DerivedClass, Lookups, MessageLogEntry } from '../types';
 
-export const mockStudents = [
-  { StudentID: 'S001', Name: 'Aarav Krishnan', Phone: '+919845708094', Class: 'Guitar - Grade 3', Instrument: 'Guitar', Level: 'Grade 3', Active: true },
-  { StudentID: 'S002', Name: 'Priya Sharma', Phone: '+919876543210', Class: 'Piano - Beginners', Instrument: 'Piano', Level: 'Beginners', Active: true },
-  { StudentID: 'S003', Name: 'Arjun Reddy', Phone: '+919823456789', Class: 'Drums - Intermediate', Instrument: 'Drums', Level: 'Intermediate', Active: true },
-  { StudentID: 'S004', Name: 'Meera Nair', Phone: '+919834567890', Class: 'Carnatic Vocals - Grade 2', Instrument: 'Carnatic Vocals', Level: 'Grade 2', Active: true },
-  { StudentID: 'S005', Name: 'Rohan Das', Phone: '+919845123456', Class: 'Guitar - Grade 3', Instrument: 'Guitar', Level: 'Grade 3', Active: true },
-  { StudentID: 'S006', Name: 'Kavya Iyer', Phone: '+919856789012', Class: 'Western Vocals - Advanced', Instrument: 'Western Vocals', Level: 'Advanced', Active: true },
-  { StudentID: 'S007', Name: 'Vikram Patel', Phone: '+919867890123', Class: 'Piano - Beginners', Instrument: 'Piano', Level: 'Beginners', Active: false },
-  { StudentID: 'S008', Name: 'Ananya Rao', Phone: '+919878901234', Class: 'Violin - Foundation', Instrument: 'Violin', Level: 'Foundation', Active: true },
-  { StudentID: 'S009', Name: 'Nikhil Hegde', Phone: '+919889012345', Class: 'Hindustani Vocals - Beginners', Instrument: 'Hindustani Vocals', Level: 'Beginners', Active: true },
-  { StudentID: 'S010', Name: 'Riya Menon', Phone: '+919890123456', Class: 'Drums - Intermediate', Instrument: 'Drums', Level: 'Intermediate', Active: true },
-];
+// Real data from Excel migration
+export const mockStudents: Student[] = seedData.students as Student[];
+export const mockEnquiries: Enquiry[] = seedData.enquiries as Enquiry[];
+export const mockBatches: Batch[] = seedData.batches as Batch[];
+export const mockClasses: DerivedClass[] = seedData.classes as DerivedClass[];
+export const mockLookups: Lookups = seedData.lookups as unknown as Lookups;
 
-export const mockClasses = [
-  { ClassID: 'CLS001', Instrument: 'Guitar', Level: 'Grade 3', Name: 'Guitar - Grade 3', Teacher: 'Mr. Cecil', Status: 'Active' },
-  { ClassID: 'CLS002', Instrument: 'Piano', Level: 'Beginners', Name: 'Piano - Beginners', Teacher: 'Mr. Giri', Status: 'Active' },
-  { ClassID: 'CLS003', Instrument: 'Drums', Level: 'Intermediate', Name: 'Drums - Intermediate', Teacher: 'Mr. Cecil', Status: 'Active' },
-  { ClassID: 'CLS004', Instrument: 'Carnatic Vocals', Level: 'Grade 2', Name: 'Carnatic Vocals - Grade 2', Teacher: 'Mrs. Lakshmi', Status: 'Active' },
-  { ClassID: 'CLS005', Instrument: 'Western Vocals', Level: 'Advanced', Name: 'Western Vocals - Advanced', Teacher: 'Mrs. Lakshmi', Status: 'Active' },
-  { ClassID: 'CLS006', Instrument: 'Violin', Level: 'Foundation', Name: 'Violin - Foundation', Teacher: 'Mr. Giri', Status: 'Active' },
-  { ClassID: 'CLS007', Instrument: 'Hindustani Vocals', Level: 'Beginners', Name: 'Hindustani Vocals - Beginners', Teacher: 'Mrs. Lakshmi', Status: 'Active' },
-];
-
+// Operational data (not from Excel)
 export const mockConfig = {
   WHATSAPP_TOKEN: 'EAAM5X064FqA...(hidden)',
   PHONE_NUMBER_ID: '1085043881349577',
@@ -36,7 +23,7 @@ export const mockConfig = {
   WEBHOOK_SECRET: '(hidden)',
 };
 
-export const mockMessageLog = [
+export const mockMessageLog: MessageLogEntry[] = [
   { id: 'MSG001', type: 'daily_schedule', target: 'all', message: 'Daily class schedule sent to all active students', sentBy: 'System', sentAt: '2026-04-01T08:00:00', recipients: 9, delivered: 9, failed: 0 },
   { id: 'MSG002', type: 'broadcast', target: 'all', message: 'Muzigal will be closed on April 5 for Ugadi. Classes resume April 7.', sentBy: 'Aldrin Stellus', sentAt: '2026-03-31T14:30:00', recipients: 9, delivered: 8, failed: 1 },
   { id: 'MSG003', type: 'teacher_change', target: 'class', message: 'Teacher changed: Drums Intermediate — Mr. Cecil → Mr. Giri', sentBy: 'System', sentAt: '2026-03-30T16:00:00', recipients: 2, delivered: 2, failed: 0 },
