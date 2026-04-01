@@ -70,15 +70,8 @@ export default function Sidebar({ open, onClose }: SidebarProps) {
         )}
       >
         <div className="px-6 py-4 border-b border-zinc-100">
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 bg-emerald-600 rounded-lg flex items-center justify-center">
-              <MessageCircle size={14} className="text-white" />
-            </div>
-            <div>
-              <span className="text-lg font-bold text-zinc-900 tracking-tight">{CLIENT.name}</span>
-              <p className="text-[10px] text-zinc-400 mt-0.5">{CLIENT.tagline}</p>
-            </div>
-          </div>
+          <p className="text-sm font-bold text-zinc-900 tracking-tight">{CLIENT.name}-WhatsApp</p>
+          <p className="text-[10px] text-zinc-400">Powered by ZOO-CRM</p>
         </div>
 
         <nav className="flex-1 overflow-y-auto py-3 px-3">
