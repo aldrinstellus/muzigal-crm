@@ -33,3 +33,4 @@ exports/*.pdf
 *.sw?
 .claude/worktrees/
 .vercel
+.env*.local
